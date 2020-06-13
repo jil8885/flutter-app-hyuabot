@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
+import 'style.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,20 +10,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -35,59 +32,26 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // 전체 스크린
     return Scaffold(
+      appBar: EmptyAppBar(),
       body: Container(
-        height: 760,
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        alignment: Alignment.bottomCenter,
-        // 하단 텍스트 입력부
-        child: Container(
-          height: 42,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Color.fromARGB(16, 0, 0, 0),
-                offset: Offset(0, -1),
-                blurRadius: 6,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          // 하단 입력부 화면(텍스트 입력, 전송 버튼)
-          child: Row(
-            children: <Widget>[
-              //입력 부분
-              SizedBox(
-                width: 329,
-                height: 42,
-                child: TextField(
-                // 힌트 텍스트
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                  hintText: '메세지를 입력해주세요',
-                  hintStyle: TextStyle(
-                    color: Color(0xffe0e0e0),
-                    fontSize: 13,
-                    fontFamily: 'NotoSans',
-                    fontWeight: FontWeight.w500,
-                  ),
-                  contentPadding: const EdgeInsets.only(left: 48)
-                ),
-                textAlignVertical: TextAlignVertical.center,
-              ),
-              )
-              // 전송 버튼 부분
-
-            ],
-          ),
-        ),
-      ),
+        color: Color(0xffc5c5c5),
+        child: Column(children: <Widget>[
+          // 로고 부분
+          Container(margin: const EdgeInsets.all(10.0), child: Image.asset('images/logo-food.png'),),
+          // 메인 화면
+          Expanded(child: Container(
+            color: Color(0xff747474)
+          ),),
+          // 버튼 부분(전체 공간)
+          Container(
+            // 버튼 widget 코드
+            child: Row(children:<Widget>[
+              FlatButton(onPressed: null, child: Row(children: <Widget>[Image.asset('images/icon-food.png', height: 40, width: 40,), Text("학식", style: TextStyle(fontSize: 20),)]))
+            ]
+            mainAxisAlignment: MainAxisAlignment.center,),
+          )
+        ],)
+      )
     );
   }
 }
