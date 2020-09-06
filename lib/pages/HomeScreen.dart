@@ -1,3 +1,4 @@
+import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chatbot/style.dart';
@@ -10,9 +11,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var _image = Image.asset('images/logo-food.png');
+  var _messages = [];
   // 홈화면 상태 빌드 함수
   @override
   Widget build(BuildContext context) {
+    _messages.clear();
+    _messages.insert(0, ChatMessage(text: "안녕하냥~내가 너를 도와줄게!"));
+    _messages.insert(0, ChatMessage(text: "어디에서 학식을 먹고 싶냥?"));
     // 전체 스크린
     return Scaffold(
         appBar: EmptyAppBar(),
@@ -28,6 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
               Expanded(
                 child: Container(
                   color: Color.fromRGBO(239, 244, 244, 0),
+                  child: ListView.builder(
+                    itemBuilder: (_, int index) => _messages[index],
+                    itemCount: _messages.length,
+                    reverse: true,
+                    padding: EdgeInsets.all(8.0),
+                  ),
                 ),
               ),
               Row(
@@ -171,3 +182,5 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 }
+
+
