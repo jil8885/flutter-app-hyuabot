@@ -1,21 +1,23 @@
-import 'package:chatbot/pages/TransportPage.dart';
-import 'package:chatbot/ui/ChatMessage.dart';
-import 'package:chatbot/ui/NavigatorPageRoute.dart';
 import 'package:flutter/material.dart';
 
-import 'package:chatbot/style.dart';
+import 'package:chatbot/ui/ChatMessage.dart';
 
-class HomeScreen extends StatefulWidget {
+import '../style.dart';
+
+
+class TransportPage extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _TransportPageState createState() => _TransportPageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  List<ChatMessage> _messages = [ChatMessage(text: "안녕하냥~내가 너를 도와줄게!")];
+class _TransportPageState extends State<TransportPage> {
+  List<ChatMessage> _messages = [
+    ChatMessage(text: "안녕하냥~내가 너를 도와줄게!"),
+    ChatMessage(text: "어느 정보를 알고싶은지 골라달라냥!")];
 
   // 버튼 항목 선언
   int _selected = -1;
-  List<String> _buttonName = ["교통", "학식", "도서", "전화"];
+  List<String> _buttonName = ["셔틀버스", "전철", "노선버스"];
   List<List<String>> _buttonAsset = [
     ["images/icon-bus-active.png", "images/icon-bus.png"],
     ["images/icon-food-active.png", "images/icon-food.png"],
@@ -23,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ["images/icon-phone-active.png", "images/icon-phone.png"]
   ];
 
-  var _logoImage = Image.asset('images/logo-default.png');
+  var _logoImage = Image.asset('images/logo-bus.png');
 
   // 홈화면 상태 빌드 함수
   @override
@@ -79,53 +81,47 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _buildButtons() {
     List<Widget> _listButtons = List.generate(_buttonName.length, (index) {
-      return SizedBox(
-        width: 88,
-        child: RaisedButton(
-          onPressed: () {
-            setState(() {
-              _selected = index;
-              switch (index) {
-                case 0:
-                  Navigator.push(context, NavigatorPageRoute(builder: (_) => TransportPage()));
-                  break;
-                case 1:
-                  break;
-                case 2:
-                // _messages.add(ChatMessage(text: "도서 검색과 열람실 좌석 중에 골라달라냥!"));
-                  break;
-                case 3:
-                // _messages.add(ChatMessage(text: "어떤 번호를 검색할지 골라달라냥!"));
-                  break;
-              }
-            });
-          },
-          child: Row(children: <Widget>[
-            Image.asset(
-              _selected == index
-                  ? _buttonAsset[index][0]
-                  : _buttonAsset[index][1],
-              height: 25,
-              width: 25,
-            ),
-            Text(
-              _buttonName[index],
-              style: TextStyle(
-                  fontSize: 16,
-                  color: _selected == index ? Colors.white : Colors.black),
-            )
-          ]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+      return RaisedButton(
+        onPressed: () {
+          setState(() {
+            _selected = index;
+            switch (index) {
+              case 0:
+                break;
+              case 1:
+                break;
+              case 2:
+              // _messages.add(ChatMessage(text: "도서 검색과 열람실 좌석 중에 골라달라냥!"));
+                break;
+            }
+          });
+        },
+        child: Row(children: <Widget>[
+          Image.asset(
+            _selected == index
+                ? _buttonAsset[index][0]
+                : _buttonAsset[index][1],
+            height: 25,
+            width: 25,
           ),
-          color: _selected == index
-              ? Color.fromARGB(255, 20, 75, 170)
-              : Colors.white,
-          elevation: 6,
-          focusColor: Colors.blue,
+          Text(
+            _buttonName[index],
+            style: TextStyle(
+                fontSize: 16,
+                color: _selected == index ? Colors.white : Colors.black),
+          )
+        ]),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
+        color: _selected == index
+            ? Color.fromARGB(255, 20, 75, 170)
+            : Colors.white,
+        elevation: 6,
+        focusColor: Colors.blue,
       );
     });
+    _listButtons.insert(0, IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: (){Navigator.pop(context);}));
     return _listButtons;
   }
 }
