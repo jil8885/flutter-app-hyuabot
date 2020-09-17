@@ -1,5 +1,6 @@
 import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:chatbot/style.dart';
 
@@ -30,11 +31,25 @@ class _HomeScreenState extends State<HomeScreen> {
   // 홈화면 상태 빌드 함수
   @override
   Widget build(BuildContext context) {
-    List<List<Widget>> _menus = [
-      _buildButtons(),
-      _buildTransportButtons(),
-      _buildFoodButtons(),
-      _buildLibraryButtons()
+    List _menus = [
+      Row(
+        children: _buildButtons(),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      ),
+      Row(
+        children: _buildTransportButtons(),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      ),
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: _buildFoodButtons(),
+        ),
+      ),
+      Row(
+        children: _buildLibraryButtons(),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      )
     ];
     // 전체 스크린
     return Scaffold(
@@ -59,10 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Row(
-                  children: _menus[_menuSelected],
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                ),
+                _menus[_menuSelected],
                 // 메세지 전송 버튼
                 Container(
                   height: 50,
@@ -163,12 +175,11 @@ class _HomeScreenState extends State<HomeScreen> {
             _selected = index;
             switch (index) {
               case 0:
+                showBarModalBottomSheet(context: context, builder: null);
                 break;
               case 1:
                 break;
               case 2:
-                break;
-              case 3:
                 break;
             }
           });
@@ -193,52 +204,57 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     _listButtons.insert(
         0,
-        IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              _menuSelected = 0;
-              _messages.removeLast();
-            });
-          },
+        SizedBox(
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                _menuSelected = 0;
+                _messages.removeLast();
+              });
+            },
+          ),
         ));
     return _listButtons;
   }
 
   List<Widget> _buildFoodButtons() {
     List<Widget> _listButtons = List.generate(_buttonFoodName.length, (index) {
-      return RaisedButton(
-        onPressed: () {
-          setState(() {
-            _selected = index;
-            switch (index) {
-              case 0:
-                break;
-              case 1:
-                break;
-              case 2:
-                break;
-              case 3:
-                break;
-            }
-          });
-        },
-        child: Row(children: <Widget>[
-          Text(
-            _buttonFoodName[index],
-            style: TextStyle(
-                fontSize: 16,
-                color: _selected == index ? Colors.white : Colors.black),
-          )
-        ]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+      return Container(
+        margin: EdgeInsets.only(right: 10),
+        child: RaisedButton(
+          onPressed: () {
+            setState(() {
+              _selected = index;
+              switch (index) {
+                case 0:
+                  break;
+                case 1:
+                  break;
+                case 2:
+                  break;
+                case 3:
+                  break;
+              }
+            });
+          },
+          child: Row(children: <Widget>[
+            Text(
+              _buttonFoodName[index],
+              style: TextStyle(
+                  fontSize: 16,
+                  color: _selected == index ? Colors.white : Colors.black),
+            )
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          color: _selected == index
+              ? Color.fromARGB(255, 20, 75, 170)
+              : Colors.white,
+          elevation: 6,
+          focusColor: Colors.blue,
         ),
-        color: _selected == index
-            ? Color.fromARGB(255, 20, 75, 170)
-            : Colors.white,
-        elevation: 6,
-        focusColor: Colors.blue,
       );
     });
     _listButtons.insert(
