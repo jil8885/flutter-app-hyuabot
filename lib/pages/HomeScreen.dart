@@ -16,6 +16,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _menuSelected = 0;
   List<String> _buttonName = ["교통", "학식", "도서", "전화"];
   List<String> _buttonTransportName = ["셔틀", "전철", "노선버스"];
+  List<String> _buttonFoodName = ["학생식당", "교직원식당", "푸드코트", "창업보육센터", "창의인재원식당"];
+  List<String> _buttonLibraryName = ["도서 검색", "열람실 잔여좌석"];
   List<List<String>> _buttonAsset = [
     ["images/icon-bus-active.png", "images/icon-bus.png"],
     ["images/icon-food-active.png", "images/icon-food.png"],
@@ -28,7 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
   // 홈화면 상태 빌드 함수
   @override
   Widget build(BuildContext context) {
-    List<List<Widget>> _menus = [_buildButtons(), _buildTransportButtons()];
+    List<List<Widget>> _menus = [
+      _buildButtons(),
+      _buildTransportButtons(),
+      _buildFoodButtons(),
+      _buildLibraryButtons()
+    ];
     // 전체 스크린
     return Scaffold(
         appBar: EmptyAppBar(),
@@ -96,18 +103,24 @@ class _HomeScreenState extends State<HomeScreen> {
           onPressed: () {
             setState(() {
               _selected = index;
+              if (_messages.length > 1) {
+                _messages = [ChatMessage(text: "안녕하냥~내가 너를 도와줄게!")];
+              }
               switch (index) {
                 case 0:
                   _messages.add(ChatMessage(text: "원하는 교통수단을 골라달라냥!"));
                   _menuSelected = 1;
                   break;
                 case 1:
+                  _messages.add(ChatMessage(text: "메뉴를 알고 싶은 식당을 골라달라냥!"));
+                  _menuSelected = 2;
                   break;
                 case 2:
-                  // _messages.add(ChatMessage(text: "도서 검색과 열람실 좌석 중에 골라달라냥!"));
+                  _messages.add(ChatMessage(text: "알고 싶은 정보를 골라달라냥!"));
+                  _menuSelected = 3;
                   break;
                 case 3:
-                  // _messages.add(ChatMessage(text: "어떤 번호를 검색할지 골라달라냥!"));
+                  _messages.add(ChatMessage(text: "밑에서 원하는 기관을 검색하라냥!"));
                   break;
               }
             });
@@ -150,6 +163,107 @@ class _HomeScreenState extends State<HomeScreen> {
             _selected = index;
             switch (index) {
               case 0:
+                break;
+              case 1:
+                break;
+              case 2:
+                break;
+              case 3:
+                break;
+            }
+          });
+        },
+        child: Row(children: <Widget>[
+          Text(
+            _buttonTransportName[index],
+            style: TextStyle(
+                fontSize: 16,
+                color: _selected == index ? Colors.white : Colors.black),
+          )
+        ]),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        color: _selected == index
+            ? Color.fromARGB(255, 20, 75, 170)
+            : Colors.white,
+        elevation: 6,
+        focusColor: Colors.blue,
+      );
+    });
+    _listButtons.insert(
+        0,
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            setState(() {
+              _menuSelected = 0;
+              _messages.removeLast();
+            });
+          },
+        ));
+    return _listButtons;
+  }
+
+  List<Widget> _buildFoodButtons() {
+    List<Widget> _listButtons = List.generate(_buttonFoodName.length, (index) {
+      return RaisedButton(
+        onPressed: () {
+          setState(() {
+            _selected = index;
+            switch (index) {
+              case 0:
+                break;
+              case 1:
+                break;
+              case 2:
+                break;
+              case 3:
+                break;
+            }
+          });
+        },
+        child: Row(children: <Widget>[
+          Text(
+            _buttonFoodName[index],
+            style: TextStyle(
+                fontSize: 16,
+                color: _selected == index ? Colors.white : Colors.black),
+          )
+        ]),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        color: _selected == index
+            ? Color.fromARGB(255, 20, 75, 170)
+            : Colors.white,
+        elevation: 6,
+        focusColor: Colors.blue,
+      );
+    });
+    _listButtons.insert(
+        0,
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            setState(() {
+              _menuSelected = 0;
+              _messages.removeLast();
+            });
+          },
+        ));
+    return _listButtons;
+  }
+
+  List<Widget> _buildLibraryButtons() {
+    List<Widget> _listButtons =
+        List.generate(_buttonLibraryName.length, (index) {
+      return RaisedButton(
+        onPressed: () {
+          setState(() {
+            _selected = index;
+            switch (index) {
+              case 0:
                 // List<Widget> _listTransportButtons
                 break;
               case 1:
@@ -165,7 +279,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Row(children: <Widget>[
           Text(
-            _buttonTransportName[index],
+            _buttonLibraryName[index],
             style: TextStyle(
                 fontSize: 16,
                 color: _selected == index ? Colors.white : Colors.black),
