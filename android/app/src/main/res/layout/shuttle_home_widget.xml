@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded_edge"
+    android:paddingLeft="5dp">
+ 
+    <ImageView
+        android:id="@+id/shuttleIcon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1.7"
+        android:src="@drawable/bus_widget" />
+ 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.75"
+        android:layout_gravity="center"
+        android:paddingLeft="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="정류장"
+            android:textSize="25dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="셔틀콕"
+            android:layout_weight="1"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_weight="1.2" >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="7분 후(순환)"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="37분 후(순환)"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/shuttleRefreshButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"
+        android:background="@android:color/transparent"
+        android:src="@drawable/refresh"/>
+</LinearLayout>
