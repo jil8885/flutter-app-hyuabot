@@ -4,7 +4,7 @@
     android:initialKeyguardLayout="@layout/shuttle_home_widget"
     android:initialLayout="@layout/shuttle_home_widget"
     android:minHeight="60dp"
-    android:minWidth="350dp"
+    android:minWidth="2100dp"
     android:previewImage="@drawable/bus_widget"
     android:resizeMode="horizontal"
     android:updatePeriodMillis="0"
