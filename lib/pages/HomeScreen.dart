@@ -1,8 +1,8 @@
-import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'package:chatbot/style.dart';
+import 'package:chatbot/ui/ChatMessage.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -37,18 +37,63 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),
       Row(
-        children: _buildTransportButtons(),
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                _menuSelected = 0;
+                _messages.removeLast();
+              });
+            },
+          ),
+          Flexible(
+            child: Row(
+              children: _buildTransportButtons(),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+            ),
+          ),
+        ],
       ),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: _buildFoodButtons(),
+      Row(children: [
+        IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            setState(() {
+              _menuSelected = 0;
+              _messages.removeLast();
+            });
+          },
         ),
-      ),
+        Flexible(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _buildFoodButtons(),
+            ),
+          ),
+        ),
+      ],),
       Row(
-        children: _buildLibraryButtons(),
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                _menuSelected = 0;
+                _messages.removeLast();
+              });
+            },
+          ),
+          Flexible(
+            child: Row(
+              children: _buildLibraryButtons(),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            ),
+          ),
+        ],
       )
     ];
     // 전체 스크린
@@ -57,7 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: WillPopScope(
           child: Container(
               color: Color.fromRGBO(239, 244, 244, 0),
-              child: Column(children: <Widget>[
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
                 // 로고 부분
                 Container(
                   margin: const EdgeInsets.all(10.0),
@@ -96,14 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ])),
-          onWillPop: () {
-            setState(() {
-              if (_menuSelected != 0) {
-                _menuSelected = 0;
-                _messages.removeLast();
-              }
-            });
-          },
+          onWillPop: () {},
         ));
   }
 
@@ -202,19 +242,6 @@ class _HomeScreenState extends State<HomeScreen> {
         focusColor: Colors.blue,
       );
     });
-    _listButtons.insert(
-        0,
-        SizedBox(
-          child: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              setState(() {
-                _menuSelected = 0;
-                _messages.removeLast();
-              });
-            },
-          ),
-        ));
     return _listButtons;
   }
 
@@ -257,17 +284,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     });
-    _listButtons.insert(
-        0,
-        IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              _menuSelected = 0;
-              _messages.removeLast();
-            });
-          },
-        ));
     return _listButtons;
   }
 
@@ -311,17 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
         focusColor: Colors.blue,
       );
     });
-    _listButtons.insert(
-        0,
-        IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              _menuSelected = 0;
-              _messages.removeLast();
-            });
-          },
-        ));
     return _listButtons;
   }
 }
