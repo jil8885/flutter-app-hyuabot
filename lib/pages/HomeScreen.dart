@@ -1,5 +1,9 @@
+import 'package:chatbot/model/Bus.dart';
+import 'package:chatbot/networking/GetBus.dart';
 import 'package:chatbot/networking/GetShuttle.dart';
 import 'package:chatbot/ui/BusLine.dart';
+import 'package:chatbot/ui/ShuttleLine.dart';
+import 'package:chatbot/ui/MetroLine.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -222,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context: context,
                   backgroundColor: Colors.transparent,
                   builder: (context, scrollController) => ClipRRect(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
                       child: Container(
                         height: 450,
                         color: Color.fromARGB(255, 20, 75, 170),
@@ -244,8 +248,204 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 break;
               case 1:
+                showMaterialModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context, scrollController) => ClipRRect(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                        child: Container(
+                          height: 450,
+                          color: Color.fromARGB(255, 20, 75, 170),
+                          child: DefaultTabController(
+                            length: 2,
+                            child: Scaffold(
+                              appBar: PreferredSize(
+                                preferredSize: Size.fromHeight(50),
+                                child: AppBar(
+                                  automaticallyImplyLeading: false,
+                                  backgroundColor: Color.fromARGB(255, 20, 75, 170),
+                                  elevation: 0,
+                                  bottom: TabBar(
+                                    labelColor: Color.fromARGB(255, 20, 75, 170),
+                                    unselectedLabelColor: Colors.white,
+                                    indicatorSize: TabBarIndicatorSize.label,
+                                    indicator: BoxDecoration(
+                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+                                      color: Colors.white
+                                    ),
+                                    tabs: [
+                                      Tab(child: Align(alignment: Alignment.center, child: Text("4호선"),),),
+                                      Tab(child: Align(alignment: Alignment.center, child: Text("수인분당선"),),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              body: TabBarView(
+                                children: [
+                                  Container(
+                                    color: Color.fromARGB(255, 20, 75, 170),
+                                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                                    child: Column(
+                                      children: [
+                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
+                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞", "상록수", "반월", "대야미", "수리산"]),),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    color: Color.fromARGB(255, 20, 75, 170),
+                                    padding: EdgeInsets.symmetric(vertical: 15.0),
+                                    child: Column(
+                                      children: [
+                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
+                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["사리", "야목", "어천", "오목천", "고색"]),),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        )
+                    ),
+                    useRootNavigator: false
+                );
                 break;
               case 2:
+                showMaterialModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context, scrollController) => ClipRRect(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                        child: Container(
+                            height: 450,
+                            color: Color.fromARGB(255, 20, 75, 170),
+                            child: DefaultTabController(
+                              length: 3,
+                              child: FutureBuilder(
+                                future: getBusInfoList(),
+                                builder: (context, snapshot){
+                                  if(snapshot.hasError) return Container();
+                                  if (snapshot.hasData) {
+                                    List<dynamic> data = snapshot.data as List;
+                                    Map<String, BusInfoRealtime> realtimeData = data[0];
+                                    Map<String, List<BusInfoTimetable>> timeTableData = data[1];
+                                    return Scaffold(
+                                      appBar: PreferredSize(
+                                        preferredSize: Size.fromHeight(50),
+                                        child: AppBar(
+                                          automaticallyImplyLeading: false,
+                                          backgroundColor: Color.fromARGB(
+                                              255, 20, 75, 170),
+                                          elevation: 0,
+                                          bottom: TabBar(
+                                            labelColor: Color.fromARGB(
+                                                255, 20, 75, 170),
+                                            unselectedLabelColor: Colors.white,
+                                            indicatorSize: TabBarIndicatorSize
+                                                .label,
+                                            indicator: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft: Radius.circular(
+                                                        10.0),
+                                                    topRight: Radius.circular(
+                                                        10.0)),
+                                                color: Colors.white
+                                            ),
+                                            tabs: [
+                                              Tab(child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text("상록수역(10-1)"),),),
+                                              Tab(child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text("강남역(3102)"),),),
+                                              Tab(child: Align(
+                                                alignment: Alignment.center,
+                                                child: Text("수원역(707-1)"),),),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      body: TabBarView(
+                                        children: [
+                                          Container(
+                                            color: Color.fromARGB(
+                                                255, 20, 75, 170),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15.0),
+                                            child: CustomPaint(
+                                              size: Size(MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width, 400),
+                                              painter: BusLine([
+                                                "한양대게스트하우스",
+                                                "한국생산기술연구원",
+                                                "한양대기숙사앞",
+                                                "경기테크노파크"
+                                              ],
+                                              realtimeData["10-1"],
+                                              timeTableData["10-1"],
+                                              terminalStop: "푸르지오6차후문"
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            color: Color.fromARGB(
+                                                255, 20, 75, 170),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15.0),
+                                            child: CustomPaint(
+                                              size: Size(MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width, 400),
+                                              painter: BusLine([
+                                                "한양대게스트하우스",
+                                                "한국생산기술연구원",
+                                                "한양대기숙사앞",
+                                                "경기테크노파크"
+                                              ],
+                                              realtimeData['3102'],
+                                              timeTableData["3102"],
+                                              terminalStop: "송산그린시티"),
+                                            ),
+                                          ),
+                                          Container(
+                                            color: Color.fromARGB(
+                                                255, 20, 75, 170),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 15.0),
+                                            child: CustomPaint(
+                                              size: Size(MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width, 400),
+                                              painter: BusLine([
+                                                "한양대정문",
+                                                "고잔1차푸르지오",
+                                                "송호초교",
+                                                "네오빌6단지",
+                                                "화승타운",
+                                                "홈플러스"
+                                              ],
+                                              realtimeData['707-1'],
+                                              timeTableData['707-1']),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  } else {
+                                    return Center(child: CircularProgressIndicator());
+                                  }
+                                }
+                              ),
+                            )
+                        )
+                    ),
+                    useRootNavigator: false
+                );
                 break;
             }
           });
