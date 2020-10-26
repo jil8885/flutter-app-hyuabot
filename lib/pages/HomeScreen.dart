@@ -1,7 +1,9 @@
+import 'package:chatbot/networking/GetShuttle.dart';
+import 'package:chatbot/ui/BusLine.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import 'package:chatbot/style.dart';
+import 'file:///D:/Jeongin/Projects/flutter-app-hyuabot/lib/config/style.dart';
 import 'package:chatbot/ui/ChatMessage.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -130,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Flexible(
                         child: TextField(
                           decoration: InputDecoration(
-                              hintText: "메세지를 입력해주세요.",
+                              hintText: "서버 유지비를 위해 광고를 넣는건 어떻나냥.",
                               contentPadding: const EdgeInsets.only(left: 20),
                               border: InputBorder.none),
                         ),
@@ -215,7 +217,31 @@ class _HomeScreenState extends State<HomeScreen> {
             _selected = index;
             switch (index) {
               case 0:
-                showBarModalBottomSheet(context: context, builder: null);
+                var result = getShuttleBusInfoList();
+                showMaterialModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context, scrollController) => ClipRRect(
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+                      child: Container(
+                        height: 450,
+                        color: Color.fromARGB(255, 20, 75, 170),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 60,
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(icon: Icon(Icons.refresh, color: Colors.white,), onPressed: ()=>{},),),),
+                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectStation(),),),
+                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectTerminal(),),),
+                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneCycle(),),)
+                          ],
+                      ),)
+                  ),
+                  useRootNavigator: false
+                );
                 break;
               case 1:
                 break;

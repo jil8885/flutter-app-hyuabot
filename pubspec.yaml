@@ -24,8 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  modal_bottom_sheet: ^0.2.0+1
+  modal_bottom_sheet: ^0.2.2
   bubble: ^1.1.9+1
+  http:
 
 dev_dependencies:
   flutter_test:
