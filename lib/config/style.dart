@@ -3,12 +3,16 @@
 // Empty App bar 
 import 'package:flutter/widgets.dart';
 
-class EmptyAppBar extends StatelessWidget implements PreferredSizeWidget{
+class MainAppBar extends StatelessWidget implements PreferredSizeWidget{
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      color: primaryColor,
+    );
   }
 
   @override
-  Size get preferredSize => Size(0.0, 0.0);
+  Size get preferredSize => Size(0, 0);
 }
+
+Color primaryColor = Color.fromARGB(255, 20, 75, 170);
