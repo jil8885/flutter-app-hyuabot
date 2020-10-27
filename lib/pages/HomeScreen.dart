@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ["assets/images/icon-phone-active.png", "assets/images/icon-phone.png"]
   ];
 
-  var _logoImage = Image.asset('assets/images/logo-default.png');
+  var _logoImage = Image.asset('assets/images/dark/logo-default-dark.png');
 
   // 홈화면 상태 빌드 함수
   @override
@@ -50,6 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               setState(() {
                 _menuSelected = 0;
+                _logoImage = Image.asset('assets/images/logo-default.png');
                 _messages.removeLast();
               });
             },
@@ -78,6 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: _buildFoodButtons(),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
             ),
           ),
         ),
@@ -114,6 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // 로고 부분
                 Container(
                   margin: const EdgeInsets.only(top: 10, left: 30, right: 30),
+                  width: MediaQuery.of(context).size.width,
+                  height: 150,
                   child: _logoImage,
                 ),
                 // 메인 화면
@@ -150,18 +155,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 switch (index) {
                   case 0:
                     _messages.add(ChatMessage(text: "원하는 교통수단을 골라달라냥!"));
+                    _logoImage = Image.asset('assets/images/logo-bus.png');
                     _menuSelected = 1;
                     break;
                   case 1:
                     _messages.add(ChatMessage(text: "메뉴를 알고 싶은 식당을 골라달라냥!"));
+                    _logoImage = Image.asset('assets/images/logo-food.png');
                     _menuSelected = 2;
                     break;
                   case 2:
                     _messages.add(ChatMessage(text: "알고 싶은 정보를 골라달라냥!"));
+                    _logoImage = Image.asset('assets/images/logo-book.png');
                     _menuSelected = 3;
                     break;
                   case 3:
                     _messages.add(ChatMessage(text: "밑에서 원하는 기관을 검색하라냥!"));
+                    _logoImage = Image.asset('assets/images/logo-default.png');
                     break;
                 }
               });
@@ -185,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             color: _selected == index
-                ? Color.fromARGB(255, 20, 75, 170)
+                ? Theme.of(context).accentColor
                 : Colors.white,
             elevation: 6,
             focusColor: Colors.blue,
@@ -197,7 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
       SizedBox(
         width: 88,
         child: RaisedButton(
-          child: Text("설정", style: TextStyle(fontSize: 12),),
+          child: Text("설정", style: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.black)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
@@ -216,199 +225,226 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _buildTransportButtons() {
     List<Widget> _listButtons =
         List.generate(_buttonTransportName.length, (index) {
-      return RaisedButton(
-        onPressed: () {
-          setState(() {
-            _selected = index;
-            switch (index) {
-              case 0:
-                // var result = getShuttleBusInfoList();
-                showMaterialModalBottomSheet(
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context, scrollController) => ClipRRect(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-                      child: Container(
-                        height: 450,
-                        color: Color.fromARGB(255, 20, 75, 170),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 60,
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: IconButton(icon: Icon(Icons.refresh, color: Colors.white,), onPressed: ()=>{},),),),
-                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectStation(),),),
-                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectTerminal(),),),
-                            Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneCycle(),),)
-                          ],
-                      ),)
-                  ),
-                  useRootNavigator: false
-                );
-                break;
-              case 1:
-                showMaterialModalBottomSheet(
+      return Padding(
+        padding: const EdgeInsets.all(6),
+        child: RaisedButton(
+          onPressed: () {
+            setState(() {
+              _selected = index;
+              switch (index) {
+                case 0:
+                  // var result = getShuttleBusInfoList();
+                  showMaterialModalBottomSheet(
                     context: context,
                     backgroundColor: Colors.transparent,
                     builder: (context, scrollController) => ClipRRect(
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
                         child: Container(
                           height: 450,
-                          color: Color.fromARGB(255, 20, 75, 170),
-                          child: DefaultTabController(
-                            length: 2,
-                            child: Scaffold(
-                              appBar: PreferredSize(
-                                preferredSize: Size.fromHeight(50),
-                                child: AppBar(
-                                  automaticallyImplyLeading: false,
-                                  backgroundColor: Color.fromARGB(255, 20, 75, 170),
-                                  elevation: 0,
-                                  bottom: TabBar(
-                                    labelColor: Color.fromARGB(255, 20, 75, 170),
-                                    unselectedLabelColor: Colors.white,
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicator: BoxDecoration(
-                                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-                                      color: Colors.white
-                                    ),
-                                    tabs: [
-                                      Tab(child: Align(alignment: Alignment.center, child: Text("4호선"),),),
-                                      Tab(child: Align(alignment: Alignment.center, child: Text("수인분당선"),),),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              body: TabBarView(
-                                children: [
-                                  Container(
-                                    color: Color.fromARGB(255, 20, 75, 170),
-                                    padding: EdgeInsets.symmetric(vertical: 15.0),
-                                    child: Column(
-                                      children: [
-                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
-                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞", "상록수", "반월", "대야미", "수리산"]),),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    color: Color.fromARGB(255, 20, 75, 170),
-                                    padding: EdgeInsets.symmetric(vertical: 15.0),
-                                    child: Column(
-                                      children: [
-                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
-                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞","사리", "야목", "어천", "오목천"]),),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        )
+                          color: Theme.of(context).accentColor,
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 60,
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(icon: Icon(Icons.refresh, color: Colors.white,), onPressed: ()=>{},),),),
+                              Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectStation(),),),
+                              Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneDirectTerminal(),),),
+                              Container(child: CustomPaint(size: Size(MediaQuery.of(context).size.width, 130), painter: BusLaneCycle(),),)
+                            ],
+                        ),)
                     ),
                     useRootNavigator: false
-                );
-                break;
-              case 2:
-                var busArrivalInfo = getBusInfoList();
-                showMaterialModalBottomSheet(
-                    context: context,
-                    backgroundColor: Colors.transparent,
-                    builder: (context, scrollController) => ClipRRect(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-                        child: Container(
+                  );
+                  break;
+                case 1:
+                  showMaterialModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context, scrollController) => ClipRRect(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                          child: Container(
                             height: 450,
-                            color: Color.fromARGB(255, 20, 75, 170),
+                            color: Theme.of(context).accentColor,
                             child: DefaultTabController(
-                              length: 3,
-                              child: FutureBuilder(
-                                future: busArrivalInfo,
-                                builder: (context, snapshot){
-                                  if(snapshot.hasError) return Container();
-                                  if (snapshot.hasData) {
-                                    List<dynamic> data = snapshot.data as List;
-                                    Map<String, BusInfoRealtime> realtimeData = data[0];
-                                    Map<String, List<BusInfoTimetable>> timeTableData = data[1];
-                                    return Scaffold(
-                                      appBar: PreferredSize(
-                                        preferredSize: Size.fromHeight(50),
-                                        child: AppBar(
-                                          automaticallyImplyLeading: false,
-                                          backgroundColor: Color.fromARGB(
-                                              255, 20, 75, 170),
-                                          elevation: 0,
-                                          bottom: TabBar(
-                                            labelColor: Color.fromARGB(
+                              length: 2,
+                              child: Scaffold(
+                                appBar: PreferredSize(
+                                  preferredSize: Size.fromHeight(50),
+                                  child: AppBar(
+                                    automaticallyImplyLeading: false,
+                                    backgroundColor: Theme.of(context).accentColor,
+                                    elevation: 0,
+                                    bottom: TabBar(
+                                      labelColor: Theme.of(context).accentColor,
+                                      unselectedLabelColor: Colors.white,
+                                      indicatorSize: TabBarIndicatorSize.label,
+                                      indicator: BoxDecoration(
+                                        borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
+                                        color: Colors.white
+                                      ),
+                                      tabs: [
+                                        Tab(child: Align(alignment: Alignment.center, child: Text("4호선"),),),
+                                        Tab(child: Align(alignment: Alignment.center, child: Text("수인분당선"),),),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                body: TabBarView(
+                                  children: [
+                                    Container(
+                                      color: Theme.of(context).accentColor,
+                                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                                      child: Column(
+                                        children: [
+                                          CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
+                                          CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞", "상록수", "반월", "대야미", "수리산"]),),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      color: Theme.of(context).accentColor,
+                                      padding: EdgeInsets.symmetric(vertical: 15.0),
+                                      child: Column(
+                                        children: [
+                                          CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
+                                          CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞","사리", "야목", "어천", "오목천"]),),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          )
+                      ),
+                      useRootNavigator: false
+                  );
+                  break;
+                case 2:
+                  var busArrivalInfo = getBusInfoList();
+                  showMaterialModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context, scrollController) => ClipRRect(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                          child: Container(
+                              height: 450,
+                              color: Theme.of(context).accentColor,
+                              child: DefaultTabController(
+                                length: 3,
+                                child: FutureBuilder(
+                                  future: busArrivalInfo,
+                                  builder: (context, snapshot){
+                                    if(snapshot.hasError) return Container();
+                                    if (snapshot.hasData) {
+                                      List<dynamic> data = snapshot.data as List;
+                                      Map<String, BusInfoRealtime> realtimeData = data[0];
+                                      Map<String, List<BusInfoTimetable>> timeTableData = data[1];
+                                      return Scaffold(
+                                        appBar: PreferredSize(
+                                          preferredSize: Size.fromHeight(50),
+                                          child: AppBar(
+                                            automaticallyImplyLeading: false,
+                                            backgroundColor: Color.fromARGB(
                                                 255, 20, 75, 170),
-                                            unselectedLabelColor: Colors.white,
-                                            indicatorSize: TabBarIndicatorSize
-                                                .label,
-                                            indicator: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(
-                                                        10.0),
-                                                    topRight: Radius.circular(
-                                                        10.0)),
-                                                color: Colors.white
+                                            elevation: 0,
+                                            bottom: TabBar(
+                                              labelColor: Color.fromARGB(
+                                                  255, 20, 75, 170),
+                                              unselectedLabelColor: Colors.white,
+                                              indicatorSize: TabBarIndicatorSize
+                                                  .label,
+                                              indicator: BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(
+                                                          10.0),
+                                                      topRight: Radius.circular(
+                                                          10.0)),
+                                                  color: Colors.white
+                                              ),
+                                              tabs: [
+                                                Tab(child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text("상록수역(10-1)"),),),
+                                                Tab(child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text("강남역(3102)"),),),
+                                                Tab(child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Text("수원역(707-1)"),),),
+                                              ],
                                             ),
-                                            tabs: [
-                                              Tab(child: Align(
-                                                alignment: Alignment.center,
-                                                child: Text("상록수역(10-1)"),),),
-                                              Tab(child: Align(
-                                                alignment: Alignment.center,
-                                                child: Text("강남역(3102)"),),),
-                                              Tab(child: Align(
-                                                alignment: Alignment.center,
-                                                child: Text("수원역(707-1)"),),),
-                                            ],
                                           ),
                                         ),
-                                      ),
-                                      body: TabBarView(
-                                        children: [
-                                          InkWell(
-                                            onTap: (){
-                                              setState(() {
-                                                busArrivalInfo = getBusInfoList();
-                                              });
-                                            },
-                                            child: Container(
-                                              color: Color.fromARGB(
-                                                  255, 20, 75, 170),
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 15.0),
-                                              child: CustomPaint(
-                                                size: Size(MediaQuery
-                                                    .of(context)
-                                                    .size
-                                                    .width, 400),
-                                                painter: BusLine([
-                                                  "한양대게스트하우스",
-                                                  "한국생산기술연구원",
-                                                  "한양대기숙사앞",
-                                                  "경기테크노파크",
-                                                  "푸르지오6,7차정문",
-                                                  "해양중학교",
-                                                  "푸르지오6차후문"
-                                                ],
-                                                realtimeData["10-1"],
-                                                timeTableData["10-1"],
-                                                terminalStop: "푸르지오6차후문"
+                                        body: TabBarView(
+                                          children: [
+                                            InkWell(
+                                              onTap: (){
+                                                setState(() {
+                                                  busArrivalInfo = getBusInfoList();
+                                                });
+                                              },
+                                              child: Container(
+                                                color: Color.fromARGB(
+                                                    255, 20, 75, 170),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15.0),
+                                                child: CustomPaint(
+                                                  size: Size(MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width, 400),
+                                                  painter: BusLine([
+                                                    "한양대게스트하우스",
+                                                    "한국생산기술연구원",
+                                                    "한양대기숙사앞",
+                                                    "경기테크노파크",
+                                                    "푸르지오6,7차정문",
+                                                    "해양중학교",
+                                                    "푸르지오6차후문"
+                                                  ],
+                                                  realtimeData["10-1"],
+                                                  timeTableData["10-1"],
+                                                  terminalStop: "푸르지오6차후문"
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          InkWell(
-                                            onTap: (){
-                                              setState(() {
-                                                busArrivalInfo = getBusInfoList();
-                                              });
-                                            },
-                                            child: Container(
+                                            InkWell(
+                                              onTap: (){
+                                                setState(() {
+                                                  busArrivalInfo = getBusInfoList();
+                                                });
+                                              },
+                                              child: Container(
+                                                color: Color.fromARGB(
+                                                    255, 20, 75, 170),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 15.0),
+                                                child: CustomPaint(
+                                                  size: Size(MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width, 400),
+                                                  painter: BusLine([
+                                                    "한양대게스트하우스",
+                                                    "한국생산기술연구원",
+                                                    "한양대기숙사앞",
+                                                    "경기테크노파크",
+                                                    "푸르지오6,7차정문",
+                                                    "해양중학교",
+                                                    "푸르지오6차후문"
+                                                  ],
+                                                  realtimeData['3102'],
+                                                  timeTableData["3102"],
+                                                  terminalStop: "송산그린시티"),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
                                               color: Color.fromARGB(
                                                   255, 20, 75, 170),
                                               padding: EdgeInsets.symmetric(
@@ -419,75 +455,50 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .size
                                                     .width, 400),
                                                 painter: BusLine([
-                                                  "한양대게스트하우스",
-                                                  "한국생산기술연구원",
-                                                  "한양대기숙사앞",
-                                                  "경기테크노파크",
-                                                  "푸르지오6,7차정문",
-                                                  "해양중학교",
-                                                  "푸르지오6차후문"
+                                                  "한양대정문",
+                                                  "고잔1차푸르지오",
+                                                  "송호초교",
+                                                  "네오빌6단지",
+                                                  "화승타운",
+                                                  "홈플러스"
                                                 ],
-                                                realtimeData['3102'],
-                                                timeTableData["3102"],
-                                                terminalStop: "송산그린시티"),
+                                                realtimeData['707-1'],
+                                                timeTableData['707-1']),
                                               ),
                                             ),
-                                          ),
-                                          Container(
-                                            color: Color.fromARGB(
-                                                255, 20, 75, 170),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15.0),
-                                            child: CustomPaint(
-                                              size: Size(MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width, 400),
-                                              painter: BusLine([
-                                                "한양대정문",
-                                                "고잔1차푸르지오",
-                                                "송호초교",
-                                                "네오빌6단지",
-                                                "화승타운",
-                                                "홈플러스"
-                                              ],
-                                              realtimeData['707-1'],
-                                              timeTableData['707-1']),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  } else {
-                                    return Center(child: CircularProgressIndicator());
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      return Center(child: CircularProgressIndicator());
+                                    }
                                   }
-                                }
-                              ),
-                            )
-                        )
-                    ),
-                    useRootNavigator: false
-                );
-                break;
-            }
-          });
-        },
-        child: Row(children: <Widget>[
-          Text(
-            _buttonTransportName[index],
-            style: TextStyle(
-                fontSize: 16,
-                color: _selected == index ? Colors.white : Colors.black),
-          )
-        ]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+                                ),
+                              )
+                          )
+                      ),
+                      useRootNavigator: false
+                  );
+                  break;
+              }
+            });
+          },
+          child: Row(children: <Widget>[
+            Text(
+              _buttonTransportName[index],
+              style: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR",
+                  color: _selected == index ? Colors.white : Colors.black),
+            )
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          color: _selected == index
+              ? Theme.of(context).accentColor
+              : Colors.white,
+          elevation: 6,
+          focusColor: Colors.blue,
         ),
-        color: _selected == index
-            ? Color.fromARGB(255, 20, 75, 170)
-            : Colors.white,
-        elevation: 6,
-        focusColor: Colors.blue,
       );
     });
     return _listButtons;
@@ -495,8 +506,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _buildFoodButtons() {
     List<Widget> _listButtons = List.generate(_buttonFoodName.length, (index) {
-      return Container(
-        margin: EdgeInsets.only(right: 10),
+      return Padding(
+        padding: EdgeInsets.all(6.0),
         child: RaisedButton(
           onPressed: () {
             setState(() {
@@ -516,8 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(children: <Widget>[
             Text(
               _buttonFoodName[index],
-              style: TextStyle(
-                  fontSize: 16,
+              style: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR",
                   color: _selected == index ? Colors.white : Colors.black),
             )
           ]),
@@ -525,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           color: _selected == index
-              ? Color.fromARGB(255, 20, 75, 170)
+              ? Theme.of(context).accentColor
               : Colors.white,
           elevation: 6,
           focusColor: Colors.blue,
@@ -538,38 +548,40 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _buildLibraryButtons() {
     List<Widget> _listButtons =
         List.generate(_buttonLibraryName.length, (index) {
-      return RaisedButton(
-        onPressed: () {
-          setState(() {
-            _selected = index;
-            switch (index) {
-              case 0:
-                // List<Widget> _listTransportButtons
-                break;
-              case 1:
-                showMaterialModalBottomSheet(
-                    context: context, backgroundColor: Colors.transparent,
-                    builder: (context, scrollController) => Container());
-                break;
-            }
-          });
-        },
-        child: Row(children: <Widget>[
-          Text(
-            _buttonLibraryName[index],
-            style: TextStyle(
-                fontSize: 16,
-                color: _selected == index ? Colors.white : Colors.black),
-          )
-        ]),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
+      return Padding(
+        padding: EdgeInsets.all(6.0),
+        child: RaisedButton(
+          onPressed: () {
+            setState(() {
+              _selected = index;
+              switch (index) {
+                case 0:
+                  // List<Widget> _listTransportButtons
+                  break;
+                case 1:
+                  showMaterialModalBottomSheet(
+                      context: context, backgroundColor: Colors.transparent,
+                      builder: (context, scrollController) => Container());
+                  break;
+              }
+            });
+          },
+          child: Row(children: <Widget>[
+            Text(
+              _buttonLibraryName[index],
+              style: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR",
+                  color: _selected == index ? Colors.white : Colors.black),
+            )
+          ]),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          color: _selected == index
+              ? Theme.of(context).accentColor
+              : Colors.white,
+          elevation: 6,
+          focusColor: Colors.blue,
         ),
-        color: _selected == index
-            ? Color.fromARGB(255, 20, 75, 170)
-            : Colors.white,
-        elevation: 6,
-        focusColor: Colors.blue,
       );
     });
     return _listButtons;

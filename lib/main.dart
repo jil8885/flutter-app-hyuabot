@@ -1,3 +1,4 @@
+import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,42 +10,55 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(Phoenix(child: EasyLocalization(child: MyApp(), supportedLocales: [Locale('ko', 'KR'), Locale('en', 'US')], path: 'assets/translations')));
+  runApp(
+      Phoenix(
+          child: EasyLocalization(
+              child: MyApp(),
+              supportedLocales: [Locale('ko', 'KR'), Locale('en', 'US')],
+              path: 'assets/translations'
+          )
+      )
+  );
 }
 
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Future<Locale> locale = getLocale();
+    Future<Map<String, dynamic>> _pref = getPref();
+
     return FutureBuilder(
-      future: locale,
-      builder: (BuildContext context, AsyncSnapshot<Locale> snapshot){
+      future: _pref,
+      builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot){
         if(snapshot.hasError){
             return MaterialApp(
-                debugShowCheckedModeBanner: false,
-                localizationsDelegates: context.localizationDelegates,
-                supportedLocales: context.supportedLocales,
-                locale: context.locale,
-                theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-                ),
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              locale: context.locale,
+              theme: ThemeData.light(),
+              darkTheme: ThemeData.dark(),
+              themeMode: currentTheme.currentTheme(),
               home: Center(child: Text(snapshot.error.toString(), style: TextStyle(fontSize: 10),),),
             );
         }else{
           if(snapshot.data != null){
-            context.locale = snapshot.data;
+            context.locale = snapshot.data["locale"];
+            print(snapshot.data["darkMode"]);
+            if(snapshot.data["darkMode"] == 'true' || snapshot.data["darkMode"] == 'false'){
+              currentTheme.setTheme(snapshot.data["darkMode"] == 'true');
+            } else{
+              currentTheme.setTheme(MediaQueryData.fromWindow(WidgetsBinding.instance.window).platformBrightness == Brightness.dark);
+            }
           }
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-            ),
+            theme: lightTheme,
+            darkTheme: darkTheme,
+            themeMode: currentTheme.currentTheme(),
             home: SplashScreen(),
             routes: <String, WidgetBuilder>{
               '/home' : (BuildContext context) => new HomeScreen()
@@ -55,14 +69,27 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Future<Locale> getLocale() async{
+  Future<Map<String, dynamic>> getPref() async{
     SharedPreferences _prefManager = await SharedPreferences.getInstance();
+    Map<String, dynamic> _prefs = {};
+
+    // Get Application Locale
     List<String> localeCode = _prefManager.getStringList("language");
     if(localeCode!=null) {
-      return Locale(localeCode[0], localeCode[1]);
+      _prefs["locale"] = Locale(localeCode[0], localeCode[1]);
     } else {
-      return null;
+      _prefs["locale"] =  null;
     }
+
+    // Get isDarkMode
+    String isDarkMode = _prefManager.getString("darkMode");
+    if(isDarkMode != null){
+      _prefs["darkMode"] = isDarkMode;
+    } else {
+      _prefs["darkMode"] = "auto";
+    }
+
+    return _prefs;
   }
 }
 

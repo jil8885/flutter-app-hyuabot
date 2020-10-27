@@ -1,4 +1,7 @@
 {
   "language": "Language",
-  "settings": "Global Settings"
+  "settings": "Global Settings",
+  "dark_mode": "Dark Mode",
+  "light_mode": "Light Mode",
+  "auto_mode": "Auto Mode"
 }

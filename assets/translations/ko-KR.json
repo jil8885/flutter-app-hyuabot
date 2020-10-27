@@ -1,4 +1,7 @@
 {
   "language": "언어",
-  "settings": "전체 설정"
+  "settings": "전체 설정",
+  "dark_mode": "야간 모드",
+  "light_mode": "주간 모드",
+  "auto_mode": "자동 모드"
 }
