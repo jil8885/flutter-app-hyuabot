@@ -1,6 +1,6 @@
 import 'package:chatbot/model/Bus.dart';
 import 'package:chatbot/networking/GetBus.dart';
-import 'package:chatbot/networking/GetShuttle.dart';
+import 'package:chatbot/pages/SettingScreen.dart';
 import 'package:chatbot/ui/BusLine.dart';
 import 'package:chatbot/ui/ShuttleLine.dart';
 import 'package:chatbot/ui/MetroLine.dart';
@@ -26,21 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
   List<String> _buttonFoodName = ["학생식당", "교직원식당", "푸드코트", "창업보육센터", "창의인재원식당"];
   List<String> _buttonLibraryName = ["도서 검색", "열람실 잔여좌석"];
   List<List<String>> _buttonAsset = [
-    ["images/icon-bus-active.png", "images/icon-bus.png"],
-    ["images/icon-food-active.png", "images/icon-food.png"],
-    ["images/icon-book-active.png", "images/icon-book.png"],
-    ["images/icon-phone-active.png", "images/icon-phone.png"]
+    ["assets/images/icon-bus-active.png", "assets/images/icon-bus.png"],
+    ["assets/images/icon-food-active.png", "assets/images/icon-food.png"],
+    ["assets/images/icon-book-active.png", "assets/images/icon-book.png"],
+    ["assets/images/icon-phone-active.png", "assets/images/icon-phone.png"]
   ];
 
-  var _logoImage = Image.asset('images/logo-default.png');
+  var _logoImage = Image.asset('assets/images/logo-default.png');
 
   // 홈화면 상태 빌드 함수
   @override
   Widget build(BuildContext context) {
     List _menus = [
-      Row(
-        children: _buildButtons(),
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      SingleChildScrollView(
+        child: Row(children: _buildButtons(),),
+        scrollDirection: Axis.horizontal,
       ),
       Row(
         mainAxisSize: MainAxisSize.max,
@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     // 전체 스크린
     return Scaffold(
-        appBar: EmptyAppBar(),
+        appBar: MainAppBar(),
         body: WillPopScope(
           child: Container(
               color: Color.fromRGBO(239, 244, 244, 0),
@@ -127,10 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                Padding(
-                  child: _menus[_menuSelected],
-                  padding: EdgeInsets.only(bottom: 10, left: 7.5, right: 7.5),
-                ),
+                _menus[_menuSelected],
                 // 메세지 전송 버튼
               ])),
           onWillPop: () {},
@@ -139,60 +136,80 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _buildButtons() {
     List<Widget> _listButtons = List.generate(_buttonName.length, (index) {
-      return SizedBox(
-        width: 88,
-        child: RaisedButton(
-          onPressed: () {
-            setState(() {
-              _selected = index;
-              if (_messages.length > 1) {
-                _messages = [ChatMessage(text: "안녕하냥~내가 너를 도와줄게!")];
-              }
-              switch (index) {
-                case 0:
-                  _messages.add(ChatMessage(text: "원하는 교통수단을 골라달라냥!"));
-                  _menuSelected = 1;
-                  break;
-                case 1:
-                  _messages.add(ChatMessage(text: "메뉴를 알고 싶은 식당을 골라달라냥!"));
-                  _menuSelected = 2;
-                  break;
-                case 2:
-                  _messages.add(ChatMessage(text: "알고 싶은 정보를 골라달라냥!"));
-                  _menuSelected = 3;
-                  break;
-                case 3:
-                  _messages.add(ChatMessage(text: "밑에서 원하는 기관을 검색하라냥!"));
-                  break;
-              }
-            });
-          },
-          child: Row(children: <Widget>[
-            Image.asset(
-              _selected == index
-                  ? _buttonAsset[index][0]
-                  : _buttonAsset[index][1],
-              height: 25,
-              width: 25,
+      return Padding(
+        padding: const EdgeInsets.all(6),
+        child: SizedBox(
+          width: 88,
+          child: RaisedButton(
+            onPressed: () {
+              setState(() {
+                _selected = index;
+                if (_messages.length > 1) {
+                  _messages = [ChatMessage(text: "안녕하냥~내가 너를 도와줄게!")];
+                }
+                switch (index) {
+                  case 0:
+                    _messages.add(ChatMessage(text: "원하는 교통수단을 골라달라냥!"));
+                    _menuSelected = 1;
+                    break;
+                  case 1:
+                    _messages.add(ChatMessage(text: "메뉴를 알고 싶은 식당을 골라달라냥!"));
+                    _menuSelected = 2;
+                    break;
+                  case 2:
+                    _messages.add(ChatMessage(text: "알고 싶은 정보를 골라달라냥!"));
+                    _menuSelected = 3;
+                    break;
+                  case 3:
+                    _messages.add(ChatMessage(text: "밑에서 원하는 기관을 검색하라냥!"));
+                    break;
+                }
+              });
+            },
+            child: Row(children: <Widget>[
+              Image.asset(
+                _selected == index
+                    ? _buttonAsset[index][0]
+                    : _buttonAsset[index][1],
+                height: 25,
+                width: 25,
+              ),
+              Text(
+                _buttonName[index],
+                style: TextStyle(
+                    fontSize: 12,
+                    color: _selected == index ? Colors.white : Colors.black),
+              )
+            ]),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            Text(
-              _buttonName[index],
-              style: TextStyle(
-                  fontSize: 16,
-                  color: _selected == index ? Colors.white : Colors.black),
-            )
-          ]),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
+            color: _selected == index
+                ? Color.fromARGB(255, 20, 75, 170)
+                : Colors.white,
+            elevation: 6,
+            focusColor: Colors.blue,
           ),
-          color: _selected == index
-              ? Color.fromARGB(255, 20, 75, 170)
-              : Colors.white,
-          elevation: 6,
-          focusColor: Colors.blue,
         ),
       );
     });
+    _listButtons.add(
+      SizedBox(
+        width: 88,
+        child: RaisedButton(
+          child: Text("설정", style: TextStyle(fontSize: 12),),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SettingScreen()));
+          },
+          elevation: 6,
+          color: Colors.white,
+          focusColor: Colors.blue,
+        ),
+      )
+    );
     return _listButtons;
   }
 
@@ -296,6 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 break;
               case 2:
+                var busArrivalInfo = getBusInfoList();
                 showMaterialModalBottomSheet(
                     context: context,
                     backgroundColor: Colors.transparent,
@@ -307,7 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: DefaultTabController(
                               length: 3,
                               child: FutureBuilder(
-                                future: getBusInfoList(),
+                                future: busArrivalInfo,
                                 builder: (context, snapshot){
                                   if(snapshot.hasError) return Container();
                                   if (snapshot.hasData) {
@@ -352,47 +370,67 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                       body: TabBarView(
                                         children: [
-                                          Container(
-                                            color: Color.fromARGB(
-                                                255, 20, 75, 170),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15.0),
-                                            child: CustomPaint(
-                                              size: Size(MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width, 400),
-                                              painter: BusLine([
-                                                "한양대게스트하우스",
-                                                "한국생산기술연구원",
-                                                "한양대기숙사앞",
-                                                "경기테크노파크"
-                                              ],
-                                              realtimeData["10-1"],
-                                              timeTableData["10-1"],
-                                              terminalStop: "푸르지오6차후문"
+                                          InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                busArrivalInfo = getBusInfoList();
+                                              });
+                                            },
+                                            child: Container(
+                                              color: Color.fromARGB(
+                                                  255, 20, 75, 170),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 15.0),
+                                              child: CustomPaint(
+                                                size: Size(MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width, 400),
+                                                painter: BusLine([
+                                                  "한양대게스트하우스",
+                                                  "한국생산기술연구원",
+                                                  "한양대기숙사앞",
+                                                  "경기테크노파크",
+                                                  "푸르지오6,7차정문",
+                                                  "해양중학교",
+                                                  "푸르지오6차후문"
+                                                ],
+                                                realtimeData["10-1"],
+                                                timeTableData["10-1"],
+                                                terminalStop: "푸르지오6차후문"
+                                                ),
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            color: Color.fromARGB(
-                                                255, 20, 75, 170),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 15.0),
-                                            child: CustomPaint(
-                                              size: Size(MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width, 400),
-                                              painter: BusLine([
-                                                "한양대게스트하우스",
-                                                "한국생산기술연구원",
-                                                "한양대기숙사앞",
-                                                "경기테크노파크"
-                                              ],
-                                              realtimeData['3102'],
-                                              timeTableData["3102"],
-                                              terminalStop: "송산그린시티"),
+                                          InkWell(
+                                            onTap: (){
+                                              setState(() {
+                                                busArrivalInfo = getBusInfoList();
+                                              });
+                                            },
+                                            child: Container(
+                                              color: Color.fromARGB(
+                                                  255, 20, 75, 170),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 15.0),
+                                              child: CustomPaint(
+                                                size: Size(MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width, 400),
+                                                painter: BusLine([
+                                                  "한양대게스트하우스",
+                                                  "한국생산기술연구원",
+                                                  "한양대기숙사앞",
+                                                  "경기테크노파크",
+                                                  "푸르지오6,7차정문",
+                                                  "해양중학교",
+                                                  "푸르지오6차후문"
+                                                ],
+                                                realtimeData['3102'],
+                                                timeTableData["3102"],
+                                                terminalStop: "송산그린시티"),
+                                              ),
                                             ),
                                           ),
                                           Container(
@@ -509,12 +547,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 // List<Widget> _listTransportButtons
                 break;
               case 1:
-                break;
-              case 2:
-                // _messages.add(ChatMessage(text: "도서 검색과 열람실 좌석 중에 골라달라냥!"));
-                break;
-              case 3:
-                // _messages.add(ChatMessage(text: "어떤 번호를 검색할지 골라달라냥!"));
+                showMaterialModalBottomSheet(
+                    context: context, backgroundColor: Colors.transparent,
+                    builder: (context, scrollController) => Container());
                 break;
             }
           });
