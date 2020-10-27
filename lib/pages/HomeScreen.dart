@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: <Widget>[
                 // 로고 부분
                 Container(
-                  margin: const EdgeInsets.all(10.0),
+                  margin: const EdgeInsets.only(top: 10, left: 30, right: 30),
                   child: _logoImage,
                 ),
                 // 메인 화면
@@ -127,27 +127,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                _menus[_menuSelected],
-                // 메세지 전송 버튼
-                Container(
-                  height: 50,
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              hintText: "서버 유지비를 위해 광고를 넣는건 어떻나냥.",
-                              contentPadding: const EdgeInsets.only(left: 20),
-                              border: InputBorder.none),
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: IconButton(icon: Icon(Icons.send)),
-                      ),
-                    ],
-                  ),
+                Padding(
+                  child: _menus[_menuSelected],
+                  padding: EdgeInsets.only(bottom: 10, left: 7.5, right: 7.5),
                 ),
+                // 메세지 전송 버튼
               ])),
           onWillPop: () {},
         ));
@@ -221,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
             _selected = index;
             switch (index) {
               case 0:
-                var result = getShuttleBusInfoList();
+                // var result = getShuttleBusInfoList();
                 showMaterialModalBottomSheet(
                   context: context,
                   backgroundColor: Colors.transparent,
@@ -298,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     child: Column(
                                       children: [
                                         CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineRight(["한대앞", "중앙", "고잔", "초지", "안산"]),),
-                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["사리", "야목", "어천", "오목천", "고색"]),),
+                                        CustomPaint(size: Size(MediaQuery.of(context).size.width, 170), painter: MetroLineLeft(["한대앞","사리", "야목", "어천", "오목천"]),),
                                       ],
                                     ),
                                   ),

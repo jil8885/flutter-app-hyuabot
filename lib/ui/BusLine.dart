@@ -7,7 +7,8 @@ class BusLine extends CustomPainter{
   final BusInfoRealtime realtimeInfo;
   final List<BusInfoTimetable> timetableInfo;
   final String terminalStop;
-  BusLine(this.stopList, this.realtimeInfo, this.timetableInfo,{this.terminalStop=""});
+
+  BusLine(this.stopList, this.realtimeInfo, this.timetableInfo, {this.terminalStop=""});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -38,10 +39,30 @@ class BusLine extends CustomPainter{
 
     int location = this.realtimeInfo.location;
     if(location != -1){
-      if(location >= length){
+      String resultString = "";
+      if(this.realtimeInfo.seats == -1){
+        resultString = this.realtimeInfo.location.toString() + "전 정류장 / " + this.realtimeInfo.time.toString() + "분 후 도착";
+      } else{
+        resultString = this.realtimeInfo.location.toString() + "전 정류장 / " + this.realtimeInfo.time.toString() + "분 후 도착(" + this.realtimeInfo.seats.toString() + "석)";
+      }
+      if(location < length){
         canvas.drawCircle(Offset(160, 60 + (size.height - 120) / (length - 1) * (length - location - 0.5)), 4, commingBus);
+        TextSpan sp = TextSpan(style: TextStyle(color: Colors.black), text: resultString);
+        TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr, textAlign: TextAlign.right);
+        tp.layout();
+        canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(175, 58 + (size.height - 120) / (length - 1) * (length - location - 0.5) - tp.height * 0.5, tp.width + 10, tp.height  + 4),
+            bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4), topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+            paint);
+        tp.paint(canvas, Offset(180, 60 + (size.height - 120) / (length - 1) * (length - location - 0.5) - tp.height * 0.5));
       } else{
         canvas.drawCircle(Offset(160, 20), 4, commingBus);
+        TextSpan sp = TextSpan(style: TextStyle(color: Colors.black), text: resultString);
+        TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr, textAlign: TextAlign.right);
+        tp.layout();
+        canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(175, 18 - tp.height * 0.5, tp.width + 10, tp.height  + 4),
+            bottomLeft: Radius.circular(4), bottomRight: Radius.circular(4), topLeft: Radius.circular(4), topRight: Radius.circular(4)),
+            paint);
+        tp.paint(canvas, Offset(180, 20 - tp.height * 0.5));
       }
     } else{
       if(this.timetableInfo.isNotEmpty){

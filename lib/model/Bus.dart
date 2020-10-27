@@ -6,7 +6,7 @@ class BusInfoRealtime{
   BusInfoRealtime(this.location, this.time, this.seats);
 
   factory BusInfoRealtime.fromJson(Map<String, dynamic> json){
-    return BusInfoRealtime(json['location'], json['time'], json['seat']);
+    return BusInfoRealtime(int.parse(json['location']), int.parse(json['time']), int.parse(json['seat']));
   }
 }
 

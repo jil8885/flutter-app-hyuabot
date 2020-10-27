@@ -11,6 +11,7 @@ Future getBusInfoList() async{
   Map<String, BusInfoRealtime> busArrivalList = {};
 
   List<String> routes = responseJson['realtime'].keys.toList();
+
   for(String key in routes){
     if((responseJson['realtime'][key] as List).length > 0){
       busArrivalList[key] = BusInfoRealtime.fromJson(responseJson['realtime'][key][0]);
