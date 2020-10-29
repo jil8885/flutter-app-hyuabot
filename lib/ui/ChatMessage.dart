@@ -12,7 +12,12 @@ class ChatMessage extends StatelessWidget {
         children: <Widget>[
           Container(
             margin: const EdgeInsets.only(right: 8.0),
-            child: CircleAvatar(child: Image.asset("assets/images/hanyang.png")), ),
+            child: CircleAvatar(
+                child: Container(
+                    decoration: new BoxDecoration(image:DecorationImage(image: new AssetImage("assets/images/hanyang.png"), fit: BoxFit.fill))
+                )
+            ),
+          ),
           Column( crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
