@@ -1,11 +1,14 @@
+import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/config/style.dart';
+import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:chatbot/ui/bottombuttons/FoodButtons.dart';
 import 'package:chatbot/ui/bottombuttons/LibraryButtons.dart';
 import 'package:chatbot/ui/bottombuttons/MainButtons.dart';
 import 'package:chatbot/ui/bottombuttons/TransportButtons.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -13,22 +16,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   // 홈화면 상태 빌드 함수
   @override
   Widget build(BuildContext context) {
-    List _menus = [
-      MainMenuButtons(),
+    List _subMenus = [
       TransportMenuButtons(),
       FoodMenuButtons(),
-      LibraryMenuButtons()
+      LibraryMenuButtons(),
+      backMenuButton(),
     ];
 
     // 전체 스크린
     return Scaffold(
         appBar: MainAppBar(),
-        body: WillPopScope(
+        body: DoubleBackToCloseApp(
           child: Container(
               color: Color.fromRGBO(239, 244, 244, 0),
               child: Column(
@@ -45,17 +46,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 Expanded(
                   child: Container(
                     color: Color.fromRGBO(239, 244, 244, 0),
-                    child: ListView.builder(
-                      itemBuilder: (_, int index) => chatMessages[index],
-                      itemCount: chatMessages.length,
-                      padding: EdgeInsets.all(8.0),
+                    child: StreamBuilder<List<ChatMessage>>(
+                      stream: chatController.chatList,
+                      builder: (context, snapshot) {
+                        return ListView.builder(
+                          itemBuilder: (_, int index) => snapshot.data[index],
+                          itemCount: snapshot.data.length,
+                          padding: EdgeInsets.all(8.0),
+                        );
+                      }
                     ),
                   ),
                 ),
-                _menus[_menuSelected],
-                // 메세지 전송 버튼
+                StreamBuilder<int>(
+                  stream: mainButtonController.mainButtonIndex,
+                  builder: (_, snapshot){
+                    if(snapshot.data == -1 || snapshot.data > _subMenus.length || snapshot.data == null){
+                      return MainMenuButtons();
+                    }
+                    return _subMenus[snapshot.data];
+                  },
+                ),
               ])),
-          onWillPop: () {},
+          snackBar: const SnackBar(content: Text("하냥이와 함께 좋은 하루 되라냥!", textAlign: TextAlign.center,),),
         ));
   }
 }

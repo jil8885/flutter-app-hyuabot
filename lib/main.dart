@@ -1,14 +1,18 @@
-import 'package:chatbot/config/common.dart';
+import 'package:chatbot/bloc/ChatListChanged.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chatbot/pages/HomeScreen.dart';
 import 'package:chatbot/pages/SplashScreen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'bloc/ButtonPressed.dart';
+
+final mainButtonController = MainButtonPressed();
+final subButtonController = SubButtonPressed();
+final chatController = ChatListChanged();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +32,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Future<Map<String, dynamic>> _pref = getPref();
 
-    return BlocProvider(
-      create: (BuildContext context){
-        return appBloc;
-      },
-      child: FutureBuilder(
+    return FutureBuilder(
         future: _pref,
         builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>> snapshot){
           if(snapshot.hasError){
@@ -71,7 +71,6 @@ class MyApp extends StatelessWidget {
             );
           }
         },
-      ),
     );
   }
 

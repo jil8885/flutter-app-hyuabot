@@ -1,4 +1,4 @@
-import 'package:chatbot/config/common.dart';
+import 'package:chatbot/main.dart';
 import 'package:chatbot/pages/SettingScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -27,29 +27,30 @@ class _MainMenuButtonsState extends State<MainMenuButtons>{
   }
 
   Widget _makeFuncButton(BuildContext context, String msgText, String logoPath, String icon, String iconPressed, String buttonText, int index){
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: RaisedButton(
-        child: Row(children: <Widget>[
-          Image.asset(pressedMainButton == index ? iconPressed:icon, height: 25, width: 25),
-          Text(
-            buttonText,
-            style: TextStyle(fontSize: 12, color: pressedMainButton == index ? Colors.white : Colors.black),
-          )
-        ]),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
-        color: pressedMainButton == index ? Theme.of(context).accentColor : Colors.white,
-        onPressed: (){
-          setState(() {
-            pressedMainButton = index;
-            print(pressedMainButton);
-            if(chatMessages.length > 1){
-              chatMessages = [ChatMessage(text: "반갑다냥~내가 너를 도와줄게!")];
-            }
-            chatMessages.add(ChatMessage(text: msgText,));
-          });
-        },
-      ),
+    return StreamBuilder<int>(
+      stream: mainButtonController.mainButtonIndex,
+      builder: (context, snapshot) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: RaisedButton(
+            child: Row(children: <Widget>[
+              Image.asset(snapshot.data == index ? iconPressed:icon, height: 25, width: 25),
+              Text(
+                buttonText,
+                style: TextStyle(fontSize: 12, color: snapshot.data == index ? Colors.white : Colors.black),
+              )
+            ]),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
+            color: snapshot.data == index ? Theme.of(context).accentColor : Colors.white,
+            onPressed: (){
+              setState(() {
+                mainButtonController.updateMainButtonIndex(index);
+                chatController.setChatList(ChatMessage(text: msgText,));
+              });
+            },
+          ),
+        );
+      }
     );
   }
 
