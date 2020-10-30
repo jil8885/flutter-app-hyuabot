@@ -1,11 +1,8 @@
-import 'package:chatbot/pages/BrightnessSettingScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 import 'package:chatbot/config/style.dart';
-
-import 'LanguageScreen.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 class SettingScreen extends StatelessWidget{
   @override
@@ -19,32 +16,9 @@ class SettingScreen extends StatelessWidget{
           backgroundColor: Theme.of(context).backgroundColor,
           sections: [
             SettingsSection(
-              title: "settings".tr(),
+              title: "settings",
               tiles: [
-                SettingsTile(
-                  title: "language".tr(),
-                  leading: Icon(Icons.language),
-                  onTap: (){
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context){
-                          return LanguagesScreen();
-                        }
-                      );
-                    },
-                ),
-                SettingsTile(
-                  title: "dark_mode".tr(),
-                  leading: Icon(Icons.wb_sunny),
-                  onTap: (){
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context){
-                          return BrightnessSettingScreen();
-                        }
-                    );
-                  },
-                )
+                SettingsTile(title: "Dark Mode", leading: Icon(Icons.wb_sunny), onTap: ()=>{showDialog(context: context, builder: (_) => ThemeConsumer(child: ThemeDialog(),))},)
               ],
             )
           ],

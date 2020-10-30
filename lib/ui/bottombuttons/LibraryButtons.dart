@@ -9,7 +9,7 @@ class LibraryMenuButtons extends StatelessWidget{
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        backMenuButton(),
+        backMenuButton(context),
         Flexible(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

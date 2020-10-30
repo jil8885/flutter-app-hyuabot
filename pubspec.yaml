@@ -29,12 +29,10 @@ dependencies:
   http:
   charts_flutter:
   settings_ui: ^0.4.0
-  easy_localization: ^2.3.3
-  flag: ^3.0.5
   shared_preferences: ^0.5.12+2
-  flutter_phoenix: ^0.1.0
   rxdart: ^0.24.1
   double_back_to_close_app: ^1.2.0
+  theme_provider: ^0.4.0+1
 
 dev_dependencies:
   flutter_test:
