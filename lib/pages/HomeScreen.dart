@@ -10,13 +10,7 @@ import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  // 홈화면 상태 빌드 함수
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List _subMenus = [
@@ -49,11 +43,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: StreamBuilder<List<ChatMessage>>(
                       stream: chatController.chatList,
                       builder: (context, snapshot) {
-                        return ListView.builder(
-                          itemBuilder: (_, int index) => snapshot.data[index],
-                          itemCount: snapshot.data.length,
-                          padding: EdgeInsets.all(8.0),
-                        );
+                        if(snapshot.hasData){
+                          return ListView.builder(
+                            itemBuilder: (_, int index) => snapshot.data[index],
+                            itemCount: snapshot.data.length,
+                            padding: EdgeInsets.all(8.0),
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
                       }
                     ),
                   ),
@@ -61,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 StreamBuilder<int>(
                   stream: mainButtonController.mainButtonIndex,
                   builder: (_, snapshot){
-                    if(snapshot.data == -1 || snapshot.data > _subMenus.length || snapshot.data == null){
+                    if(!snapshot.hasData || snapshot.data == -1 || snapshot.data > _subMenus.length){
                       return MainMenuButtons();
                     }
                     return _subMenus[snapshot.data];
