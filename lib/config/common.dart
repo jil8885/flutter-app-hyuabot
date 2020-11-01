@@ -18,7 +18,7 @@ Widget backMenuButton(BuildContext context){
   return IconButton(
     icon: Icon(Icons.arrow_back),
     onPressed: (){
-      logoImage = Image.asset(getImagePath(context, "header-default.png"));
+      headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
       chatController.resetChatList();
       mainButtonController.backToMain();
       subButtonController.resetSubButtonIndex();

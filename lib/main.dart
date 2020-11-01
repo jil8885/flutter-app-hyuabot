@@ -1,10 +1,10 @@
 import 'package:chatbot/bloc/ChatListController.dart';
+import 'package:chatbot/bloc/HeaderImageController.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:flutter/material.dart';
 
 import 'package:chatbot/pages/HomeScreen.dart';
 import 'package:chatbot/pages/SplashScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 import 'bloc/ButtonController.dart';
@@ -12,6 +12,7 @@ import 'bloc/ButtonController.dart';
 final mainButtonController = MainButtonPressed();
 final subButtonController = SubButtonPressed();
 final chatController = ChatListChanged();
+final headerImageController = HeaderImageChanged();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();

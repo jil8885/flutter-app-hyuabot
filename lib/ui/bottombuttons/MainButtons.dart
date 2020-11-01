@@ -1,3 +1,4 @@
+import 'package:chatbot/config/common.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/pages/SettingScreen.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,10 @@ class MainMenuButtons extends StatelessWidget{
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", "assets/images/logo-bus.png", "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
-          _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", "assets/images/logo-food.png", "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
-          _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", "assets/images/logo-book.png", "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
-          _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", "assets/images/logo-default.png", "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
+          _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
+          _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
+          _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
+          _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
           _settingButtons(context),
         ],
       ),
@@ -40,6 +41,7 @@ class MainMenuButtons extends StatelessWidget{
             onPressed: (){
               mainButtonController.updateMainButtonIndex(index);
               chatController.setChatList(ChatMessage(text: msgText,));
+              headerImageController.setHeaderImage(logoPath);
             },
           ),
         );

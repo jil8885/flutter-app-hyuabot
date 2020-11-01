@@ -1,3 +1,4 @@
+import 'package:chatbot/bloc/HeaderImageController.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/config/style.dart';
@@ -9,7 +10,6 @@ import 'package:chatbot/ui/bottombuttons/TransportButtons.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
-import 'package:theme_provider/theme_provider.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -21,8 +21,8 @@ class HomeScreen extends StatelessWidget {
       LibraryMenuButtons(),
       backMenuButton(context),
     ];
-    logoImage = Image.asset(getImagePath(context, "header-default.png"));
 
+    headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
     // 전체 스크린
     return Scaffold(
         appBar: MainAppBar(),
@@ -33,10 +33,15 @@ class HomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                 // 로고 부분
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 150,
-                  child: logoImage,
+                StreamBuilder<Image>(
+                  stream: headerImageController.headerImage,
+                  builder: (context, snapshot) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 150,
+                      child: snapshot.data,
+                    );
+                  }
                 ),
                 // 메인 화면
                 Expanded(
