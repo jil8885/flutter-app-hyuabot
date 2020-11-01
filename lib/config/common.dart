@@ -6,14 +6,19 @@ import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 // Shared Variables for home screen
-Image logoImage = Image.asset('assets/images/logo-default.png');
+Image logoImage;
+
+String getImagePath(BuildContext context, String file_name){
+  final directory = ThemeProvider.themeOf(context) == lightTheme ? 'assets/images/light/' : 'assets/images/dark/';
+  return directory + file_name;
+}
 
 
 Widget backMenuButton(BuildContext context){
   return IconButton(
     icon: Icon(Icons.arrow_back),
     onPressed: (){
-      logoImage = ThemeProvider.themeOf(context) == lightTheme ? Image.asset('assets/images/logo-default.png') : Image.asset('assets/images/dark/logo-default-dark.png');
+      logoImage = Image.asset(getImagePath(context, "header-default.png"));
       chatController.resetChatList();
       mainButtonController.backToMain();
       subButtonController.resetSubButtonIndex();

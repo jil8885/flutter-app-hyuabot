@@ -7,7 +7,7 @@ AppTheme lightTheme = AppTheme(
     id: 'light',
     data: ThemeData(
         accentColor: Color.fromARGB(255, 20, 75, 170),
-        backgroundColor: Color.fromRGBO(239, 244, 244, 0),
+        backgroundColor: Colors.white,
         cardColor: Color.fromARGB(160, 20, 75, 170),
         brightness: Brightness.light,
         textTheme: TextTheme(
@@ -22,7 +22,7 @@ AppTheme darkTheme = AppTheme(
     id: 'dark',
     data: ThemeData(
         accentColor: Color.fromARGB(255, 20, 75, 170),
-        backgroundColor: Colors.black38,
+        backgroundColor: Colors.black,
         cardColor: Colors.white70,
         brightness: Brightness.dark,
         textTheme: TextTheme(

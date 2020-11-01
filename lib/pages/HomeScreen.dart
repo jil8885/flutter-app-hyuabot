@@ -6,8 +6,10 @@ import 'package:chatbot/ui/bottombuttons/FoodButtons.dart';
 import 'package:chatbot/ui/bottombuttons/LibraryButtons.dart';
 import 'package:chatbot/ui/bottombuttons/MainButtons.dart';
 import 'package:chatbot/ui/bottombuttons/TransportButtons.dart';
+import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -19,19 +21,19 @@ class HomeScreen extends StatelessWidget {
       LibraryMenuButtons(),
       backMenuButton(context),
     ];
+    logoImage = Image.asset(getImagePath(context, "header-default.png"));
 
     // 전체 스크린
     return Scaffold(
         appBar: MainAppBar(),
         body: DoubleBackToCloseApp(
           child: Container(
-              color: Color.fromRGBO(239, 244, 244, 0),
+              color: Theme.of(context).backgroundColor,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                 // 로고 부분
                 Container(
-                  padding: EdgeInsets.only(top: 5.0, right:18),
                   width: MediaQuery.of(context).size.width,
                   height: 150,
                   child: logoImage,
@@ -39,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                 // 메인 화면
                 Expanded(
                   child: Container(
-                    color: Color.fromRGBO(239, 244, 244, 0),
+                    color: Theme.of(context).backgroundColor,
                     child: StreamBuilder<List<ChatMessage>>(
                       stream: chatController.chatList,
                       builder: (context, snapshot) {
