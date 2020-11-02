@@ -1,5 +1,6 @@
 import 'package:chatbot/bloc/ChatListController.dart';
 import 'package:chatbot/bloc/HeaderImageController.dart';
+import 'package:chatbot/bloc/ShuttleController.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,7 @@ final mainButtonController = MainButtonPressed();
 final subButtonController = SubButtonPressed();
 final chatController = ChatListChanged();
 final headerImageController = HeaderImageChanged();
+final allShuttleController = FetchAllShuttleController();
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();

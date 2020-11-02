@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class TransportSheets extends StatelessWidget{
-  TransportSheets(this.assetPath);
+  TransportSheets(this.assetPath, this.contents);
+  final Widget contents;
   final assetPath;
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,9 @@ class TransportSheets extends StatelessWidget{
               borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
               child: Container(
                 height: MediaQuery.of(context).size.height * .45,
+                width: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
+                child: contents,
               ),
             ),
           ],

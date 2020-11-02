@@ -1,16 +1,12 @@
-class ShuttleStopInfo{
+class ShuttleStopDepartureInfo{
   final List<dynamic> shuttleListStation;
   final List<dynamic> shuttleListTerminal;
   final List<dynamic> shuttleListCycle;
 
-  ShuttleStopInfo(this.shuttleListStation, this.shuttleListTerminal, this.shuttleListCycle);
-}
+  ShuttleStopDepartureInfo(this.shuttleListStation, this.shuttleListTerminal, this.shuttleListCycle);
 
-Map<String, ShuttleStopInfo> getShuttleList(Map<String, dynamic> json){
-  Map<String, ShuttleStopInfo> shuttleInfoList = {};
-  for(String key in json.keys){
-    shuttleInfoList[key] = ShuttleStopInfo(json[key]['DH'], json[key]['DY'], json[key]['C']);
+  factory ShuttleStopDepartureInfo.fromJson(Map<String, dynamic> json){
+    return ShuttleStopDepartureInfo(json["DH"], json["DY"], json["C"]);
   }
-
-  return shuttleInfoList;
 }
+

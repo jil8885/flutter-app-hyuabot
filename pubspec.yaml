@@ -26,13 +26,14 @@ dependencies:
 
   modal_bottom_sheet: ^0.2.2
   bubble: ^1.1.9+1
-  http:
+  http: ^0.12.2
   charts_flutter:
   settings_ui: ^0.4.0
   shared_preferences: ^0.5.12+2
   rxdart: ^0.24.1
   double_back_to_close_app: ^1.2.0
   theme_provider: ^0.4.0+1
+  intl: ^0.16.1
 
 dev_dependencies:
   flutter_test:

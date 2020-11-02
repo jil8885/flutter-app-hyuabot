@@ -3,6 +3,7 @@
 import 'package:chatbot/main.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:theme_provider/theme_provider.dart';
 
 // Shared Variables for home screen
@@ -24,4 +25,9 @@ Widget backMenuButton(BuildContext context){
       subButtonController.resetSubButtonIndex();
     },
   );
+}
+
+DateTime getTimeFromString(String str, DateTime now){
+  DateTime time = DateFormat('HH:mm').parse(str);
+  return DateTime(now.year, now.month, now.day, time.hour, time.minute);
 }
