@@ -15,9 +15,9 @@ class TransportMenuButtons extends StatelessWidget{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, "셔틀", 0, Container()),
-              _makeFuncButton(context, "전철", 1, Container()),
-              _makeFuncButton(context, "노선버스", 2, Container()),
+              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png"),
+              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png"),
+              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png"),
             ],
           ),
         ),
@@ -25,7 +25,7 @@ class TransportMenuButtons extends StatelessWidget{
     );
   }
 
-  Widget _makeFuncButton(BuildContext context, String buttonText, int index, Widget bottomSheet){
+  Widget _makeFuncButton(BuildContext context, String buttonText, int index, String assetPath){
     return StreamBuilder<int>(
       stream: subButtonController.subButtonIndex,
       builder: (context, snapshot) {
@@ -38,7 +38,10 @@ class TransportMenuButtons extends StatelessWidget{
             elevation: 6,
             onPressed: (){
               subButtonController.updateSubButtonIndex(index);
-              showMaterialModalBottomSheet(context: context, builder: (context, scrollController) => TransportSheets());
+              showMaterialModalBottomSheet(
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context, scrollController) => TransportSheets(assetPath));
             },
           ),
         );
