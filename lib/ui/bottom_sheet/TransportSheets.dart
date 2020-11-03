@@ -14,7 +14,7 @@ class TransportSheets extends StatelessWidget{
             ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
               child: Container(
-                height: MediaQuery.of(context).size.height * .45,
+                height: MediaQuery.of(context).size.height * .35,
                 width: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
                 child: contents,
@@ -23,7 +23,7 @@ class TransportSheets extends StatelessWidget{
           ],
         ),
         Positioned(
-          bottom: MediaQuery.of(context).size.height * .40,
+          bottom: MediaQuery.of(context).size.height * .30,
           right: -5,
           child: SizedBox(
             child: Container(child: Image.asset(assetPath)),

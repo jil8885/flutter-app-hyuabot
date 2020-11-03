@@ -1,14 +1,41 @@
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/model/Shuttle.dart';
-import 'package:chatbot/ui/bottomsheets/TransportSheets.dart';
+import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
 import 'package:chatbot/ui/custompaints/shuttleLines.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class TransportMenuButtons extends StatelessWidget{
+
+class TransportMenuButtons extends StatefulWidget{
+  @override
+  State<StatefulWidget> createState()=> TransportMenuStates();
+}
+
+class TransportMenuStates extends State<TransportMenuButtons>{
+  ui.Image busIcon;
+  @override
+  void initState() {
+    _loadImage();
+  }
+
+  _loadImage() async {
+    ByteData bd = await rootBundle.load("assets/images/shared/bus-icon.png");
+
+    final Uint8List bytes = Uint8List.view(bd.buffer);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+
+    final ui.Image image = (await codec.getNextFrame()).image;
+
+    setState(() => busIcon = image);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -19,7 +46,7 @@ class TransportMenuButtons extends StatelessWidget{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", _shuttleSheets(context)),
+              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", _shuttleSheets(context, busIcon)),
               _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png"),
               _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png"),
             ],
@@ -54,7 +81,7 @@ class TransportMenuButtons extends StatelessWidget{
     );
   }
 
-  Widget _shuttleSheets(BuildContext context){
+  Widget _shuttleSheets(BuildContext context, ui.Image icon){
     DateTime current = DateTime.now();
     Timer.periodic(Duration(seconds: 30), (timer) {
       allShuttleController.fetch();
@@ -76,13 +103,13 @@ class TransportMenuButtons extends StatelessWidget{
           }
           return Column(
             children: [
-              CustomPaint(painter: ShuttleStops(), size: Size(400, 30)),
+              CustomPaint(painter: ShuttleStops(), size: Size(MediaQuery.of(context).size.width, 30)),
               CustomPaint(
-                painter: ShuttleLanes("한대앞행", context, _result["DH"]), size: Size(360, 95),),
+                painter: ShuttleLanes("한대앞행", context, _result["DH"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
               CustomPaint(
-                painter: ShuttleLanes("예술인행", context, _result["DY"]), size: Size(360, 95),),
+                painter: ShuttleLanes("예술인행", context, _result["DY"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
               CustomPaint(
-                painter: ShuttleLanes("순환버스", context, _result["C"]), size: Size(360, 95),)
+                painter: ShuttleLanes("순환버스", context, _result["C"], icon), size: Size(MediaQuery.of(context).size.width, 75),)
             ],
           );
         }

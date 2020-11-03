@@ -10,7 +10,8 @@ class ShuttleLanes extends CustomPainter{
   final String label;
   final BuildContext context;
   final Map<String, List<String>> data;
-  ShuttleLanes(this.label, this.context, this.data);
+  final ui.Image icon;
+  ShuttleLanes(this.label, this.context, this.data, this.icon);
 
   @override
   void paint(Canvas canvas, Size size){
@@ -28,19 +29,17 @@ class ShuttleLanes extends CustomPainter{
     final radius = 4.5;
 
     // 도형 그리기
-    canvas.drawLine(
-        Offset(70, size.height / 3), Offset(size.width - 20, size.height / 3),
-        paint);
+    canvas.drawLine(Offset(90, size.height / 3), Offset(350, size.height / 3), paint);
     drawLabel(canvas, size, label, context);
-    canvas.drawCircle(Offset(70, size.height / 3), radius, color);
-    canvas.drawCircle(Offset(137.5, size.height / 3), radius, color);
+    canvas.drawCircle(Offset(90, size.height / 3), radius, paint);
+    canvas.drawCircle(Offset(155, size.height / 3), radius, paint);
     if (!this.label.contains("예술인")) {
-      canvas.drawCircle(Offset(205, size.height / 3), radius, color);
+      canvas.drawCircle(Offset(220, size.height / 3), radius, paint);
     }
     if (!this.label.contains("한대앞")) {
-      canvas.drawCircle(Offset(272.5, size.height / 3), radius, color);
+      canvas.drawCircle(Offset(285, size.height / 3), radius, paint);
     }
-    canvas.drawCircle(Offset(340, size.height / 3), radius, color);
+    canvas.drawCircle(Offset(355, size.height / 3), radius, paint);
 
 
     String result;
@@ -50,42 +49,42 @@ class ShuttleLanes extends CustomPainter{
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70, size.height * .66, result.trim(), context);
+      drawText(canvas, 90, size.height * .66, result.trim(), context);
     }
 
     timeTable = data["Shuttlecock_O"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 137.5, size.height * .66, result.trim(), context);
+      drawText(canvas, 155, size.height * .66, result.trim(), context);
     }
 
     timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 205, size.height * .66, result.trim(), context);
+      drawText(canvas, 220, size.height * .66, result.trim(), context);
     }
 
     timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 270, size.height * .66, result.trim(), context);
+      drawText(canvas, 285, size.height * .66, result.trim(), context);
     }
 
     timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 337.5, size.height * .66, result.trim(), context);
+      drawText(canvas, 350, size.height * .66, result.trim(), context);
     }
 
 
 
     if(label.contains("한대앞")){
       timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
-      // canvas.drawImage(busIcon, Offset(340, size.height / 3), paint);
+      canvas.drawImage(icon, Offset(340, size.height / 3 - 15), paint);
       return;
     } else if(label.contains("예술인")){
       timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
@@ -97,7 +96,10 @@ class ShuttleLanes extends CustomPainter{
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant ShuttleLanes oldDelegate) {
+    if(this.data == oldDelegate.data){
+      return false;
+    }
     return true;
   }
 
@@ -132,24 +134,22 @@ class ShuttleStops extends CustomPainter{
       ..strokeWidth = 4.0;
 
     final color = Paint()
-      ..color = Colors.orange
+      ..color = Colors.white
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
-    final rect = Rect.fromLTWH(10, 10, size.width - 20, size.height - 10);
+    final rect = Rect.fromLTWH(60, 10, size.width - 80, size.height - 10);
     canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(40)), paint);
-    canvas.drawCircle(Offset(25, size.height * .666), size.height / 6, color);
-    drawText(canvas, size, "정류장", 48, size.height * 0.625);
     drawText(canvas, size, "기숙사", 90, size.height * 0.625);
-    drawText(canvas, size, "셔틀콕", 157.5, size.height * 0.625);
-    drawText(canvas, size, "한대앞", 225, size.height * 0.625);
-    drawText(canvas, size, "예술인", 292.5, size.height * 0.625);
-    drawText(canvas, size, "셔틀콕 건너편", 355, size.height * 0.625);
+    drawText(canvas, size, "셔틀콕", 155, size.height * 0.625);
+    drawText(canvas, size, "한대앞", 220, size.height * 0.625);
+    drawText(canvas, size, "예술인", 285, size.height * 0.625);
+    drawText(canvas, size, "셔틀콕 건너편", 350, size.height * 0.625);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+    return false;
   }
 
   void drawText(Canvas canvas, Size size, String text, dx, dy) {
