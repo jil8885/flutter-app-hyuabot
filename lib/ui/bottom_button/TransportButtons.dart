@@ -7,6 +7,7 @@ import 'package:chatbot/config/common.dart';
 import 'package:chatbot/model/Shuttle.dart';
 import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
 import 'package:chatbot/ui/custompaints/shuttleLines.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -46,9 +47,9 @@ class TransportMenuStates extends State<TransportMenuButtons>{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", _shuttleSheets(context, busIcon)),
-              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png"),
-              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png"),
+              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context, busIcon)),
+              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.55),
+              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65),
             ],
           ),
         ),
@@ -56,7 +57,7 @@ class TransportMenuStates extends State<TransportMenuButtons>{
     );
   }
 
-  Widget _makeFuncButton(BuildContext context, String buttonText, int index, String assetPath, [Widget contents]){
+  Widget _makeFuncButton(BuildContext context, String buttonText, int index, String assetPath, double height ,[Widget contents]){
     contents ??= Container();
     return StreamBuilder<int>(
       stream: subButtonController.subButtonIndex,
@@ -73,7 +74,7 @@ class TransportMenuStates extends State<TransportMenuButtons>{
               showMaterialModalBottomSheet(
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context, scrollController) => TransportSheets(assetPath, contents));
+                  builder: (context, scrollController) => TransportSheets(assetPath, contents, height));
             },
           ),
         );
@@ -82,8 +83,7 @@ class TransportMenuStates extends State<TransportMenuButtons>{
   }
 
   Widget _shuttleSheets(BuildContext context, ui.Image icon){
-    DateTime current = DateTime.now();
-    Timer.periodic(Duration(seconds: 30), (timer) {
+    Timer.periodic(Duration(seconds: 60), (timer) {
       allShuttleController.fetch();
     });
 
@@ -109,7 +109,13 @@ class TransportMenuStates extends State<TransportMenuButtons>{
               CustomPaint(
                 painter: ShuttleLanes("예술인행", context, _result["DY"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
               CustomPaint(
-                painter: ShuttleLanes("순환버스", context, _result["C"], icon), size: Size(MediaQuery.of(context).size.width, 75),)
+                painter: ShuttleLanes("순환버스", context, _result["C"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
+              // Container(
+              //   height: 20,
+              //   padding: EdgeInsets.symmetric(horizontal: 35),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.end,
+              //     children: [IconButton(icon: Icon(Icons.refresh), onPressed: (){allShuttleController.fetch();})
             ],
           );
         }
