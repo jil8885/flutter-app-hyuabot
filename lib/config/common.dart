@@ -9,9 +9,9 @@ import 'package:theme_provider/theme_provider.dart';
 // Shared Variables for home screen
 Image logoImage;
 
-String getImagePath(BuildContext context, String file_name){
+String getImagePath(BuildContext context, String fileName){
   final directory = ThemeProvider.themeOf(context) == lightTheme ? 'assets/images/light/' : 'assets/images/dark/';
-  return directory + file_name;
+  return directory + fileName;
 }
 
 

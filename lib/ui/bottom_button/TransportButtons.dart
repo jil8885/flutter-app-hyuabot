@@ -1,15 +1,14 @@
 import 'dart:async';
-import 'dart:typed_data';
-import 'dart:ui' as ui;
 
+
+import 'package:chatbot/config/style.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/model/Shuttle.dart';
 import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
-import 'package:chatbot/ui/custompaints/shuttleLines.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:chatbot/ui/custom_paint/shuttleLines.dart';
+import 'package:chatbot/ui/custom_paint/MetroLines.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 
@@ -18,23 +17,12 @@ class TransportMenuButtons extends StatefulWidget{
   State<StatefulWidget> createState()=> TransportMenuStates();
 }
 
-class TransportMenuStates extends State<TransportMenuButtons>{
-  ui.Image busIcon;
+class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerProviderStateMixin{
+  TabController _controller;
   @override
   void initState() {
-    _loadImage();
-  }
-
-  _loadImage() async {
-    ByteData bd = await rootBundle.load("assets/images/shared/bus-icon.png");
-
-    final Uint8List bytes = Uint8List.view(bd.buffer);
-
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
-
-    final ui.Image image = (await codec.getNextFrame()).image;
-
-    setState(() => busIcon = image);
+    super.initState();
+    _controller = new TabController(length: 2, vsync: this);
   }
 
   @override
@@ -48,7 +36,7 @@ class TransportMenuStates extends State<TransportMenuButtons>{
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
-              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.55, _metroSheets(context)),
+              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.65, _metroSheets(context)),
               _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65),
             ],
           ),
@@ -135,7 +123,42 @@ class TransportMenuStates extends State<TransportMenuButtons>{
             return CircularProgressIndicator();
           }
           else {
-            return Container();
+            return Scaffold(
+              appBar: ColoredTabBar(
+                  Theme.of(context).accentColor,
+                  TabBar(
+                    controller: _controller,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorColor: Colors.white,
+                    indicatorWeight: 5,
+                    indicatorPadding: EdgeInsets.symmetric(horizontal: 20),
+                    labelColor: Colors.white,
+                    tabs: [
+                      const Tab(child: Text("4호선", style: TextStyle(fontSize: 20, fontFamily: "Noto Sans KR", color: Colors.white)), ),
+                      const Tab(child: Text("수인분당선", style: TextStyle(fontSize: 20, fontFamily: "Noto Sans KR", color: Colors.white)),)
+                    ],
+                  )
+              ),
+              body: Container(
+                color: Theme.of(context).accentColor,
+                child: TabBarView(
+                  controller: _controller,
+                  children: [
+                    Column(
+                      children: [
+                        CustomPaint(painter: MetroLanesRealtime(true, Color.fromRGBO(0, 165, 222, 1), ["안산", "초지", "고잔", "중앙", "한대앞"]), size: Size(MediaQuery.of(context).size.width, 200),),
+                        CustomPaint(painter: MetroLanesRealtime(false, Color.fromRGBO(0, 165, 222, 1), ["한대앞", "상록수", "반월", "대야미", "수리산"]), size: Size(MediaQuery.of(context).size.width, 200)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        CustomPaint(painter: MetroLanesRealtime(true, Color.fromRGBO(245, 163, 0, 1), ["안산", "초지", "고잔", "중앙", "한대앞"]), size: Size(MediaQuery.of(context).size.width, 200),),
+                        CustomPaint(painter: MetroLanesRealtime(false, Color.fromRGBO(245, 163, 0, 1), ["한대앞", "사리", "야목", "어천", "오목천"]), size: Size(MediaQuery.of(context).size.width, 200)),
+                      ],
+                    ),
+                ]),
+              ),
+            );
           }
         }
     );

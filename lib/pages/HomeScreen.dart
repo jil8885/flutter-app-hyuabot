@@ -1,4 +1,3 @@
-import 'package:chatbot/bloc/HeaderImageController.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/config/style.dart';
@@ -7,7 +6,6 @@ import 'package:chatbot/ui/bottom_button/TransportButtons.dart';
 import 'package:chatbot/ui/bottom_button/LibraryButtons.dart';
 import 'package:chatbot/ui/bottom_button/MainButtons.dart';
 import 'package:chatbot/ui/bottom_button/FoodButtons.dart';
-import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
 
