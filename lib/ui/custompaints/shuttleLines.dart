@@ -10,8 +10,7 @@ class ShuttleLanes extends CustomPainter{
   final String label;
   final BuildContext context;
   final Map<String, List<String>> data;
-  final ui.Image icon;
-  ShuttleLanes(this.label, this.context, this.data, this.icon);
+  ShuttleLanes(this.label, this.context, this.data);
 
   @override
   void paint(Canvas canvas, Size size){

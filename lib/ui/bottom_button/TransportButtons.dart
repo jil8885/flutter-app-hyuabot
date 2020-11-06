@@ -47,8 +47,8 @@ class TransportMenuStates extends State<TransportMenuButtons>{
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context, busIcon)),
-              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.55),
+              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
+              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.55, _metroSheets(context)),
               _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65),
             ],
           ),
@@ -82,7 +82,7 @@ class TransportMenuStates extends State<TransportMenuButtons>{
     );
   }
 
-  Widget _shuttleSheets(BuildContext context, ui.Image icon){
+  Widget _shuttleSheets(BuildContext context){
     Timer.periodic(Duration(seconds: 60), (timer) {
       allShuttleController.fetch();
     });
@@ -105,11 +105,11 @@ class TransportMenuStates extends State<TransportMenuButtons>{
             children: [
               CustomPaint(painter: ShuttleStops(), size: Size(MediaQuery.of(context).size.width, 30)),
               CustomPaint(
-                painter: ShuttleLanes("한대앞행", context, _result["DH"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
+                painter: ShuttleLanes("한대앞행", context, _result["DH"]), size: Size(MediaQuery.of(context).size.width, 75),),
               CustomPaint(
-                painter: ShuttleLanes("예술인행", context, _result["DY"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
+                painter: ShuttleLanes("예술인행", context, _result["DY"]), size: Size(MediaQuery.of(context).size.width, 75),),
               CustomPaint(
-                painter: ShuttleLanes("순환버스", context, _result["C"], icon), size: Size(MediaQuery.of(context).size.width, 75),),
+                painter: ShuttleLanes("순환버스", context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
               // Container(
               //   height: 20,
               //   padding: EdgeInsets.symmetric(horizontal: 35),
@@ -120,6 +120,24 @@ class TransportMenuStates extends State<TransportMenuButtons>{
           );
         }
       }
+    );
+  }
+
+  Widget _metroSheets(BuildContext context){
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      metroController.fetch();
+    });
+
+    return StreamBuilder<Map<String, dynamic>>(
+        stream: metroController.allMetroInfo,
+        builder: (context, snapshot) {
+          if(snapshot.hasError || !snapshot.hasData){
+            return CircularProgressIndicator();
+          }
+          else {
+            return Container();
+          }
+        }
     );
   }
 }
