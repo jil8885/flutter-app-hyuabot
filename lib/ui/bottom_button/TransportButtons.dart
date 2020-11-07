@@ -6,10 +6,11 @@ import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/model/Shuttle.dart';
 import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
-import 'package:chatbot/ui/custom_paint/shuttleLines.dart';
+import 'package:chatbot/ui/custom_paint/ShuttleLines.dart';
 import 'package:chatbot/ui/custom_paint/MetroLines.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:touchable/touchable.dart';
 
 
 class TransportMenuButtons extends StatefulWidget{
@@ -92,12 +93,18 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
           return Column(
             children: [
               CustomPaint(painter: ShuttleStops(), size: Size(MediaQuery.of(context).size.width, 30)),
-              CustomPaint(
-                painter: ShuttleLanes("한대앞행", context, _result["DH"]), size: Size(MediaQuery.of(context).size.width, 75),),
-              CustomPaint(
-                painter: ShuttleLanes("예술인행", context, _result["DY"]), size: Size(MediaQuery.of(context).size.width, 75),),
-              CustomPaint(
-                painter: ShuttleLanes("순환버스", context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
+              CanvasTouchDetector(
+                builder:(context) => CustomPaint(
+                  painter: ShuttleLanes("한대앞행", context, _result["DH"]), size: Size(MediaQuery.of(context).size.width, 75),),
+              ),
+              CanvasTouchDetector(
+                builder: (context) => CustomPaint(
+                  painter: ShuttleLanes("예술인행", context, _result["DY"]), size: Size(MediaQuery.of(context).size.width, 75),),
+              ),
+              CanvasTouchDetector(
+                builder: (context) => CustomPaint(
+                  painter: ShuttleLanes("순환버스", context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
+              ),
               // Container(
               //   height: 20,
               //   padding: EdgeInsets.symmetric(horizontal: 35),
