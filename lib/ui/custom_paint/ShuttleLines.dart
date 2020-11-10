@@ -42,6 +42,8 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70, size.height * .25, result.trim(), context);
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70, size.height * .75, result.trim(), context);
+    } else{
+      drawText(canvas, 70, size.height * .75, "운행종료", context);
     }
 
     timeTable = data["Shuttlecock_O"].map((e) => getTimeFromString(e, current)).toList();
@@ -54,6 +56,8 @@ class ShuttleLanes extends CustomPainter{
       if(diff.inMinutes <= 5){
         drawArrow(canvas, 70 + (max - 110) * .25 - (max - 110) * .05 * (diff.inMinutes + 0.5), size.height / 2, color);
       }
+    } else{
+      drawText(canvas, 70 + (max - 110) * .25, size.height * .75, "운행종료", context);
     }
 
     timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
@@ -66,6 +70,8 @@ class ShuttleLanes extends CustomPainter{
       if(diff.inMinutes <= 10){
         drawArrow(canvas, 70 + (max - 110) * .5 - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
       }
+    } else if(!label.contains("예술인")){
+      drawText(canvas, 70 + (max - 110) * .50, size.height * .75, "운행종료", context);
     }
 
     timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
@@ -84,6 +90,8 @@ class ShuttleLanes extends CustomPainter{
           drawArrow(canvas, 70 + (max - 110) * .75 - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       }
+    } else if(!label.contains("한대앞")){
+      drawText(canvas, 70 + (max - 110) * .75, size.height * .75, "운행종료", context);
     }
 
     timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
@@ -102,6 +110,8 @@ class ShuttleLanes extends CustomPainter{
           drawArrow(canvas, 70 + (max - 110) - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       }
+    } else{
+      drawText(canvas, 70 + (max - 110), size.height * .75, "운행종료", context);
     }
 
     var touchableCanvas = TouchyCanvas(context, canvas);

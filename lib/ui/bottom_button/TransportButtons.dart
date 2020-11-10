@@ -153,14 +153,14 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
                   children: [
                     Column(
                       children: [
-                        CustomPaint(painter: MetroLanesRealtime(true, Color.fromRGBO(0, 165, 222, 1), ["안산", "초지", "고잔", "중앙", "한대앞"]), size: Size(MediaQuery.of(context).size.width, 200),),
-                        CustomPaint(painter: MetroLanesRealtime(false, Color.fromRGBO(0, 165, 222, 1), ["한대앞", "상록수", "반월", "대야미", "수리산"]), size: Size(MediaQuery.of(context).size.width, 200)),
+                        CustomPaint(painter: MetroLanesRealtime(true, Color.fromRGBO(0, 165, 222, 1), ["안산", "초지", "고잔", "중앙", "한대앞"], snapshot.data['main']['up']), size: Size(MediaQuery.of(context).size.width, 200),),
+                        CustomPaint(painter: MetroLanesRealtime(false, Color.fromRGBO(0, 165, 222, 1), ["한대앞", "상록수", "반월", "대야미", "수리산"], snapshot.data['main']['down']), size: Size(MediaQuery.of(context).size.width, 200)),
                       ],
                     ),
                     Column(
                       children: [
-                        CustomPaint(painter: MetroLanesRealtime(true, Color.fromRGBO(245, 163, 0, 1), ["안산", "초지", "고잔", "중앙", "한대앞"]), size: Size(MediaQuery.of(context).size.width, 200),),
-                        CustomPaint(painter: MetroLanesRealtime(false, Color.fromRGBO(245, 163, 0, 1), ["한대앞", "사리", "야목", "어천", "오목천"]), size: Size(MediaQuery.of(context).size.width, 200)),
+                        CustomPaint(painter: MetroLanesTimeTable(true, Color.fromRGBO(245, 163, 0, 1), ["안산", "초지", "고잔", "중앙", "한대앞"], snapshot.data['sub']['up']), size: Size(MediaQuery.of(context).size.width, 200),),
+                        CustomPaint(painter: MetroLanesTimeTable(false, Color.fromRGBO(245, 163, 0, 1), ["한대앞", "사리", "야목", "어천", "오목천"], snapshot.data['sub']['down']), size: Size(MediaQuery.of(context).size.width, 200)),
                       ],
                     ),
                 ]),
