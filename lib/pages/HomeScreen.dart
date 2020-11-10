@@ -25,6 +25,8 @@ class HomeScreenStates extends State<HomeScreen>{
       backMenuButton(context),
     ];
     DateTime _lastPressedAt;
+    int _selectedIndex;
+
     headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
     // 전체 스크린
     return Scaffold(
@@ -69,6 +71,9 @@ class HomeScreenStates extends State<HomeScreen>{
                 StreamBuilder<Map<String, dynamic>>(
                   stream: mainButtonController.mainButtonIndex,
                   builder: (_, snapshot){
+                    if(snapshot.hasData){
+                      _selectedIndex = snapshot.data['index'];
+                    }
                     return AnimatedSwitcher(
                         duration: Duration(microseconds: 400),
                         child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this):_subMenus[snapshot.data['index']],
@@ -77,13 +82,18 @@ class HomeScreenStates extends State<HomeScreen>{
                 ),
               ])),
           onWillPop: () async{
+            if(_selectedIndex <= _subMenus.length || _selectedIndex != -1){
+              mainButtonController.backToMain();
+              chatController.resetChatList();
+              return false;
+            }
             if(_lastPressedAt == null || DateTime.now().difference(_lastPressedAt) > Duration(seconds: 1)){
                 Fluttertoast.showToast(
                     msg: "하냥이랑 함께 좋은 하루 되라냥!\n뒤로 가기 버튼을 한번 더 눌러주세요!",
                     toastLength: Toast.LENGTH_SHORT,
                     timeInSecForIosWeb: 1,
-                    textColor: Colors.white,
-                    backgroundColor: Colors.black,
+                    textColor: Theme.of(context).backgroundColor==Colors.black?Colors.black:Colors.white,
+                    backgroundColor: Theme.of(context).backgroundColor==Colors.black?Colors.white:Colors.black,
                     gravity: ToastGravity.SNACKBAR
                 );
                 _lastPressedAt = DateTime.now();
