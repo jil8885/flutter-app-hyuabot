@@ -6,11 +6,16 @@ import 'package:chatbot/ui/bottom_button/TransportButtons.dart';
 import 'package:chatbot/ui/bottom_button/LibraryButtons.dart';
 import 'package:chatbot/ui/bottom_button/MainButtons.dart';
 import 'package:chatbot/ui/bottom_button/FoodButtons.dart';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => HomeScreenStates();
+}
+
+class HomeScreenStates extends State<HomeScreen>{
   @override
   Widget build(BuildContext context) {
     List _subMenus = [
@@ -19,12 +24,12 @@ class HomeScreen extends StatelessWidget {
       LibraryMenuButtons(),
       backMenuButton(context),
     ];
-
+    DateTime _lastPressedAt;
     headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
     // 전체 스크린
     return Scaffold(
         appBar: MainAppBar(),
-        body: DoubleBackToCloseApp(
+        body: WillPopScope(
           child: Container(
               color: Theme.of(context).backgroundColor,
               child: Column(
@@ -61,17 +66,31 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                StreamBuilder<int>(
+                StreamBuilder<Map<String, dynamic>>(
                   stream: mainButtonController.mainButtonIndex,
                   builder: (_, snapshot){
-                    if(!snapshot.hasData || snapshot.data == -1 || snapshot.data > _subMenus.length){
-                      return MainMenuButtons();
-                    }
-                    return _subMenus[snapshot.data];
+                    return AnimatedSwitcher(
+                        duration: Duration(microseconds: 400),
+                        child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this):_subMenus[snapshot.data['index']],
+                    );
                   },
                 ),
               ])),
-          snackBar: const SnackBar(content: Text("하냥이와 함께 좋은 하루 되라냥!", textAlign: TextAlign.center,),),
+          onWillPop: () async{
+            if(_lastPressedAt == null || DateTime.now().difference(_lastPressedAt) > Duration(seconds: 1)){
+                Fluttertoast.showToast(
+                    msg: "하냥이랑 함께 좋은 하루 되라냥!\n뒤로 가기 버튼을 한번 더 눌러주세요!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    timeInSecForIosWeb: 1,
+                    textColor: Colors.white,
+                    backgroundColor: Colors.black,
+                    gravity: ToastGravity.SNACKBAR
+                );
+                _lastPressedAt = DateTime.now();
+                return false;
+              }
+            return true;
+          }
         ));
   }
 }

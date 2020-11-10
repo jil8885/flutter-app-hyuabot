@@ -1,21 +1,30 @@
 import 'package:rxdart/rxdart.dart';
 
 class MainButtonPressed{
-  final _mainButtonSubject = BehaviorSubject<int>();
+  final _mainButtonSubject = BehaviorSubject<Map<String, dynamic>>();
   MainButtonPressed(){
-    updateMainButtonIndex(999);
+    updateMainButtonIndex({"index": 999, "expanded": false});
   }
 
   void backToMain(){
-    _mainButtonSubject.add(999);
+    _mainButtonSubject.add({"index": 999, "expanded": false});
   }
 
-  void updateMainButtonIndex(int index) {
-    _mainButtonSubject.add(index);
+  void updateMainButtonIndex(Map<String, dynamic> data) {
+    _mainButtonSubject.add(data);
   }
 
-  Stream<int> get mainButtonIndex => _mainButtonSubject.stream;
+  void updateMainButtonExpand({bool expand=false}) {
+    _mainButtonSubject.add({"index": 999, "expanded": expand});
+  }
+
+  MainButtonExpand(){
+    updateMainButtonExpand();
+  }
+
+  Stream<Map<String, dynamic>> get mainButtonIndex => _mainButtonSubject.stream;
 }
+
 
 class SubButtonPressed{
   final _subButtonSubject = BehaviorSubject<int>();

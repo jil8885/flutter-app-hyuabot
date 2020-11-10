@@ -31,9 +31,10 @@ dependencies:
   settings_ui: ^0.4.0
   shared_preferences: ^0.5.12+2
   rxdart: ^0.24.1
-  double_back_to_close_app: ^1.2.0
   theme_provider: ^0.4.0+1
   intl: ^0.16.1
+  fluttertoast: ^7.1.1
+
 
 dev_dependencies:
   flutter_test:
