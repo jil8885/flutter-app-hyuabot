@@ -52,7 +52,7 @@ class ShuttleLanes extends CustomPainter{
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110) * .25, size.height * .75, result.trim(), context);
       if(diff.inMinutes <= 5){
-        drawArrow(canvas, 70 + (max - 110) * .25 - (max - 110) * .05 * diff.inMinutes, size.height / 2, color);
+        drawArrow(canvas, 70 + (max - 110) * .25 - (max - 110) * .05 * (diff.inMinutes + 0.5), size.height / 2, color);
       }
     }
 
@@ -64,7 +64,7 @@ class ShuttleLanes extends CustomPainter{
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110) * .5, size.height * .75, result.trim(), context);
       if(diff.inMinutes <= 10){
-        drawArrow(canvas, 70 + (max - 110) * .5 - (max - 110) * .025 * diff.inMinutes, size.height / 2, color);
+        drawArrow(canvas, 70 + (max - 110) * .5 - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
       }
     }
 
@@ -77,11 +77,11 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110) * .75, size.height * .75, result.trim(), context);
       if(label.contains("순환버스")){
         if(diff.inMinutes <= 5){
-          drawArrow(canvas, 70 + (max - 110) * .75 - (max - 110) * .05 * diff.inMinutes, size.height / 2, color);
+          drawArrow(canvas, 70 + (max - 110) * .75 - (max - 110) * .05 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       } else {
         if(diff.inMinutes <= 10){
-          drawArrow(canvas, 70 + (max - 110) * .75 - (max - 110) * .025 * diff.inMinutes, size.height / 2, color);
+          drawArrow(canvas, 70 + (max - 110) * .75 - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       }
     }
@@ -95,11 +95,11 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110), size.height * .75, result.trim(), context);
       if(label.contains("한대앞")){
         if(diff.inMinutes <= 10){
-          drawArrow(canvas, 70 + (max - 110) - (max - 110) * .05 * diff.inMinutes, size.height / 2, color);
+          drawArrow(canvas, 70 + (max - 110) - (max - 110) * .05 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       } else {
         if(diff.inMinutes <= 10){
-          drawArrow(canvas, 70 + (max - 110) - (max - 110) * .025 * diff.inMinutes, size.height / 2, color);
+          drawArrow(canvas, 70 + (max - 110) - (max - 110) * .025 * (diff.inMinutes + 0.5), size.height / 2, color);
         }
       }
     }
