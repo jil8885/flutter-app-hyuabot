@@ -2,8 +2,8 @@ import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
-  ChatMessage({this.text});
-  final String text;
+  ChatMessage({this.chat});
+  final Widget chat;
   @override Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return Container(
@@ -29,7 +29,10 @@ class ChatMessage extends StatelessWidget {
                 nipWidth: 5,
                 margin: BubbleEdges.only(top:5.0),
                 color: themeData.cardColor,
-                child: Text(text, style: themeData.textTheme.bodyText2),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .3, maxWidth: MediaQuery.of(context).size.width * .5),
+                  child: chat,
+                ),
               ),
             ],
           ),

@@ -20,7 +20,7 @@ Widget backMenuButton(BuildContext context){
     icon: Icon(Icons.arrow_back),
     onPressed: (){
       headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
-      chatController.resetChatList();
+      chatController.resetChatList(context);
       mainButtonController.backToMain();
       subButtonController.resetSubButtonIndex();
     },

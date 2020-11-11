@@ -84,7 +84,7 @@ class HomeScreenStates extends State<HomeScreen>{
           onWillPop: () async{
             if(_selectedIndex <= _subMenus.length && _selectedIndex >= 0){
               headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
-              chatController.resetChatList();
+              chatController.resetChatList(context);
               mainButtonController.backToMain();
               subButtonController.resetSubButtonIndex();
               return false;

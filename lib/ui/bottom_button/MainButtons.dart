@@ -92,7 +92,7 @@ class MainMenuButtons extends StatelessWidget{
               color: snapshot.data['index'] == index ? Theme.of(context).accentColor : Colors.white,
               onPressed: (){
                 mainButtonController.updateMainButtonIndex({"index": index, "expanded": false});
-                chatController.setChatList(ChatMessage(text: msgText,));
+                chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
                 headerImageController.setHeaderImage(logoPath);
               },
             ),

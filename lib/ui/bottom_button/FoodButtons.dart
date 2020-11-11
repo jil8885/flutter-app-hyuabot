@@ -15,11 +15,11 @@ class FoodMenuButtons extends StatelessWidget{
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _makeFuncButton(context, "학생식당", 0, Container()),
-                _makeFuncButton(context, "교직원식당", 1, Container()),
-                _makeFuncButton(context, "창의인재원식당", 2, Container()),
-                _makeFuncButton(context, "창업보육센터", 3, Container()),
-                _makeFuncButton(context, "푸드코트", 4, Container()),
+                _makeFuncButton(context, "학생식당", 0, "student"),
+                _makeFuncButton(context, "교직원식당", 1, "teacher"),
+                _makeFuncButton(context, "창의인재원식당", 2, "dormitory"),
+                _makeFuncButton(context, "창업보육센터", 3, "changbo"),
+                _makeFuncButton(context, "푸드코트", 4, "foodcoart"),
               ],
             ),
           ),
@@ -28,7 +28,7 @@ class FoodMenuButtons extends StatelessWidget{
     );
   }
 
-  Widget _makeFuncButton(BuildContext context, String buttonText, int index, Widget bottomSheet){
+  Widget _makeFuncButton(BuildContext context, String buttonText, int index, String restaurant){
     return StreamBuilder<int>(
         stream: subButtonController.subButtonIndex,
         builder: (context, snapshot) {
@@ -41,7 +41,7 @@ class FoodMenuButtons extends StatelessWidget{
               elevation: 6,
               onPressed: (){
                 subButtonController.updateSubButtonIndex(index);
-                showMaterialModalBottomSheet(context: context, builder: null);
+                chatController.fetchMenu(restaurant, context);
               },
             ),
           );

@@ -12,7 +12,7 @@ class FetchMetroInfoController{
   }
 
   void fetch() async{
-    final url = Uri.encodeFull(conf.apiServer + "/app/subway");
+    final url = Uri.encodeFull(conf.getAPIServer() + "/app/subway");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
 

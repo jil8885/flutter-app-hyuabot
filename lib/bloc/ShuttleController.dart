@@ -13,7 +13,7 @@ class FetchAllShuttleController{
   }
 
   void fetch() async{
-    final url = Uri.encodeFull(conf.apiServer + "/app/shuttle");
+    final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle");
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     Map<String, dynamic> responseJson = jsonDecode(response.body);
 

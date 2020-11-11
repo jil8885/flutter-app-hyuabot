@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class MetroLanesRealtime extends CustomPainter {
   final isRight;
-  final lineColor;
+  final Color lineColor;
   final List stationList;
   final List<MetroRealtimeInfo> data;
 
@@ -23,27 +23,30 @@ class MetroLanesRealtime extends CustomPainter {
       ..strokeWidth = 4.0;
 
     final metroLine = Paint()
+      ..color = lineColor.withOpacity(0.6)
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 4.0;
+
+    final metroStation = Paint()
       ..color = lineColor
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
     // 주 사각형
     canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(20, 10, size.width - 40, size.height - 20), Radius.circular(10)), white);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(20, 10 + (size.height - 20)*.6, size.width - 40, (size.height - 20)*.4), Radius.circular(10)), subBox);
+    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(20, 10 + (size.height - 20)*.6, size.width - 40, (size.height - 20)*.4), bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)), subBox);
   
     // 화살표(왼쪽/오른쪽)
     canvas.drawLine(Offset(40, size.height / 3), Offset(size.width - 40, size.height / 3), metroLine);
     if(isRight){
-      canvas.drawLine(Offset(size.width - 40, size.height / 3), Offset(size.width - 50, size.height / 3 - 10), metroLine);
-      canvas.drawLine(Offset(size.width - 40, size.height / 3), Offset(size.width - 50, size.height / 3 + 10), metroLine);
+      canvas.drawLine(Offset(size.width - 40, size.height / 3), Offset(size.width - 52.5, size.height / 3 - 12.5), metroLine);
     } else{
-      canvas.drawLine(Offset(40, size.height / 3), Offset(50, size.height / 3 - 10), metroLine);
-      canvas.drawLine(Offset(40, size.height / 3), Offset(50, size.height / 3 + 10), metroLine);
+      canvas.drawLine(Offset(40, size.height / 3), Offset(52.5, size.height / 3 - 12.5), metroLine);
     }
     
     // 각 역 표시
     for(int i=0; i<stationList.length; i++){
-      canvas.drawCircle(Offset(70 + (size.width - 140) * (i / (stationList.length - 1)), size.height / 3), 4.0, metroLine);
+      canvas.drawCircle(Offset(70 + (size.width - 140) * (i / (stationList.length - 1)), size.height / 3), 4.0, metroStation);
       TextSpan sp = TextSpan(style: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.black), text: stationList[i]);
       TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
       tp.layout();
@@ -52,13 +55,23 @@ class MetroLanesRealtime extends CustomPainter {
       Offset offset = Offset(dx, dy);
       tp.paint(canvas, offset);
     }
-
+    Color textColor;
     for(int i=0; i<data.length; i++){
       if (i == 2) {
         break;
       }
-      String result = '(${data[i].terminalStation}행) ${data[i].remainedTime.toInt()}분 후 도착-${data[i].currentStation}';
-      TextSpan sp = TextSpan(style: TextStyle(fontSize: 15, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold), text: result);
+      String result = '(${data[i].terminalStation}행) ${data[i].remainedTime.toInt()}분 후 도착';
+      if (data[i].currentStatus != "운행중"){
+        result += "-${data[i].currentStatus}";
+      } else {
+        result += "-${data[i].currentStation}";
+      }
+      if(i==0){
+        textColor = Colors.white;
+      } else {
+        textColor = Colors.white.withOpacity(0.6);
+      }
+      TextSpan sp = TextSpan(style: TextStyle(fontSize: 15, fontFamily: "Noto Sans KR", color: textColor, fontWeight: FontWeight.bold), text: result);
       TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
       tp.layout();
       double dx = size.width / 2 - tp.width / 2;
@@ -69,27 +82,27 @@ class MetroLanesRealtime extends CustomPainter {
         int time = data[i].remainedTime.toInt();
         if(isRight){
           if(time<=0){
-            drawArrow(canvas, size.width - 70, size.height / 3, subBox);
+            drawTrain(canvas, size.width - 70, size.height / 3, subBox);
           }else if(time<=2){
-            drawArrow(canvas, size.width - 70 - (size.width - 140) * 0.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, size.width - 70 - (size.width - 140) * 0.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=4){
-            drawArrow(canvas, size.width - 70 - (size.width - 140) * 1.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, size.width - 70 - (size.width - 140) * 1.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=6.5){
-            drawArrow(canvas, size.width - 70 - (size.width - 140) * 2.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, size.width - 70 - (size.width - 140) * 2.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=9){
-            drawArrow(canvas, size.width - 70 - (size.width - 140) * 3.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, size.width - 70 - (size.width - 140) * 3.5 / (stationList.length - 1), size.height / 3, subBox);
           }
         } else {
           if(time<=0){
-            drawArrowReverse(canvas, 70, size.height / 3, subBox);
+            drawTrain(canvas, 70, size.height / 3, subBox);
           }else if(time<=2){
-            drawArrowReverse(canvas, 70 + (size.width - 140) * 0.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, 70 + (size.width - 140) * 0.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=6){
-            drawArrowReverse(canvas, 70 + (size.width - 140) * 1.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, 70 + (size.width - 140) * 1.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=8.5){
-            drawArrowReverse(canvas, 70 + (size.width - 140) * 2.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, 70 + (size.width - 140) * 2.5 / (stationList.length - 1), size.height / 3, subBox);
           }else if(time<=11.5){
-            drawArrowReverse(canvas, 70 + (size.width - 140) * 3.5 / (stationList.length - 1), size.height / 3, subBox);
+            drawTrain(canvas, 70 + (size.width - 140) * 3.5 / (stationList.length - 1), size.height / 3, subBox);
           }
         }
       }
@@ -101,29 +114,15 @@ class MetroLanesRealtime extends CustomPainter {
     return true;
   }
 
-  void drawArrow(Canvas canvas, double dx, double dy, Paint paint){
-    final path = Path()
-      ..moveTo(dx + 7.5, dy)
-      ..lineTo(dx - 7.5, dy - 7.5)
-      ..quadraticBezierTo(dx, dy, dx - 7.5, dy + 7.5)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
-
-  void drawArrowReverse(Canvas canvas, double dx, double dy, Paint paint){
-    final path = Path()
-      ..moveTo(dx - 7.5, dy)
-      ..lineTo(dx + 7.5, dy + 7.5)
-      ..quadraticBezierTo(dx, dy, dx + 7.5, dy - 7.5)
-      ..close();
-    canvas.drawPath(path, paint);
+  void drawTrain(Canvas canvas, double dx, double dy, Paint paint){
+    canvas.drawCircle(Offset(dx, dy), 6.0 , paint);
   }
 }
 
 
 class MetroLanesTimeTable extends CustomPainter {
   final isRight;
-  final lineColor;
+  final Color lineColor;
   final List stationList;
   final List<MetroTimeTableInfo> data;
 
@@ -141,34 +140,31 @@ class MetroLanesTimeTable extends CustomPainter {
       ..strokeWidth = 4.0;
 
     final metroLine = Paint()
-      ..color = lineColor
+      ..color = lineColor.withOpacity(0.6)
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
+    final metroStation = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 4.0;
     // 주 사각형
     canvas.drawRRect(RRect.fromRectAndRadius(
         Rect.fromLTWH(20, 10, size.width - 40, size.height - 20),
         Radius.circular(10)), white);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(
-        20, 10 + (size.height - 20) * .6, size.width - 40,
-        (size.height - 20) * .4), Radius.circular(10)), subBox);
+    canvas.drawRRect(RRect.fromRectAndCorners(Rect.fromLTWH(20, 10 + (size.height - 20)*.6, size.width - 40, (size.height - 20)*.4), bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)), subBox);
+
 
     // 화살표(왼쪽/오른쪽)
     canvas.drawLine(
         Offset(40, size.height / 3), Offset(size.width - 40, size.height / 3),
         metroLine);
-    if (isRight) {
-      canvas.drawLine(Offset(size.width - 40, size.height / 3),
-          Offset(size.width - 50, size.height / 3 - 10), metroLine);
-      canvas.drawLine(Offset(size.width - 40, size.height / 3),
-          Offset(size.width - 50, size.height / 3 + 10), metroLine);
-    } else {
-      canvas.drawLine(
-          Offset(40, size.height / 3), Offset(50, size.height / 3 - 10),
-          metroLine);
-      canvas.drawLine(
-          Offset(40, size.height / 3), Offset(50, size.height / 3 + 10),
-          metroLine);
+    // 화살표(왼쪽/오른쪽)
+    canvas.drawLine(Offset(40, size.height / 3), Offset(size.width - 40, size.height / 3), metroLine);
+    if(isRight){
+      canvas.drawLine(Offset(size.width - 40, size.height / 3), Offset(size.width - 52.5, size.height / 3 - 12.5), metroLine);
+    } else{
+      canvas.drawLine(Offset(40, size.height / 3), Offset(52.5, size.height / 3 - 12.5), metroLine);
     }
 
     // 각 역 표시
@@ -192,30 +188,31 @@ class MetroLanesTimeTable extends CustomPainter {
       if (i == 2) {
         break;
       }
-      DateTime diff = getTimeFromString(data[i].arrivalTime, DateTime.now());
-      int time = diff.minute;
+      Duration diff = getTimeFromString(data[i].arrivalTime, DateTime.now()).difference(DateTime.now());
+      int time = diff.inMinutes;
+
       String currentStation="";
       if (isRight) {
         if (time <= 0) {
-          drawArrow(canvas, size.width - 70, size.height / 3, subBox);
+          drawTrain(canvas, size.width - 70, size.height / 3, subBox);
           currentStation = "한대앞";
         } else if (time <= 2) {
-          drawArrow(canvas, size.width - 70 -
+          drawTrain(canvas, size.width - 70 -
               (size.width - 140) * 0.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "중앙";
         } else if (time <= 4) {
-          drawArrow(canvas, size.width - 70 -
+          drawTrain(canvas, size.width - 70 -
               (size.width - 140) * 1.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "고잔";
         } else if (time <= 6.5) {
-          drawArrow(canvas, size.width - 70 -
+          drawTrain(canvas, size.width - 70 -
               (size.width - 140) * 2.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "초지";
         } else if (time <= 9) {
-          drawArrow(canvas, size.width - 70 -
+          drawTrain(canvas, size.width - 70 -
               (size.width - 140) * 3.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "안산";
@@ -246,25 +243,25 @@ class MetroLanesTimeTable extends CustomPainter {
         }
       } else {
         if (time <= 0) {
-          drawArrowReverse(canvas, 70, size.height / 3, subBox);
+          drawTrain(canvas, 70, size.height / 3, subBox);
           currentStation = "한대앞";
         } else if (time <= 2) {
-          drawArrowReverse(canvas,
+          drawTrain(canvas,
               70 + (size.width - 140) * 0.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "사리";
         } else if (time <= 7) {
-          drawArrowReverse(canvas,
+          drawTrain(canvas,
               70 + (size.width - 140) * 1.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "야목";
         } else if (time <= 10) {
-          drawArrowReverse(canvas,
+          drawTrain(canvas,
               70 + (size.width - 140) * 2.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "어천";
         } else if (time <= 14) {
-          drawArrowReverse(canvas,
+          drawTrain(canvas,
               70 + (size.width - 140) * 3.5 / (stationList.length - 1),
               size.height / 3, subBox);
           currentStation = "오목천";
@@ -285,14 +282,19 @@ class MetroLanesTimeTable extends CustomPainter {
           currentStation = "매탄권선";
         }
       }
-      print(time);
+      Color textColor;
+      if(i==0){
+        textColor = Colors.white;
+      } else {
+        textColor = Colors.white.withOpacity(0.6);
+      }
       String result = '(${data[i].terminalStation}행) ${data[i].arrivalTime} 도착';
       if(currentStation != ""){
         result += " - 예상 위치:$currentStation";
       }
       TextSpan sp = TextSpan(style: TextStyle(fontSize: 15,
           fontFamily: "Noto Sans KR",
-          color: Colors.white,
+          color: textColor,
           fontWeight: FontWeight.bold), text: result);
       TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
       tp.layout();
@@ -308,21 +310,8 @@ class MetroLanesTimeTable extends CustomPainter {
     return true;
   }
 
-  void drawArrow(Canvas canvas, double dx, double dy, Paint paint){
-    final path = Path()
-      ..moveTo(dx + 7.5, dy)
-      ..lineTo(dx - 7.5, dy - 7.5)
-      ..quadraticBezierTo(dx, dy, dx - 7.5, dy + 7.5)
-      ..close();
-    canvas.drawPath(path, paint);
+  void drawTrain(Canvas canvas, double dx, double dy, Paint paint){
+    canvas.drawCircle(Offset(dx, dy), 6.0 , paint);
   }
 
-  void drawArrowReverse(Canvas canvas, double dx, double dy, Paint paint){
-    final path = Path()
-      ..moveTo(dx - 7.5, dy)
-      ..lineTo(dx + 7.5, dy + 7.5)
-      ..quadraticBezierTo(dx, dy, dx + 7.5, dy - 7.5)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
 }

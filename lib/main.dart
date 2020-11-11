@@ -13,7 +13,7 @@ import 'bloc/ButtonController.dart';
 
 final mainButtonController = MainButtonPressed();
 final subButtonController = SubButtonPressed();
-final chatController = ChatListChanged();
+ChatListChanged chatController;
 final headerImageController = HeaderImageChanged();
 final allShuttleController = FetchAllShuttleController();
 final metroController = FetchMetroInfoController();
@@ -26,6 +26,7 @@ main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    chatController = ChatListChanged(context);
     return ThemeProvider(
       themes: [lightTheme, darkTheme],
       saveThemesOnChange: true,

@@ -141,8 +141,8 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
                     indicatorPadding: EdgeInsets.symmetric(horizontal: 20),
                     labelColor: Colors.white,
                     tabs: [
-                      const Tab(child: Text("4호선", style: TextStyle(fontSize: 20, fontFamily: "Noto Sans KR", color: Colors.white)), ),
-                      const Tab(child: Text("수인분당선", style: TextStyle(fontSize: 20, fontFamily: "Noto Sans KR", color: Colors.white)),)
+                      const Tab(child: Text("4호선", style: TextStyle(fontSize: 19, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold)), ),
+                      const Tab(child: Text("수인분당선", style: TextStyle(fontSize: 19, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold)),)
                     ],
                   )
               ),
