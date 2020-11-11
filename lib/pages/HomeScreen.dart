@@ -82,9 +82,11 @@ class HomeScreenStates extends State<HomeScreen>{
                 ),
               ])),
           onWillPop: () async{
-            if(_selectedIndex <= _subMenus.length || _selectedIndex != -1){
-              mainButtonController.backToMain();
+            if(_selectedIndex <= _subMenus.length && _selectedIndex >= 0){
+              headerImageController.setHeaderImage(getImagePath(context, "header-default.png"));
               chatController.resetChatList();
+              mainButtonController.backToMain();
+              subButtonController.resetSubButtonIndex();
               return false;
             }
             if(_lastPressedAt == null || DateTime.now().difference(_lastPressedAt) > Duration(seconds: 1)){
