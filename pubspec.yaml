@@ -34,7 +34,7 @@ dependencies:
   theme_provider: ^0.4.0+1
   intl: ^0.16.1
   fluttertoast: ^7.1.1
-
+  configurable_expansion_tile: ^1.0.0
 
 dev_dependencies:
   flutter_test:

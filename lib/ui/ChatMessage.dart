@@ -18,7 +18,9 @@ class ChatMessage extends StatelessWidget {
                 )
             ),
           ),
-          Column( crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 5.0),
@@ -30,7 +32,7 @@ class ChatMessage extends StatelessWidget {
                 margin: BubbleEdges.only(top:5.0),
                 color: themeData.cardColor,
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .3, maxWidth: MediaQuery.of(context).size.width * .5),
+                  constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * .5, maxWidth: MediaQuery.of(context).size.width * .5),
                   child: chat,
                 ),
               ),

@@ -11,8 +11,8 @@ AppTheme lightTheme = AppTheme(
         cardColor: Color.fromARGB(160, 20, 75, 170),
         brightness: Brightness.light,
         textTheme: TextTheme(
-          bodyText1: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.black),
-          bodyText2: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.white),
+          bodyText1: TextStyle(fontSize: 13, fontFamily: "Noto Sans KR", color: Colors.black),
+          bodyText2: TextStyle(fontSize: 13, fontFamily: "Noto Sans KR", color: Colors.white),
         )
     ),
     description: "normal light theme",
@@ -26,8 +26,8 @@ AppTheme darkTheme = AppTheme(
         cardColor: Colors.white70,
         brightness: Brightness.dark,
         textTheme: TextTheme(
-          bodyText1: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.white),
-          bodyText2: TextStyle(fontSize: 11, fontFamily: "Noto Sans KR", color: Colors.black),
+          bodyText1: TextStyle(fontSize: 13, fontFamily: "Noto Sans KR", color: Colors.white),
+          bodyText2: TextStyle(fontSize: 13, fontFamily: "Noto Sans KR", color: Colors.black),
         )
     ),
     description: "normal dark theme",
