@@ -13,10 +13,13 @@ import 'bloc/ButtonController.dart';
 
 final mainButtonController = MainButtonPressed();
 final subButtonController = SubButtonPressed();
-ChatListChanged chatController;
 final headerImageController = HeaderImageChanged();
 final allShuttleController = FetchAllShuttleController();
 final metroController = FetchMetroInfoController();
+
+ChatListChanged chatController;
+bool shuttleSheetOpened = false;
+bool metroSheetOpened = false;
 
 main() async {
   WidgetsFlutterBinding.ensureInitialized();

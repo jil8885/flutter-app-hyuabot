@@ -59,6 +59,18 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
             color: snapshot.data == index ? Theme.of(context).accentColor : Colors.white,
             elevation: 6,
             onPressed: (){
+              switch(index){
+                case 0:
+                  allShuttleController.fetch();
+                  shuttleSheetOpened = true;
+                  metroSheetOpened = false;
+                  break;
+                case 1:
+                  metroController.fetch();
+                  shuttleSheetOpened = false;
+                  metroSheetOpened = true;
+                  break;
+              }
               subButtonController.updateSubButtonIndex(index);
               showMaterialModalBottomSheet(
                   context: context,
@@ -73,7 +85,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
 
   Widget _shuttleSheets(BuildContext context){
     Timer.periodic(Duration(seconds: 60), (timer) {
-      allShuttleController.fetch();
+      if(shuttleSheetOpened) {
+        allShuttleController.fetch();
+      }
     });
 
     return StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
@@ -120,7 +134,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
 
   Widget _metroSheets(BuildContext context){
     Timer.periodic(Duration(seconds: 60), (timer) {
-      metroController.fetch();
+      if(metroSheetOpened){
+        metroController.fetch();
+      }
     });
 
     return StreamBuilder<Map<String, dynamic>>(

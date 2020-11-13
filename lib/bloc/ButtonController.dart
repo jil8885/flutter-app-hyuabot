@@ -1,3 +1,4 @@
+import 'package:chatbot/main.dart';
 import 'package:rxdart/rxdart.dart';
 
 class MainButtonPressed{
@@ -7,6 +8,8 @@ class MainButtonPressed{
   }
 
   void backToMain(){
+    shuttleSheetOpened = false;
+    metroSheetOpened = false;
     _mainButtonSubject.add({"index": 999, "expanded": false});
   }
 
