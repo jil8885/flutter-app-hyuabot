@@ -61,9 +61,6 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110) * .25, size.height * .25, result.trim(), context);
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110) * .25, size.height * .75, result.trim(), context);
-      if(diff.inMinutes <= 5){
-        drawBus(canvas, 70 + (max - 110) * .25 - (max - 110) * .05 * diff.inMinutes, size.height / 2, radius * 1.5, color);
-      }
     } else{
       endHalt = 70 + (max - 110) * .25;
     }
@@ -75,9 +72,6 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110) * .5, size.height * .25, result.trim(), context);
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110) * .5, size.height * .75, result.trim(), context);
-      if(diff.inMinutes <= 10){
-        drawBus(canvas, 70 + (max - 110) * .5 - (max - 110) * .025 * diff.inMinutes, size.height / 2, radius * 1.5, color);
-      }
     } else if(!label.contains("예술인")){
       endHalt = 70 + (max - 110) * .5;
     }
@@ -89,15 +83,6 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110) * .75, size.height * .25, result.trim(), context);
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110) * .75, size.height * .75, result.trim(), context);
-      if(label.contains("순환버스")){
-        if(diff.inMinutes <= 5){
-          drawBus(canvas, 70 + (max - 110) * .75 - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
-        }
-      } else {
-        if(diff.inMinutes <= 10){
-          drawBus(canvas, 70 + (max - 110) * .75 - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
-        }
-      }
     } else if(!label.contains("한대앞")){
       endHalt = 70 + (max - 110) * .75;
     }
@@ -109,15 +94,6 @@ class ShuttleLanes extends CustomPainter{
       drawText(canvas, 70 + (max - 110), size.height * .25, result.trim(), context);
       result = "${diff.inMinutes}분 후\n";
       drawText(canvas, 70 + (max - 110), size.height * .75, result.trim(), context);
-      if(label.contains("한대앞")){
-        if(diff.inMinutes <= 10){
-          drawBus(canvas, 70 + (max - 110) - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
-        }
-      } else {
-        if(diff.inMinutes <= 10){
-          drawBus(canvas, 70 + (max - 110) - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
-        }
-      }
     } else{
       endHalt = 70 + (max - 110);
     }
@@ -146,15 +122,62 @@ class ShuttleLanes extends CustomPainter{
       print("Shuttlecock_I");
     });
 
-    if(label.contains("한대앞")){
-      timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
-      return;
-    } else if(label.contains("예술인")){
-      timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
-      return;
+    timeTable = data["Shuttlecock_O"].map((e) => getTimeFromString(e, current)).toList();
+    if(timeTable.length > 0){
+      Duration diff = timeTable[0].difference(current);
+      if(diff.inMinutes <= 5){
+        drawBus(touchableCanvas, 70 + (max - 110) * .25 - (max - 110) * .05 * diff.inMinutes, size.height / 2, radius * 1.5, color);
+      }
     } else{
-      timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
-      return;
+      endHalt = 70 + (max - 110) * .25;
+    }
+
+    timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
+    if(timeTable.length > 0){
+      Duration diff = timeTable[0].difference(current);
+      if(diff.inMinutes <= 10){
+        drawBus(touchableCanvas, 70 + (max - 110) * .5 - (max - 110) * .025 * diff.inMinutes, size.height / 2, radius * 1.5, color);
+      }
+    } else if(!label.contains("예술인")){
+      endHalt = 70 + (max - 110) * .5;
+    }
+
+    timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
+    if(timeTable.length > 0){
+      Duration diff = timeTable[0].difference(current);
+      result = DateFormat('HH:mm').format(timeTable[0]);
+      drawText(canvas, 70 + (max - 110) * .75, size.height * .25, result.trim(), context);
+      result = "${diff.inMinutes}분 후\n";
+      drawText(canvas, 70 + (max - 110) * .75, size.height * .75, result.trim(), context);
+      if(label.contains("순환버스")){
+        if(diff.inMinutes <= 5){
+          drawBus(touchableCanvas, 70 + (max - 110) * .75 - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+        }
+      } else {
+        if(diff.inMinutes <= 10){
+          drawBus(touchableCanvas, 70 + (max - 110) * .75 - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+        }
+      }
+    } else if(!label.contains("한대앞")){
+      endHalt = 70 + (max - 110) * .75;
+    }
+
+    timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
+    if(timeTable.length > 0){
+      Duration diff = timeTable[0].difference(current);
+      result = DateFormat('HH:mm').format(timeTable[0]);
+      drawText(canvas, 70 + (max - 110), size.height * .25, result.trim(), context);
+      result = "${diff.inMinutes}분 후\n";
+      drawText(canvas, 70 + (max - 110), size.height * .75, result.trim(), context);
+      if(label.contains("한대앞")){
+        if(diff.inMinutes <= 10){
+          drawBus(touchableCanvas, 70 + (max - 110) - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+        }
+      } else {
+        if(diff.inMinutes <= 10){
+          drawBus(touchableCanvas, 70 + (max - 110) - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+        }
+      }
     }
   }
 
@@ -186,7 +209,7 @@ class ShuttleLanes extends CustomPainter{
     tp.paint(canvas, offset);
   }
 
-  void drawBus(Canvas canvas, double dx, double dy, double radius,Paint paint){
+  void drawBus(TouchyCanvas canvas, double dx, double dy, double radius,Paint paint){
     canvas.drawCircle(Offset(dx, dy), radius, paint);
   }
 }
