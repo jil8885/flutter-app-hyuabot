@@ -2,7 +2,9 @@ import 'package:chatbot/config/common.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/pages/HomeScreen.dart';
 import 'package:chatbot/pages/SettingScreen.dart';
+import 'package:chatbot/ui/bottom_sheet/TelephoneSheets.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../ChatMessage.dart';
 
@@ -91,9 +93,16 @@ class MainMenuButtons extends StatelessWidget{
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
               color: snapshot.data['index'] == index ? Theme.of(context).accentColor : Colors.white,
               onPressed: (){
-                mainButtonController.updateMainButtonIndex({"index": index, "expanded": false});
-                chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
-                headerImageController.setHeaderImage(logoPath);
+                if(!buttonText.contains("전화")){
+                  mainButtonController.updateMainButtonIndex({"index": index, "expanded": false});
+                  chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
+                  headerImageController.setHeaderImage(logoPath);
+                } else{
+                  showMaterialModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context, scrollController) => TelephoneSheets(Container()));
+                }
               },
             ),
           ),

@@ -10,6 +10,7 @@ class MainButtonPressed{
   void backToMain(){
     shuttleSheetOpened = false;
     metroSheetOpened = false;
+    busSheetOpened = false;
     _mainButtonSubject.add({"index": 999, "expanded": false});
   }
 
@@ -19,10 +20,6 @@ class MainButtonPressed{
 
   void updateMainButtonExpand({bool expand=false}) {
     _mainButtonSubject.add({"index": 999, "expanded": expand});
-  }
-
-  MainButtonExpand(){
-    updateMainButtonExpand();
   }
 
   Stream<Map<String, dynamic>> get mainButtonIndex => _mainButtonSubject.stream;
