@@ -6,6 +6,7 @@ import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/model/Shuttle.dart';
 import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
+import 'package:chatbot/ui/custom_paint/BusLines.dart';
 import 'package:chatbot/ui/custom_paint/ShuttleLines.dart';
 import 'package:chatbot/ui/custom_paint/MetroLines.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,15 @@ class TransportMenuButtons extends StatefulWidget{
   State<StatefulWidget> createState()=> TransportMenuStates();
 }
 
-class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerProviderStateMixin{
-  TabController _controller;
+class TransportMenuStates extends State<TransportMenuButtons> with TickerProviderStateMixin{
+  TabController _metroController;
+  TabController _busController;
+
   @override
   void initState() {
     super.initState();
-    _controller = new TabController(length: 2, vsync: this);
+    _metroController = new TabController(length: 2, vsync: this);
+    _busController = new TabController(length: 3, vsync: this);
   }
 
   @override
@@ -38,7 +42,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
             children: [
               _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
               _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.65, _metroSheets(context)),
-              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65),
+              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65, _busSheets(context)),
             ],
           ),
         ),
@@ -64,11 +68,19 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
                   allShuttleController.fetch();
                   shuttleSheetOpened = true;
                   metroSheetOpened = false;
+                  busSheetOpened = false;
                   break;
                 case 1:
                   metroController.fetch();
                   shuttleSheetOpened = false;
                   metroSheetOpened = true;
+                  busSheetOpened = false;
+                  break;
+                case 2:
+                  busController.fetch();
+                  shuttleSheetOpened = false;
+                  metroSheetOpened = false;
+                  busSheetOpened = true;
                   break;
               }
               subButtonController.updateSubButtonIndex(index);
@@ -150,7 +162,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
               appBar: ColoredTabBar(
                   Theme.of(context).accentColor,
                   TabBar(
-                    controller: _controller,
+                    controller: _metroController,
                     indicatorSize: TabBarIndicatorSize.tab,
                     indicatorColor: Colors.white,
                     indicatorWeight: 5,
@@ -165,7 +177,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
               body: Container(
                 color: Theme.of(context).accentColor,
                 child: TabBarView(
-                  controller: _controller,
+                  controller: _metroController,
                   children: [
                     Column(
                       children: [
@@ -186,4 +198,53 @@ class TransportMenuStates extends State<TransportMenuButtons> with SingleTickerP
         }
     );
   }
+
+
+  Widget _busSheets(BuildContext context){
+    Timer.periodic(Duration(seconds: 60), (timer) {
+      if(busSheetOpened){
+        busController.fetch();
+      }
+    });
+
+    return StreamBuilder<Map<String, dynamic>>(
+        stream: busController.allBusInfo,
+        builder: (context, snapshot) {
+          if(snapshot.hasError || !snapshot.hasData){
+            return CircularProgressIndicator();
+          }
+          else {
+            return Scaffold(
+              appBar: ColoredTabBar(
+                  Theme.of(context).accentColor,
+                  TabBar(
+                    controller: _busController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    indicatorColor: Colors.white,
+                    indicatorWeight: 5,
+                    indicatorPadding: EdgeInsets.symmetric(horizontal: 20),
+                    labelColor: Colors.white,
+                    tabs: [
+                      const Tab(child: Text("10-1", style: TextStyle(fontSize: 19, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold)), ),
+                      const Tab(child: Text("3102", style: TextStyle(fontSize: 19, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold)), ),
+                      const Tab(child: Text("707-1", style: TextStyle(fontSize: 19, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold)),)
+                    ],
+                  )
+              ),
+              body: Container(
+                color: Theme.of(context).accentColor,
+                child: TabBarView(
+                    controller: _busController,
+                    children: [
+                      Container(child: CustomPaint(painter: BusLanes(["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["10-1"]["realtime"], snapshot.data["10-1"]["timetable"], "푸르지오6차후문"),),),
+                      Container(child: CustomPaint(painter: BusLanes(["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["3102"]["realtime"], snapshot.data["3102"]["timetable"], "송산그린시티"),),),
+                      Container(child: CustomPaint(painter: BusLanes(["홈플러스", "화승타운", "네오빌6단지", "송호초등학교", "고잔고", "고잔1차푸르지오", "한양대정문"], snapshot.data["707-1"]["realtime"], snapshot.data["707-1"]["timetable"], "신안산대학교"),),),
+                    ]),
+              ),
+            );
+          }
+        }
+    );
+  }
 }
+
