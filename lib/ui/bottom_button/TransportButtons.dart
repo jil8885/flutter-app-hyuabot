@@ -22,6 +22,7 @@ class TransportMenuButtons extends StatefulWidget{
 class TransportMenuStates extends State<TransportMenuButtons> with TickerProviderStateMixin{
   TabController _metroController;
   TabController _busController;
+  Timer timer;
 
   @override
   void initState() {
@@ -63,6 +64,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
             color: snapshot.data == index ? Theme.of(context).accentColor : Colors.white,
             elevation: 6,
             onPressed: (){
+              timer.cancel();
               switch(index){
                 case 0:
                   allShuttleController.fetch();
@@ -96,7 +98,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
   }
 
   Widget _shuttleSheets(BuildContext context){
-    Timer.periodic(Duration(seconds: 60), (timer) {
+    timer = Timer.periodic(Duration(seconds: 60), (timer) {
       if(shuttleSheetOpened) {
         allShuttleController.fetch();
       }
@@ -145,7 +147,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
   }
 
   Widget _metroSheets(BuildContext context){
-    Timer.periodic(Duration(seconds: 60), (timer) {
+    timer = Timer.periodic(Duration(seconds: 60), (timer) {
       if(metroSheetOpened){
         metroController.fetch();
       }
@@ -201,7 +203,7 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
 
 
   Widget _busSheets(BuildContext context){
-    Timer.periodic(Duration(seconds: 60), (timer) {
+    timer = Timer.periodic(Duration(seconds: 60), (timer) {
       if(busSheetOpened){
         busController.fetch();
       }
@@ -236,9 +238,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
                 child: TabBarView(
                     controller: _busController,
                     children: [
-                      Container(child: CustomPaint(painter: BusLanes(["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["10-1"]["realtime"], snapshot.data["10-1"]["timetable"], "푸르지오6차후문"),),),
-                      Container(child: CustomPaint(painter: BusLanes(["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["3102"]["realtime"], snapshot.data["3102"]["timetable"], "송산그린시티"),),),
-                      Container(child: CustomPaint(painter: BusLanes(["홈플러스", "화승타운", "네오빌6단지", "송호초등학교", "고잔고", "고잔1차푸르지오", "한양대정문"], snapshot.data["707-1"]["realtime"], snapshot.data["707-1"]["timetable"], "신안산대학교"),),),
+                      Container(child: CustomPaint(painter: BusLanes(context, ["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["10-1"]["realtime"], snapshot.data["10-1"]["timetable"], "푸르지오6차후문"),),),
+                      Container(child: CustomPaint(painter: BusLanes(context, ["푸르지오6차후문", "해양중학교", "푸르지오6,7차정문", "경기테크노파크", "한양대기숙사앞", "한국생산기술연구원", "한양대게스트하우스"], snapshot.data["3102"]["realtime"], snapshot.data["3102"]["timetable"], "송산그린시티"),),),
+                      Container(child: CustomPaint(painter: BusLanes(context, ["홈플러스", "화승타운", "네오빌6단지", "송호초등학교", "고잔고", "고잔1차푸르지오", "한양대정문"], snapshot.data["707-1"]["realtime"], snapshot.data["707-1"]["timetable"], "신안산대학교"),),),
                     ]),
               ),
             );

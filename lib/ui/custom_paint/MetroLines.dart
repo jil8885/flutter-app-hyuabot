@@ -23,7 +23,7 @@ class MetroLanesRealtime extends CustomPainter {
       ..strokeWidth = 4.0;
 
     final metroLine = Paint()
-      ..color = lineColor.withOpacity(0.6)
+      ..color = lineColor.withOpacity(0.5)
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
