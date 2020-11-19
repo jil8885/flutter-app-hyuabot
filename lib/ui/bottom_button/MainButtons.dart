@@ -1,10 +1,13 @@
+import 'package:chatbot/bloc/PhoneSearchController.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/pages/HomeScreen.dart';
 import 'package:chatbot/pages/SettingScreen.dart';
 import 'package:chatbot/ui/bottom_sheet/TelephoneSheets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import '../ChatMessage.dart';
 
@@ -98,10 +101,71 @@ class MainMenuButtons extends StatelessWidget{
                   chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
                   headerImageController.setHeaderImage(logoPath);
                 } else{
+                  phoneSearcher.fetch();
                   showMaterialModalBottomSheet(
                       context: context,
                       backgroundColor: Colors.transparent,
-                      builder: (context, scrollController) => TelephoneSheets(Container()));
+                      builder: (context, scrollController) {
+                        return AnimatedPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom), duration: Duration(milliseconds: 250),
+                          child: TelephoneSheets(
+                              Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(children: [
+                                  TextField(
+                                    decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(8),
+                                          suffixIcon: Icon(Icons.search, color: Colors.white,),
+                                          labelText: "검색어를 입력해주세요",
+                                          hintText: "검색어",
+                                          hintStyle: TextStyle(color: Colors.grey[300]),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.white),
+                                          ),
+                                    ),
+                                    cursorColor: Colors.white,
+                                    onChanged: (text){
+                                      phoneSearcher.fetch("select * from telephone where name like \'%$text%\'");
+                                    },
+                                  ),
+                                  StreamBuilder<List<PhoneNum>>(
+                                    stream: phoneSearcher.allPhoneInfo,
+                                    builder: (context, snapshot) {
+                                    if(!snapshot.hasData){
+                                      return Container();
+                                    }
+                                    List<PhoneNum> data = snapshot.data;
+                                    return Expanded(
+                                      child: ListView.separated(
+                                        padding: const EdgeInsets.all(2),
+                                          shrinkWrap: true,
+                                          itemCount: data.length,
+                                          itemBuilder: (BuildContext context, int index){
+                                          return GestureDetector(
+                                            onTap: (){UrlLauncher.launch("tel://${data[index].number}");},
+                                            child: Container(
+                                                height: 30,
+                                                child: Row(children: [
+                                                  Flexible(child: Text(data[index].name, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white),)),
+                                                  Text(data[index].number, style: TextStyle(color: Colors.white))
+                                                ],
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,)),
+                                          );
+                                          },
+                                          separatorBuilder: (context, index){
+                                          return Divider(color: Theme.of(context).textTheme.bodyText1.color,);
+                                          },
+                                      ),
+                                    );
+                                  })
+                                ],),
+                              )
+                          )
+                        );
+                    }
+                  );
                 }
               },
             ),

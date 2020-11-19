@@ -13,7 +13,7 @@ class TelephoneSheets extends StatelessWidget{
             ClipRRect(
               borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
+                height: MediaQuery.of(context).size.height * 0.4,
                 width: MediaQuery.of(context).size.width,
                 color: Theme.of(context).accentColor,
                 child: contents,
@@ -22,7 +22,7 @@ class TelephoneSheets extends StatelessWidget{
           ],
         ),
         Positioned(
-          bottom: MediaQuery.of(context).size.height * 0.45,
+          bottom: MediaQuery.of(context).size.height * 0.35,
           right: -5,
           child: SizedBox(
             child: Container(child: Image.asset("assets/images/shared/sheet-header-telephone.png")),
