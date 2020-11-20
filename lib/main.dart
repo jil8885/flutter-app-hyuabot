@@ -4,6 +4,7 @@ import 'package:chatbot/bloc/BusController.dart';
 import 'package:chatbot/bloc/ChatListController.dart';
 import 'package:chatbot/bloc/HeaderImageController.dart';
 import 'package:chatbot/bloc/PhoneSearchController.dart';
+import 'package:chatbot/bloc/ReadingRoomController.dart';
 import 'package:chatbot/bloc/ShuttleController.dart';
 import 'package:chatbot/bloc/MetroController.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
@@ -24,12 +25,14 @@ final allShuttleController = FetchAllShuttleController();
 final metroController = FetchMetroInfoController();
 final busController = FetchBusInfoController();
 final phoneSearcher = FetchPhoneController();
+final readingRoomController = ReadingRoomController();
 
 
 ChatListChanged chatController;
 bool shuttleSheetOpened = false;
 bool metroSheetOpened = false;
 bool busSheetOpened = false;
+bool readingRoomOpened = false;
 Database database;
 
 main() async {

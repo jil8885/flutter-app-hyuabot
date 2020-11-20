@@ -11,6 +11,7 @@ class MainButtonPressed{
     shuttleSheetOpened = false;
     metroSheetOpened = false;
     busSheetOpened = false;
+    readingRoomOpened = false;
     _mainButtonSubject.add({"index": 999, "expanded": false});
   }
 
