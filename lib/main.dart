@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:chatbot/bloc/BusController.dart';
@@ -33,6 +34,7 @@ bool shuttleSheetOpened = false;
 bool metroSheetOpened = false;
 bool busSheetOpened = false;
 bool readingRoomOpened = false;
+Timer timer;
 Database database;
 
 main() async {

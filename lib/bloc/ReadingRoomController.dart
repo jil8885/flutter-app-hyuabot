@@ -13,7 +13,6 @@ class ReadingRoomController{
   }
 
   void fetch() async{
-    if(readingRoomOpened) {
       final url = Uri.encodeFull(conf.getAPIServer() + "/app/library");
       http.Response response = await http.post(
           url, headers: {"Accept": "application/json"},
@@ -23,7 +22,6 @@ class ReadingRoomController{
       Map<String, ReadingRoomInfo> data = {};
       for (String key in responseJson.keys) {
         data[key] = ReadingRoomInfo.fromJson(responseJson[key]);
-      }
 
       _allReadingRoomSubject.add(data);
     }

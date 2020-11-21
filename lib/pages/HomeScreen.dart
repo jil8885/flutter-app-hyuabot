@@ -76,7 +76,7 @@ class HomeScreenStates extends State<HomeScreen>{
                     }
                     return AnimatedSwitcher(
                         duration: Duration(microseconds: 400),
-                        child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this):_subMenus[snapshot.data['index']],
+                        child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this, MediaQuery.of(context).size.width * .015):_subMenus[snapshot.data['index']],
                     );
                   },
                 ),

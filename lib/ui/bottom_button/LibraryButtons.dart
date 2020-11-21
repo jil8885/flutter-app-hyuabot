@@ -15,8 +15,6 @@ class LibraryMenuButtons extends StatefulWidget{
 }
 
 class LibraryMenuStates extends State<LibraryMenuButtons> with TickerProviderStateMixin{
-  Timer timer;
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -51,9 +49,11 @@ class LibraryMenuStates extends State<LibraryMenuButtons> with TickerProviderSta
                 timer.cancel();
                 switch(index){
                   case 0:
+                    timer.cancel();
                     readingRoomOpened = false;
                     break;
                   case 1:
+                    timer.cancel();
                     readingRoomOpened = true;
                     break;
                 }
@@ -87,39 +87,40 @@ class LibraryMenuStates extends State<LibraryMenuButtons> with TickerProviderSta
               }
               names.sort();
             }
-            print(names);
-            return Container(
-              padding: const EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 10),
-              child: ListView.builder(
-                  padding: const EdgeInsets.all(8),
-                  itemCount: names.length,
-                  itemBuilder: (_, index){
-                    return Container(
-                      height: 75,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(names[index], style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                            child: Flexible(child: LinearPercentIndicator(
-                                width: MediaQuery.of(context).size.width - 150,
-                                animation: true,
-                                lineHeight: 20.0,
-                                animationDuration: 1500,
-                                percent: snapshot.data[names[index]].available/snapshot.data[names[index]].active,
-                                center: Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}"),
-                                linearStrokeCap: LinearStrokeCap.roundAll,
-                                progressColor: Colors.green,
-                            ),),
-                          ),
-                          // Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
-                        ],
-                      ),
-                    );
-                  }
-              ),
+            return ListView.separated(
+                padding: const EdgeInsets.all(8),
+                separatorBuilder: (BuildContext context, int index) {
+                  return SizedBox(
+                    height: 10,
+                  );
+                },
+                itemCount: names.length,
+                itemBuilder: (_, index){
+                  return Container(
+                    height: 75,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(names[index], style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
+                        ),
+                        Flexible(child: LinearPercentIndicator(
+                            width: MediaQuery.of(context).size.width - 120,
+                            animation: true,
+                            lineHeight: 20.0,
+                            animationDuration: 1500,
+                            percent: snapshot.data[names[index]].available/snapshot.data[names[index]].active,
+                            center: Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}"),
+                            linearStrokeCap: LinearStrokeCap.roundAll,
+                            progressColor: Colors.green,
+                        ),),
+                        // Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
+                      ],
+                    ),
+                  );
+                }
             );
           }
         }

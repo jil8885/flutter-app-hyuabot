@@ -13,43 +13,52 @@ import '../ChatMessage.dart';
 
 class MainMenuButtons extends StatelessWidget{
   HomeScreenStates homePage;
-  MainMenuButtons(this.homePage);
+  double padding;
+  MainMenuButtons(this.homePage, this.padding);
   @override
   Widget build(BuildContext context) {
-    Widget mainButton =  Row(
-      children: [
-        _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
-        _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
-        _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
-        _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
-        IconButton(icon: Icon(Icons.keyboard_arrow_up, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
-          mainButtonController.updateMainButtonExpand(expand: true);
-          this.homePage.setState(() {});
-        })
-      ],
-    );
+      Widget mainButton = Padding(padding: EdgeInsets.symmetric(horizontal: padding),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
+              _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
+              _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
+              _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
+              IconButton(icon: Icon(Icons.keyboard_arrow_up, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
+                mainButtonController.updateMainButtonExpand(expand: true);
+                this.homePage.setState(() {});
+              })
+            ],
+          )
+      );
 
-    Widget mainButtonExpanded =  Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
+    Widget mainButtonExpanded =  Padding(
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-              _settingButtons(context)
-          ],
-        ),
-        Row(
-          children: [
-            _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
-            _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
-            _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
-            _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
-            IconButton(icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
-              mainButtonController.updateMainButtonExpand(expand: false);
-              this.homePage.setState(() {});
-            })
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                  _settingButtons(context)
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
+                _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
+                _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
+                _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
+                IconButton(icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
+                  mainButtonController.updateMainButtonExpand(expand: false);
+                  this.homePage.setState(() {});
+                })
+              ],
+            )
           ],
         )
-      ],
     );
 
 
@@ -177,12 +186,12 @@ class MainMenuButtons extends StatelessWidget{
 
   Widget _settingButtons(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       child: SizedBox(
         width: 70,
         child: RaisedButton(
           elevation: 6,
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
           child: Text(
             "설정",
             style: TextStyle(fontSize: 12, color: Colors.black),
