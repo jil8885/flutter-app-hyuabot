@@ -110,7 +110,9 @@ class MainMenuButtons extends StatelessWidget{
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
               color: snapshot.data['index'] == index ? Theme.of(context).accentColor : Colors.white,
               onPressed: (){
-                timer.cancel();
+                if(timer != null){
+                  timer.cancel();
+                }
                 if(buttonText.contains("전화")){
                   phoneSearcher.fetch();
                   showMaterialModalBottomSheet(

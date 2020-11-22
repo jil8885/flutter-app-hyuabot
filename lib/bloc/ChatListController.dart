@@ -75,8 +75,8 @@ class ChatListChanged{
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(menu.menu, style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.bold, fontFamily: "Noto Sans KR"),),
-              Text('${menu.price}원', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold, fontFamily: "Noto Sans KR"), textAlign: TextAlign.left,)
+              Text(menu.menu, style: Theme.of(context).textTheme.bodyText2,),
+              Text('${menu.price}원', style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.left,)
           ],)
         );
       }
@@ -97,7 +97,7 @@ class ChatListChanged{
               color: const Color(0xFF707070),
             ),
             initiallyExpanded: true,
-            header: Text(sortedKind[index], style: TextStyle(color: Theme.of(context).accentColor, fontSize: 13, fontWeight: FontWeight.bold, fontFamily: "Noto Sans KR"),),
+            header: Text(sortedKind[index], style: Theme.of(context).textTheme.bodyText2,),
             children: menuWidget[sortedKind[index]],
           );
         },

@@ -63,7 +63,6 @@ void copyDatabase() async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    chatController = ChatListChanged(context);
     return ThemeProvider(
       themes: [lightTheme, darkTheme],
       saveThemesOnChange: true,

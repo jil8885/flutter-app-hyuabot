@@ -1,3 +1,4 @@
+import 'package:chatbot/bloc/ChatListController.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/common.dart';
 import 'package:chatbot/config/style.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenStates extends State<HomeScreen>{
   @override
   Widget build(BuildContext context) {
+    chatController = ChatListChanged(context);
     List _subMenus = [
       TransportMenuButtons(),
       FoodMenuButtons(),
