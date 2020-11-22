@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:chatbot/config/networking.dart' as conf;
+import 'package:chatbot/config/Networking.dart' as conf;
 import 'package:chatbot/model/Metro.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;

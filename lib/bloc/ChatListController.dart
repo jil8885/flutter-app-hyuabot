@@ -1,4 +1,4 @@
-import 'package:chatbot/config/networking.dart' as conf;
+import 'package:chatbot/config/Networking.dart' as conf;
 import 'package:chatbot/model/FoodMenu.dart';
 import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:configurable_expansion_tile/configurable_expansion_tile.dart';
