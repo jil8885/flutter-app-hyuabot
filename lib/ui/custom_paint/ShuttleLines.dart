@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:chatbot/config/common.dart';
+import 'package:chatbot/config/Common.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 

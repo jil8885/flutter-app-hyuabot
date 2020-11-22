@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:chatbot/bloc/PhoneSearchController.dart';
-import 'package:chatbot/config/common.dart';
+import 'package:chatbot/config/Common.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/model/ReadingRoom.dart';
 import 'package:chatbot/pages/HomeScreen.dart';

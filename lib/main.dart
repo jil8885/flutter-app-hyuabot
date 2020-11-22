@@ -8,6 +8,7 @@ import 'package:chatbot/bloc/PhoneSearchController.dart';
 import 'package:chatbot/bloc/ReadingRoomController.dart';
 import 'package:chatbot/bloc/ShuttleController.dart';
 import 'package:chatbot/bloc/MetroController.dart';
+import 'package:chatbot/config/LocalizationDelegate.dart';
 import 'package:chatbot/ui/theme/ThemeManager.dart';
 import 'package:chatbot/pages/HomeScreen.dart';
 import 'package:chatbot/pages/SplashScreen.dart';
@@ -15,6 +16,7 @@ import 'package:chatbot/bloc/ButtonController.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
@@ -76,6 +78,24 @@ class MyApp extends StatelessWidget {
         theme: theme,
         routes: <String, WidgetBuilder>{
           '/home' : (BuildContext context) => new HomeScreen()
+        },
+        supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
+        localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
+        localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
+          if(locale == null){
+            debugPrint("language is null");
+          }
+
+          for (Locale supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode ||
+                supportedLocale.countryCode == locale.countryCode) {
+              debugPrint("*language ok $supportedLocale");
+              return supportedLocale;
+            }
+          }
+
+          debugPrint("*language to fallback ${supportedLocales.first}");
+          return supportedLocales.first;
         },
       ),
     );

@@ -2,7 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-import 'package:chatbot/config/style.dart';
+import 'package:chatbot/config/Style.dart';
 
 class SettingScreen extends StatelessWidget{
   @override

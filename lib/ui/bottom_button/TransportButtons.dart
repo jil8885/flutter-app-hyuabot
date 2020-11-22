@@ -1,9 +1,9 @@
 import 'dart:async';
 
 
-import 'package:chatbot/config/style.dart';
+import 'package:chatbot/config/Style.dart';
 import 'package:chatbot/main.dart';
-import 'package:chatbot/config/common.dart';
+import 'package:chatbot/config/Common.dart';
 import 'package:chatbot/model/Shuttle.dart';
 import 'package:chatbot/ui/bottom_sheet/TransportSheets.dart';
 import 'package:chatbot/ui/custom_paint/BusLines.dart';
