@@ -3,7 +3,6 @@ import 'package:chatbot/config/common.dart';
 import 'package:chatbot/config/style.dart';
 import 'package:chatbot/ui/ChatMessage.dart';
 import 'package:chatbot/ui/bottom_button/TransportButtons.dart';
-import 'package:chatbot/ui/bottom_button/LibraryButtons.dart';
 import 'package:chatbot/ui/bottom_button/MainButtons.dart';
 import 'package:chatbot/ui/bottom_button/FoodButtons.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +20,6 @@ class HomeScreenStates extends State<HomeScreen>{
     List _subMenus = [
       TransportMenuButtons(),
       FoodMenuButtons(),
-      LibraryMenuButtons(),
       backMenuButton(context),
     ];
     DateTime _lastPressedAt;
