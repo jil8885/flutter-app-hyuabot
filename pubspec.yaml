@@ -31,7 +31,6 @@ dependencies:
   settings_ui: ^0.4.0
   shared_preferences: ^0.5.12+2
   rxdart: ^0.24.1
-  theme_provider: ^0.4.0+1
   intl: ^0.16.1
   fluttertoast: ^7.1.1
   configurable_expansion_tile: ^1.0.0
@@ -39,6 +38,7 @@ dependencies:
   path: ^1.7.0
   url_launcher: ^5.7.10
   percent_indicator: ^2.1.8
+  adaptive_theme: ^1.1.0
 
 dev_dependencies:
   flutter_test:
