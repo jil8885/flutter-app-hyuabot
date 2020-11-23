@@ -17,7 +17,9 @@ import 'package:chatbot/bloc/ButtonController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:adaptive_theme/adaptive_theme.dart';
 
@@ -38,6 +40,8 @@ bool shuttleSheetOpened = false;
 bool metroSheetOpened = false;
 bool busSheetOpened = false;
 bool readingRoomOpened = false;
+String localeCode;
+SharedPreferences prefs;
 Timer timer;
 Database database;
 
@@ -45,12 +49,14 @@ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   copyDatabase();
   savedThemeMode = await AdaptiveTheme.getThemeMode();
-  runApp(MyApp());
+  runApp(Phoenix(child: MyApp()));
 }
 
 void copyDatabase() async{
   var databasesPath = await getDatabasesPath();
   var path = join(databasesPath, "telephone.db");
+  prefs = await SharedPreferences.getInstance();
+  localeCode = prefs.getString("localeCode");
 // delete existing if any
   await deleteDatabase(path);
 
@@ -82,20 +88,20 @@ class MyApp extends StatelessWidget {
         supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
         localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
         localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
-          if(locale == null){
-            debugPrint("language is null");
+          var localeCode = prefs.getString("localeCode");
+          switch(localeCode){
+            case 'ko_KR':
+              return const Locale('ko', 'KR');
+              break;
+            case 'en_US':
+              return const Locale('en', 'US');
+              break;
+            case 'zh':
+              return const Locale('zh');
+              break;
+            default:
+              return supportedLocales.first;
           }
-
-          for (Locale supportedLocale in supportedLocales) {
-            if (supportedLocale.languageCode == locale.languageCode ||
-                supportedLocale.countryCode == locale.countryCode) {
-              debugPrint("*language ok $supportedLocale");
-              return supportedLocale;
-            }
-          }
-
-          debugPrint("*language to fallback ${supportedLocales.first}");
-          return supportedLocales.first;
         },
       ),
     );

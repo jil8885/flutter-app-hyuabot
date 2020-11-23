@@ -1,4 +1,5 @@
 import 'package:chatbot/bloc/ChatListController.dart';
+import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/Common.dart';
 import 'package:chatbot/config/Style.dart';
@@ -76,7 +77,7 @@ class HomeScreenStates extends State<HomeScreen>{
                     }
                     return AnimatedSwitcher(
                         duration: Duration(microseconds: 400),
-                        child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this, MediaQuery.of(context).size.width * .015):_subMenus[snapshot.data['index']],
+                        child: !snapshot.hasData || !snapshot.data.containsKey('index') || snapshot.data['index'] == -1 || snapshot.data['index'] > _subMenus.length?MainMenuButtons(this, MediaQuery.of(context).size.width * .005):_subMenus[snapshot.data['index']],
                     );
                   },
                 ),
@@ -91,7 +92,7 @@ class HomeScreenStates extends State<HomeScreen>{
             }
             if(_lastPressedAt == null || DateTime.now().difference(_lastPressedAt) > Duration(seconds: 1)){
                 Fluttertoast.showToast(
-                    msg: "하냥이랑 함께 좋은 하루 되라냥!\n뒤로 가기 버튼을 한번 더 눌러주세요!",
+                    msg: Translations.of(context).trans('back_snack_msg'),
                     toastLength: Toast.LENGTH_SHORT,
                     timeInSecForIosWeb: 1,
                     textColor: Theme.of(context).backgroundColor==Colors.black?Colors.black:Colors.white,

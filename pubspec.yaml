@@ -41,6 +41,7 @@ dependencies:
   url_launcher: ^5.7.10
   percent_indicator: ^2.1.8
   adaptive_theme: ^1.1.0
+  flutter_phoenix: ^0.1.0
 
 dev_dependencies:
   flutter_test:

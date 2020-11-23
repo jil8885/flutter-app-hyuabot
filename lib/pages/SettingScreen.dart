@@ -1,8 +1,11 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:chatbot/config/Localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import 'package:chatbot/config/Style.dart';
+import 'package:chatbot/main.dart';
 
 class SettingScreen extends StatelessWidget{
   @override
@@ -13,28 +16,29 @@ class SettingScreen extends StatelessWidget{
         color: Theme.of(context).backgroundColor,
         child: SettingsList(
           backgroundColor: Theme.of(context).backgroundColor,
+
           sections: [
             SettingsSection(
-              title: "settings",
+              title: Translations.of(context).trans('setting_title'),
               tiles: [
                 SettingsTile(
-                  title: "Dark Mode",
+                  title: Translations.of(context).trans('theme_title'),
                   leading: Icon(Icons.wb_sunny),
                   onTap: ()=>{
                     showDialog(
                       context: context, 
                       child: SimpleDialog(
-                        title: Text("앱 테마를 선택해주세요."),
+                        title: Text(Translations.of(context).trans('theme_dialog_title')),
                         children: [
-                          SimpleDialogOption(child: Text("시스템", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                          SimpleDialogOption(child: Text(Translations.of(context).trans("set_theme_system"), style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                             AdaptiveTheme.of(context).setSystem();
                             Navigator.pop(context);
                           },),
-                          SimpleDialogOption(child: Text("라이트", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                          SimpleDialogOption(child: Text(Translations.of(context).trans("set_theme_light"), style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                             AdaptiveTheme.of(context).setLight();
                             Navigator.pop(context);
                           },),
-                          SimpleDialogOption(child: Text("다크", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                          SimpleDialogOption(child: Text(Translations.of(context).trans("set_theme_dark"), style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                             AdaptiveTheme.of(context).setDark();
                             Navigator.pop(context);
                           },),
@@ -42,25 +46,25 @@ class SettingScreen extends StatelessWidget{
                       ))
                   },),
                 SettingsTile(
-                  title: "Language",
+                  title: Translations.of(context).trans("language_title"),
                   leading: Icon(Icons.language),
                   onTap: ()=>{
                     showDialog(
                         context: context,
                         child: SimpleDialog(
-                          title: Text("언어를 선택해주세요."),
+                          title: Text(Translations.of(context).trans("language_dialog_title")),
                           children: [
                             SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              AdaptiveTheme.of(context).setSystem();
-                              Navigator.pop(context);
+                              prefs.setString("localeCode", "ko_KR");
+                              Phoenix.rebirth(context);
                             },),
                             SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              AdaptiveTheme.of(context).setLight();
-                              Navigator.pop(context);
+                              prefs.setString("localeCode", "en_US");
+                              Phoenix.rebirth(context);
                             },),
                             SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              AdaptiveTheme.of(context).setDark();
-                              Navigator.pop(context);
+                              prefs.setString("localeCode", "zh");
+                              Phoenix.rebirth(context);
                             },),
                           ],
                         ))

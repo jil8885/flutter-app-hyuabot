@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:chatbot/config/Common.dart';
+import 'package:chatbot/config/Localization.dart';
+import 'package:chatbot/main.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
@@ -36,89 +38,148 @@ class ShuttleLanes extends CustomPainter{
     double startHalt = 0;
     double endHalt = 0;
     // 도형 그리기
-    canvas.drawLine(Offset(70, size.height / 2), Offset(max - 40, size.height / 2), line);
+    canvas.drawLine(Offset(90, size.height / 2), Offset(max - 60, size.height / 2), line);
     drawLabel(canvas, size, label, context);
 
     String result;
     List<DateTime> timeTable;
 
+    String localeCode = prefs.getString("localeCode");
     timeTable = data["Residence"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70, size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70, size.height * .75, result.trim(), context);
+      drawText(canvas, 90, size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }
+      drawText(canvas, 90, size.height * .75, result.trim(), context);
     } else{
-      startHalt = 70;
-      endHalt = 70;
+      startHalt = 90;
+      endHalt = 90;
     }
 
     timeTable = data["Shuttlecock_O"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110) * .25, size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110) * .25, size.height * .75, result.trim(), context);
+      drawText(canvas, 90 + (max - 150) * .25, size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150) * .25, size.height * .75, result.trim(), context);
     } else{
-      endHalt = 70 + (max - 110) * .25;
+      endHalt = 90 + (max - 150) * .25;
     }
 
     timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110) * .5, size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110) * .5, size.height * .75, result.trim(), context);
+      drawText(canvas, 90 + (max - 150) * .5, size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150) * .5, size.height * .75, result.trim(), context);
     } else if(!label.contains("예술인")){
-      endHalt = 70 + (max - 110) * .5;
+      endHalt = 90 + (max - 150) * .5;
     }
 
     timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110) * .75, size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110) * .75, size.height * .75, result.trim(), context);
+      drawText(canvas, 90 + (max - 150) * .75, size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150) * .75, size.height * .75, result.trim(), context);
     } else if(!label.contains("한대앞")){
-      endHalt = 70 + (max - 110) * .75;
+      endHalt = 90 + (max - 150) * .75;
     }
 
     timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110), size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110), size.height * .75, result.trim(), context);
+      drawText(canvas, 90 + (max - 150), size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150), size.height * .75, result.trim(), context);
     } else{
-      endHalt = 70 + (max - 110);
+      endHalt = 90 + (max - 150);
+    }
+
+    switch(localeCode){
+      case "ko_KR":
+        result = "운행 종료\n";
+        break;
+      case "en_US":
+        result = "Out of service\n";
+        break;
+      case "zh":
+        result = "運行 終了\n";
+        break;
     }
 
     if(startHalt != 0){
-      drawText(canvas, (startHalt + endHalt) / 2, size.height * .75, "운행종료", context);
+      drawText(canvas, (startHalt + endHalt) / 2, size.height * .75, result, context);
     }
     var touchableCanvas = TouchyCanvas(context, canvas);
-    touchableCanvas.drawCircle(Offset(70, size.height / 2), radius, paint, onTapDown: (tapDetail){
+    touchableCanvas.drawCircle(Offset(90, size.height / 2), radius, paint, onTapDown: (tapDetail){
       print("Residence");
     });
-    touchableCanvas.drawCircle(Offset(70 + (max - 110) * .25, size.height / 2), radius, paint, onTapDown: (tapDetail){
+    touchableCanvas.drawCircle(Offset(90 + (max - 150) * .25, size.height / 2), radius, paint, onTapDown: (tapDetail){
       print("Shuttlecock_O");
     });
-    if (!this.label.contains("예술인")) {
-      touchableCanvas.drawCircle(Offset(70  + (max - 110) * .5, size.height / 2), radius, paint, onTapDown: (tapDetail){
+    if (!label.contains(Translations.of(context).trans('bound_terminal'))) {
+      touchableCanvas.drawCircle(Offset(90  + (max - 150) * .5, size.height / 2), radius, paint, onTapDown: (tapDetail){
         print("Station");
       });
     }
-    if (!this.label.contains("한대앞")) {
-      touchableCanvas.drawCircle(Offset(70 + (max - 110) * .75, size.height / 2), radius, paint, onTapDown: (tapDetail){
+    if (!label.contains(Translations.of(context).trans('bound_station'))) {
+      touchableCanvas.drawCircle(Offset(90 + (max - 150) * .75, size.height / 2), radius, paint, onTapDown: (tapDetail){
         print("Terminal");
       });
     }
-    touchableCanvas.drawCircle(Offset(70 + (max - 110), size.height / 2), radius, paint, onTapDown: (tapDetail){
+    touchableCanvas.drawCircle(Offset(90 + (max - 150), size.height / 2), radius, paint, onTapDown: (tapDetail){
       print("Shuttlecock_I");
     });
 
@@ -126,56 +187,74 @@ class ShuttleLanes extends CustomPainter{
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       if(diff.inMinutes <= 5){
-        drawBus(touchableCanvas, 70 + (max - 110) * .25 - (max - 110) * .05 * diff.inMinutes, size.height / 2, radius * 1.5, color);
+        drawBus(touchableCanvas, 90 + (max - 150) * .25 - (max - 150) * .05 * diff.inMinutes, size.height / 2, radius * 1.5, color);
       }
     } else{
-      endHalt = 70 + (max - 110) * .25;
+      endHalt = 90 + (max - 150) * .25;
     }
 
     timeTable = data["Subway"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       if(diff.inMinutes <= 10){
-        drawBus(touchableCanvas, 70 + (max - 110) * .5 - (max - 110) * .025 * diff.inMinutes, size.height / 2, radius * 1.5, color);
+        drawBus(touchableCanvas, 90 + (max - 150) * .5 - (max - 150) * .025 * diff.inMinutes, size.height / 2, radius * 1.5, color);
       }
     } else if(!label.contains("예술인")){
-      endHalt = 70 + (max - 110) * .5;
+      endHalt = 90 + (max - 150) * .5;
     }
 
     timeTable = data["YesulIn"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110) * .75, size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110) * .75, size.height * .75, result.trim(), context);
-      if(label.contains("순환버스")){
+      drawText(canvas, 90 + (max - 150) * .75, size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150) * .75, size.height * .75, result.trim(), context);
+      if(label == Translations.of(context).trans('bound_cycle')){
         if(diff.inMinutes <= 5){
-          drawBus(touchableCanvas, 70 + (max - 110) * .75 - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+          drawBus(touchableCanvas, 90 + (max - 150) * .75 - (max - 150) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
         }
       } else {
         if(diff.inMinutes <= 10){
-          drawBus(touchableCanvas, 70 + (max - 110) * .75 - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+          drawBus(touchableCanvas, 90 + (max - 150) * .75 - (max - 150) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
         }
       }
-    } else if(!label.contains("한대앞")){
-      endHalt = 70 + (max - 110) * .75;
+    } else if(!label.contains(Translations.of(context).trans('bound_station'))){
+      endHalt = 90 + (max - 150) * .75;
     }
 
     timeTable = data["Shuttlecock_I"].map((e) => getTimeFromString(e, current)).toList();
     if(timeTable.length > 0){
       Duration diff = timeTable[0].difference(current);
       result = DateFormat('HH:mm').format(timeTable[0]);
-      drawText(canvas, 70 + (max - 110), size.height * .25, result.trim(), context);
-      result = "${diff.inMinutes}분 후\n";
-      drawText(canvas, 70 + (max - 110), size.height * .75, result.trim(), context);
-      if(label.contains("한대앞")){
+      drawText(canvas, 90 + (max - 150), size.height * .25, result.trim(), context);
+      switch(localeCode){
+        case "ko_KR":
+          result = "${diff.inMinutes}분 후\n";
+          break;
+        case "en_US":
+          result = "${diff.inMinutes}mins\n";
+          break;
+        case "zh":
+          result = "${diff.inMinutes}分 後\n";
+          break;
+      }      drawText(canvas, 90 + (max - 150), size.height * .75, result.trim(), context);
+      if(label.contains(Translations.of(context).trans('bound_station'))){
         if(diff.inMinutes <= 10){
-          drawBus(touchableCanvas, 70 + (max - 110) - (max - 110) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+          drawBus(touchableCanvas, 90 + (max - 150) - (max - 150) * .05 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
         }
       } else {
         if(diff.inMinutes <= 10){
-          drawBus(touchableCanvas, 70 + (max - 110) - (max - 110) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
+          drawBus(touchableCanvas, 90 + (max - 150) - (max - 150) * .025 * diff.inMinutes, size.height / 2,  radius * 1.5, color);
         }
       }
     }
@@ -193,7 +272,7 @@ class ShuttleLanes extends CustomPainter{
     TextSpan sp = TextSpan(style: TextStyle(fontSize: 12, fontFamily: "Noto Sans KR", color: Colors.white, fontWeight: FontWeight.bold), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: ui.TextDirection.ltr);
     tp.layout();
-    double dx = 30 - tp.width / 2;
+    double dx = 45 - tp.width / 2;
     double dy = size.height / 2 - tp.height / 2;
     Offset offset = Offset(dx, dy);
     tp.paint(canvas, offset);
@@ -215,6 +294,8 @@ class ShuttleLanes extends CustomPainter{
 }
 
 class ShuttleStops extends CustomPainter{
+  BuildContext context;
+  ShuttleStops(this.context);
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -222,13 +303,13 @@ class ShuttleStops extends CustomPainter{
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
-    final rect = Rect.fromLTWH(45, 10, size.width - 60, size.height - 10);
+    final rect = Rect.fromLTWH(65, 10, size.width - 85, size.height - 10);
     canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(40)), paint);
-    drawText(canvas, size, "기숙사", 70, size.height * 0.625);
-    drawText(canvas, size, "셔틀콕", 70 + (size.width - 110) * .25, size.height * 0.625);
-    drawText(canvas, size, "한대앞", 70 + (size.width - 110) * .5, size.height * 0.625);
-    drawText(canvas, size, "예술인", 70 + (size.width - 110) * .75, size.height * 0.625);
-    drawText(canvas, size, "셔틀콕", 70 + (size.width - 110), size.height * 0.625);
+    drawText(canvas, size, Translations.of(context).trans("bus_stop_dorm"), 90, size.height * 0.625);
+    drawText(canvas, size, Translations.of(context).trans("bus_stop_school"), 90 + (size.width - 150) * .25, size.height * 0.625);
+    drawText(canvas, size, Translations.of(context).trans("bus_stop_station"), 90 + (size.width - 150) * .5, size.height * 0.625);
+    drawText(canvas, size, Translations.of(context).trans("bus_stop_terminal"), 90 + (size.width - 150) * .75, size.height * 0.625);
+    drawText(canvas, size, Translations.of(context).trans("bus_stop_school"), 90 + (size.width - 150), size.height * 0.625);
   }
 
   @override

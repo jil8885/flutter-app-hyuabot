@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:chatbot/bloc/PhoneSearchController.dart';
 import 'package:chatbot/config/Common.dart';
+import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/model/ReadingRoom.dart';
 import 'package:chatbot/pages/HomeScreen.dart';
@@ -24,12 +25,19 @@ class MainMenuButtons extends StatelessWidget{
   Widget build(BuildContext context) {
       Widget mainButton = Padding(padding: EdgeInsets.symmetric(horizontal: padding),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
-              _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
-              _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
-              _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                    _makeFuncButton(context, Translations.of(context).trans("select_transport_msg"), getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", Translations.of(context).trans("transport_btn"), 0),
+                    _makeFuncButton(context, Translations.of(context).trans("select_cafeteria_msg"), getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", Translations.of(context).trans("food_btn"), 1),
+                    _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", Translations.of(context).trans("reading_room_btn"), 2),
+                    _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", Translations.of(context).trans("contact_btn"), 3),
+                  ],),
+                ),
+              ),
               IconButton(icon: Icon(Icons.keyboard_arrow_up, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
                 mainButtonController.updateMainButtonExpand(expand: true);
                 this.homePage.setState(() {});
@@ -50,12 +58,15 @@ class MainMenuButtons extends StatelessWidget{
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _makeFuncButton(context, "원하는 교통수단을 골라달라냥!", getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", "교통", 0),
-                _makeFuncButton(context, "메뉴를 알고 싶은 식당을 골라달라냥!", getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", "학식", 1),
-                _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", "도서관", 2),
-                _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", "전화부", 3),
+                Expanded(child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(children: [
+                  _makeFuncButton(context, Translations.of(context).trans("select_transport_msg"), getImagePath(context, "header-bus.png"), "assets/images/shared/icon-bus.png", "assets/images/shared/icon-bus-active.png", Translations.of(context).trans("transport_btn"), 0),
+                  _makeFuncButton(context, Translations.of(context).trans("select_cafeteria_msg"), getImagePath(context, "header-food.png"), "assets/images/shared/icon-food.png", "assets/images/shared/icon-food-active.png", Translations.of(context).trans("food_btn"), 1),
+                  _makeFuncButton(context, "알고 싶은 정보를 골라달라냥!", getImagePath(context, "header-book.png"), "assets/images/shared/icon-book.png", "assets/images/shared/icon-book-active.png", Translations.of(context).trans("reading_room_btn"), 2),
+                  _makeFuncButton(context, "밑에서 원하는 기관을 검색하라냥!", getImagePath(context, "header-default.png"), "assets/images/shared/icon-phone.png", "assets/images/shared/icon-phone-active.png", Translations.of(context).trans("contact_btn"), 3),
+                ],),)),
                 IconButton(icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).backgroundColor == Colors.black? Colors.white : Colors.black,), onPressed: (){
                   mainButtonController.updateMainButtonExpand(expand: false);
                   this.homePage.setState(() {});
@@ -93,101 +104,98 @@ class MainMenuButtons extends StatelessWidget{
         }
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
-          child: SizedBox(
-            width: _buttonWidth,
-            child: RaisedButton(
-              elevation: 6,
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(snapshot.data['index'] == index ? iconPressed:icon, height: 25, width: 25),
-                    Text(
-                      buttonText,
-                      style: TextStyle(fontSize: 12, color: snapshot.data['index'] == index ? Colors.white : Colors.black),
-                    )
-              ]),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
-              color: snapshot.data['index'] == index ? Theme.of(context).accentColor : Colors.white,
-              onPressed: (){
-                if(timer != null){
-                  timer.cancel();
-                }
-                if(buttonText.contains("전화")){
-                  phoneSearcher.fetch();
-                  showMaterialModalBottomSheet(
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (context, scrollController) {
-                        return AnimatedPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom), duration: Duration(milliseconds: 250),
-                          child: TelephoneSheets(
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(children: [
-                                  TextField(
-                                    decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.all(8),
-                                          suffixIcon: Icon(Icons.search, color: Colors.white,),
-                                          labelText: "검색어를 입력해주세요",
-                                          hintText: "검색어",
-                                          hintStyle: TextStyle(color: Colors.grey[300]),
-                                          enabledBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
-                                          ),
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide: BorderSide(color: Colors.white),
-                                          ),
-                                    ),
-                                    cursorColor: Colors.white,
-                                    onChanged: (text){
-                                      phoneSearcher.fetch("select * from telephone where name like \'%$text%\'");
-                                    },
+          child: RaisedButton(
+            elevation: 6,
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(snapshot.data['index'] == index ? iconPressed:icon, height: 25, width: 25),
+                  Text(
+                    buttonText,
+                    style: TextStyle(fontSize: 12, color: snapshot.data['index'] == index ? Colors.white : Colors.black),
+                  )
+            ]),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
+            color: snapshot.data['index'] == index ? Theme.of(context).accentColor : Colors.white,
+            onPressed: (){
+              if(timer != null){
+                timer.cancel();
+              }
+              if(index == 3){
+                phoneSearcher.fetch();
+                showMaterialModalBottomSheet(
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context, scrollController) {
+                      return AnimatedPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom), duration: Duration(milliseconds: 250),
+                        child: TelephoneSheets(
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Column(children: [
+                                TextField(
+                                  decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.all(8),
+                                        suffixIcon: Icon(Icons.search, color: Colors.white,),
+                                        labelText: "검색어를 입력해주세요",
+                                        hintText: "검색어",
+                                        hintStyle: TextStyle(color: Colors.grey[300]),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.white),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.white),
+                                        ),
                                   ),
-                                  StreamBuilder<List<PhoneNum>>(
-                                    stream: phoneSearcher.allPhoneInfo,
-                                    builder: (context, snapshot) {
-                                    if(!snapshot.hasData){
-                                      return Container();
-                                    }
-                                    List<PhoneNum> data = snapshot.data;
-                                    return Expanded(
-                                      child: ListView.separated(
-                                        padding: const EdgeInsets.all(2),
-                                          shrinkWrap: true,
-                                          itemCount: data.length,
-                                          itemBuilder: (BuildContext context, int index){
-                                          return GestureDetector(
-                                            onTap: (){UrlLauncher.launch("tel://${data[index].number}");},
-                                            child: Container(
-                                                height: 30,
-                                                child: Row(children: [
-                                                  Flexible(child: Text(data[index].name, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white),)),
-                                                  Text(data[index].number, style: TextStyle(color: Colors.white))
-                                                ],
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,)),
-                                          );
-                                          },
-                                          separatorBuilder: (context, index){
-                                          return Divider(color: Theme.of(context).textTheme.bodyText1.color,);
-                                          },
-                                      ),
-                                    );
-                                  })
-                                ],),
-                              )
-                          )
-                        );
-                    }
-                  );
-                } else if(buttonText.contains("도서")){
-                  showMaterialModalBottomSheet(context: context, backgroundColor: Colors.transparent, builder: (context, scrollController) => LibrarySheets(_readingRoomSheets(context)));
-                } else{
-                  mainButtonController.updateMainButtonIndex({"index": index, "expanded": false});
-                  chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
-                  headerImageController.setHeaderImage(logoPath);
-                }
-              },
-            ),
+                                  cursorColor: Colors.white,
+                                  onChanged: (text){
+                                    phoneSearcher.fetch("select * from telephone where name like \'%$text%\'");
+                                  },
+                                ),
+                                StreamBuilder<List<PhoneNum>>(
+                                  stream: phoneSearcher.allPhoneInfo,
+                                  builder: (context, snapshot) {
+                                  if(!snapshot.hasData){
+                                    return Container();
+                                  }
+                                  List<PhoneNum> data = snapshot.data;
+                                  return Expanded(
+                                    child: ListView.separated(
+                                      padding: const EdgeInsets.all(2),
+                                        shrinkWrap: true,
+                                        itemCount: data.length,
+                                        itemBuilder: (BuildContext context, int index){
+                                        return GestureDetector(
+                                          onTap: (){UrlLauncher.launch("tel://${data[index].number}");},
+                                          child: Container(
+                                              height: 30,
+                                              child: Row(children: [
+                                                Flexible(child: Text(data[index].name, overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white),)),
+                                                Text(data[index].number, style: TextStyle(color: Colors.white))
+                                              ],
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,)),
+                                        );
+                                        },
+                                        separatorBuilder: (context, index){
+                                        return Divider(color: Theme.of(context).textTheme.bodyText1.color,);
+                                        },
+                                    ),
+                                  );
+                                })
+                              ],),
+                            )
+                        )
+                      );
+                  }
+                );
+              } else if(index == 2){
+                showMaterialModalBottomSheet(context: context, backgroundColor: Colors.transparent, builder: (context, scrollController) => LibrarySheets(_readingRoomSheets(context)));
+              } else{
+                mainButtonController.updateMainButtonIndex({"index": index, "expanded": false});
+                chatController.setChatList(ChatMessage(chat: Text(msgText, style: Theme.of(context).textTheme.bodyText2)));
+                headerImageController.setHeaderImage(logoPath);
+              }
+            },
           ),
         );
       }
@@ -196,22 +204,19 @@ class MainMenuButtons extends StatelessWidget{
 
   Widget _settingButtons(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
-      child: SizedBox(
-        width: 70,
-        child: RaisedButton(
-          elevation: 6,
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-          child: Text(
-            "설정",
-            style: TextStyle(fontSize: 12, color: Colors.black),
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
-          color: Colors.white,
-          onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => SettingScreen()));
-          },
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      child: RaisedButton(
+        elevation: 6,
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+        child: Text(
+          Translations.of(context).trans("setting_btn"),
+          style: TextStyle(fontSize: 12, color: Colors.black),
         ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0),),
+        color: Colors.white,
+        onPressed: (){
+          Navigator.push(context, MaterialPageRoute(builder: (_) => SettingScreen()));
+        },
       ),
     );
   }

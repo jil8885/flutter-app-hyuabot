@@ -1,3 +1,4 @@
+import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/config/Networking.dart' as conf;
 import 'package:chatbot/model/FoodMenu.dart';
 import 'package:chatbot/ui/ChatMessage.dart';
@@ -12,11 +13,11 @@ import 'dart:convert';
 class ChatListChanged{
   final _chatListSubject = BehaviorSubject<List<ChatMessage>>();
   ChatListChanged(BuildContext context){
-    _chatListSubject.add([ChatMessage(chat: Text("반갑하냥~내가 너를 도와줄게!", style: Theme.of(context).textTheme.bodyText2),)]);
+    _chatListSubject.add([ChatMessage(chat: Text(Translations.of(context).trans("hello_msg"), style: Theme.of(context).textTheme.bodyText2),)]);
   }
 
   void resetChatList(BuildContext context){
-    _chatListSubject.add([ChatMessage(chat: Text("반갑하냥~내가 너를 도와줄게!", style: Theme.of(context).textTheme.bodyText2),)]);
+    _chatListSubject.add([ChatMessage(chat: Text(Translations.of(context).trans("hello_msg"), style: Theme.of(context).textTheme.bodyText2),)]);
   }
 
   void setChatList(ChatMessage chatList){

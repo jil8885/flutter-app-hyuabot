@@ -1,4 +1,5 @@
 import 'package:bubble/bubble.dart';
+import 'package:chatbot/config/Localization.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatelessWidget {
@@ -24,7 +25,7 @@ class ChatMessage extends StatelessWidget {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 5.0),
-                child: Text("하냥이", style: themeData.textTheme.bodyText1),
+                child: Text(Translations.of(context).trans("hanyang_name"), style: themeData.textTheme.bodyText1),
               ),
               Bubble(
                 nip: BubbleNip.leftTop,

@@ -5,7 +5,7 @@ String getAPIServer(){
   if(kReleaseMode){
     apiServer = "https://personal-sideprojects-beta.du.r.appspot.com";
   } else{
-    apiServer = "http://192.168.123.109:8080";
+    apiServer = "http://192.168.0.134:8080";
   }
   return apiServer;
 }

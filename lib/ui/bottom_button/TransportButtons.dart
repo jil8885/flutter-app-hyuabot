@@ -1,6 +1,7 @@
 import 'dart:async';
 
 
+import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/config/Style.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/Common.dart';
@@ -40,9 +41,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, "셔틀", 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
-              _makeFuncButton(context, "전철", 1, "assets/images/shared/sheet-header-metro.png", 0.65, _metroSheets(context)),
-              _makeFuncButton(context, "노선버스", 2, "assets/images/shared/sheet-header-bus.png", 0.65, _busSheets(context)),
+              _makeFuncButton(context, Translations.of(context).trans("shuttle_btn"), 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
+              _makeFuncButton(context, Translations.of(context).trans("metro_btn"), 1, "assets/images/shared/sheet-header-metro.png", 0.65, _metroSheets(context)),
+              _makeFuncButton(context, Translations.of(context).trans("bus_btn"), 2, "assets/images/shared/sheet-header-bus.png", 0.65, _busSheets(context)),
             ],
           ),
         ),
@@ -120,18 +121,18 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              CustomPaint(painter: ShuttleStops(), size: Size(MediaQuery.of(context).size.width, 30)),
+              CustomPaint(painter: ShuttleStops(context), size: Size(MediaQuery.of(context).size.width, 30)),
               CanvasTouchDetector(
                 builder:(context) => CustomPaint(
-                  painter: ShuttleLanes("한대앞행", context, _result["DH"]), size: Size(MediaQuery.of(context).size.width, 75),),
+                  painter: ShuttleLanes(Translations.of(context).trans('bound_station'), context, _result["DH"]), size: Size(MediaQuery.of(context).size.width, 75),),
               ),
               CanvasTouchDetector(
                 builder: (context) => CustomPaint(
-                  painter: ShuttleLanes("예술인행", context, _result["DY"]), size: Size(MediaQuery.of(context).size.width, 75),),
+                  painter: ShuttleLanes(Translations.of(context).trans('bound_terminal'), context, _result["DY"]), size: Size(MediaQuery.of(context).size.width, 75),),
               ),
               CanvasTouchDetector(
                 builder: (context) => CustomPaint(
-                  painter: ShuttleLanes("순환버스", context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
+                  painter: ShuttleLanes(Translations.of(context).trans('bound_cycle'), context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
               ),
               // Container(
               //   height: 20,

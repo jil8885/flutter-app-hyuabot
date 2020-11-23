@@ -1,7 +1,7 @@
+import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/config/Common.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class FoodMenuButtons extends StatelessWidget{
   @override
@@ -15,11 +15,11 @@ class FoodMenuButtons extends StatelessWidget{
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _makeFuncButton(context, "학생식당", 0, "student"),
-                _makeFuncButton(context, "교직원식당", 1, "teacher"),
-                _makeFuncButton(context, "창의인재원식당", 2, "dormitory"),
-                _makeFuncButton(context, "창업보육센터", 3, "changbo"),
-                _makeFuncButton(context, "푸드코트", 4, "foodcoart"),
+                _makeFuncButton(context, Translations.of(context).trans("student_cafeteria_btn"), 0, "student"),
+                _makeFuncButton(context, Translations.of(context).trans("teacher_cafeteria_btn"), 1, "teacher"),
+                _makeFuncButton(context, Translations.of(context).trans("dorm_cafeteria_btn"), 2, "dormitory"),
+                _makeFuncButton(context, Translations.of(context).trans("changbo_cafeteria_btn"), 3, "changbo"),
+                _makeFuncButton(context, Translations.of(context).trans("food_court"), 4, "foodcoart"),
               ],
             ),
           ),
