@@ -67,19 +67,16 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
               timer.cancel();
               switch(index){
                 case 0:
-                  allShuttleController.fetch();
                   shuttleSheetOpened = true;
                   metroSheetOpened = false;
                   busSheetOpened = false;
                   break;
                 case 1:
-                  metroController.fetch();
                   shuttleSheetOpened = false;
                   metroSheetOpened = true;
                   busSheetOpened = false;
                   break;
                 case 2:
-                  busController.fetch();
                   shuttleSheetOpened = false;
                   metroSheetOpened = false;
                   busSheetOpened = true;
