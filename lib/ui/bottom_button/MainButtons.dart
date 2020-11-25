@@ -11,16 +11,27 @@ import 'package:chatbot/ui/bottom_sheet/LibrarySheets.dart';
 import 'package:chatbot/ui/bottom_sheet/TelephoneSheets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import '../ChatMessage.dart';
 
-class MainMenuButtons extends StatelessWidget{
+class MainMenuButtons extends StatefulWidget {
   HomeScreenStates homePage;
   double padding;
+
   MainMenuButtons(this.homePage, this.padding);
+  @override
+  State<StatefulWidget> createState() => MainButtonState(homePage, padding);
+}
+
+class MainButtonState extends State<MainMenuButtons>{
+  HomeScreenStates homePage;
+  double padding;
+
+  MainButtonState(this.homePage, this.padding);
   @override
   Widget build(BuildContext context) {
       Widget mainButton = Padding(padding: EdgeInsets.symmetric(horizontal: padding),
@@ -229,6 +240,7 @@ class MainMenuButtons extends StatelessWidget{
       }
     });
 
+    Map<String, String> rooms = {"제1열람실": "room_1", "제2열람실": "room_2", "제3열람실": "room_3", "제4열람실": "room_4"};
     return StreamBuilder<Map<String, ReadingRoomInfo>>(
         stream: readingRoomController.allReadingRoom,
         builder: (context, snapshot) {
@@ -252,8 +264,13 @@ class MainMenuButtons extends StatelessWidget{
                 },
                 itemCount: names.length,
                 itemBuilder: (_, index) {
+                  var isSubscribed = prefs.getBool("${rooms[names[index]]}_${prefs.getString('localeCode')}");
+                  if(isSubscribed == null){
+                    isSubscribed = false;
+                  }
                   return Container(
                     height: 75,
+                    padding: EdgeInsets.only(top: 20, left: 10, right: 20),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -269,7 +286,7 @@ class MainMenuButtons extends StatelessWidget{
                           width: MediaQuery
                               .of(context)
                               .size
-                              .width - 120,
+                              .width - 200,
                           animation: true,
                           lineHeight: 20.0,
                           animationDuration: 1500,
@@ -277,10 +294,25 @@ class MainMenuButtons extends StatelessWidget{
                               snapshot.data[names[index]].active,
                           center: Text("${snapshot.data[names[index]]
                               .available}/${snapshot.data[names[index]]
-                              .active}"),
+                              .active}", style: TextStyle(color: Colors.black),),
                           linearStrokeCap: LinearStrokeCap.roundAll,
+                          backgroundColor: Colors.white,
                           progressColor: Colors.green,
                         ),),
+                        IconButton(icon: isSubscribed ? Icon(Icons.alarm, color: Colors.white):Icon(Icons.alarm,), onPressed: (){
+                          if(isSubscribed){
+                            prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", !isSubscribed);
+                            fcm.unsubscribeFromTopic("${rooms[names[index]]}_${prefs.getString('localeCode')}");
+                          } else{
+                            if(snapshot.data[names[index]].available < 0){
+                              Fluttertoast.showToast(msg: "열람실 좌석이 없을 때만 이용할 수 있다냥!");
+                            } else{
+                              prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", !isSubscribed);
+                              fcm.subscribeToTopic("${rooms[names[index]]}_${prefs.getString('localeCode')}");
+                            }
+                          }
+                          readingRoomController.fetch();
+                        })
                         // Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
                       ],
                     ),
