@@ -97,62 +97,30 @@ main() async {
           Fluttertoast.showToast(msg: "$msg에서 자리를 발견했다냥! 알림을 종료할게요!");
         }
       },
-      onResume: (Map<String, dynamic> message) async {
+      onBackgroundMessage: (Map<String, dynamic> message) async {
         String name = message['notification']['title'];
-        if(name.contains("1")){
+        if (name.contains("1")) {
           fcm.unsubscribeFromTopic("room_1_ko_KR");
           fcm.unsubscribeFromTopic("room_1_en_US");
           fcm.unsubscribeFromTopic("room_1_zh");
           prefs.setBool("room_1_ko_KR", false);
           prefs.setBool("room_1_en_US", false);
           prefs.setBool("room_1_zh", false);
-        } else if(name.contains("2")){
+        } else if (name.contains("2")) {
           fcm.unsubscribeFromTopic("room_2_ko_KR");
           fcm.unsubscribeFromTopic("room_2_en_US");
           fcm.unsubscribeFromTopic("room_2_zh");
           prefs.setBool("room_2_ko_KR", false);
           prefs.setBool("room_2_en_US", false);
           prefs.setBool("room_2_zh", false);
-        } else if(name.contains("3")){
+        } else if (name.contains("3")) {
           fcm.unsubscribeFromTopic("room_3_ko_KR");
           fcm.unsubscribeFromTopic("room_3_en_US");
           fcm.unsubscribeFromTopic("room_3_zh");
           prefs.setBool("room_3_ko_KR", false);
           prefs.setBool("room_3_en_US", false);
           prefs.setBool("room_3_zh", false);
-        } else if(name.contains("4")){
-          fcm.unsubscribeFromTopic("room_4_ko_KR");
-          fcm.unsubscribeFromTopic("room_4_en_US");
-          fcm.unsubscribeFromTopic("room_4_zh");
-          prefs.setBool("room_4_ko_KR", false);
-          prefs.setBool("room_4_en_US", false);
-          prefs.setBool("room_4_zh", false);
-        }
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        String name = message['notification']['title'];
-        if(name.contains("1")){
-          fcm.unsubscribeFromTopic("room_1_ko_KR");
-          fcm.unsubscribeFromTopic("room_1_en_US");
-          fcm.unsubscribeFromTopic("room_1_zh");
-          prefs.setBool("room_1_ko_KR", false);
-          prefs.setBool("room_1_en_US", false);
-          prefs.setBool("room_1_zh", false);
-        } else if(name.contains("2")){
-          fcm.unsubscribeFromTopic("room_2_ko_KR");
-          fcm.unsubscribeFromTopic("room_2_en_US");
-          fcm.unsubscribeFromTopic("room_2_zh");
-          prefs.setBool("room_2_ko_KR", false);
-          prefs.setBool("room_2_en_US", false);
-          prefs.setBool("room_2_zh", false);
-        } else if(name.contains("3")){
-          fcm.unsubscribeFromTopic("room_3_ko_KR");
-          fcm.unsubscribeFromTopic("room_3_en_US");
-          fcm.unsubscribeFromTopic("room_3_zh");
-          prefs.setBool("room_3_ko_KR", false);
-          prefs.setBool("room_3_en_US", false);
-          prefs.setBool("room_3_zh", false);
-        } else if(name.contains("4")){
+        } else if (name.contains("4")) {
           fcm.unsubscribeFromTopic("room_4_ko_KR");
           fcm.unsubscribeFromTopic("room_4_en_US");
           fcm.unsubscribeFromTopic("room_4_zh");
