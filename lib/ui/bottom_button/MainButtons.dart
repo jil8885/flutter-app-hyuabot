@@ -268,6 +268,7 @@ class MainButtonState extends State<MainMenuButtons>{
                   if(isSubscribed == null){
                     isSubscribed = false;
                   }
+                  print("${rooms[names[index]]}_${prefs.getString('localeCode')}=$isSubscribed");
                   return Container(
                     height: 75,
                     padding: EdgeInsets.only(top: 20, left: 10, right: 20),
@@ -299,15 +300,15 @@ class MainButtonState extends State<MainMenuButtons>{
                           backgroundColor: Colors.white,
                           progressColor: Colors.green,
                         ),),
-                        IconButton(icon: isSubscribed ? Icon(Icons.alarm, color: Colors.white):Icon(Icons.alarm,), onPressed: (){
+                        IconButton(icon: isSubscribed ? Icon(Icons.alarm, color: Colors.white):Icon(Icons.alarm, color: Colors.grey), onPressed: (){
                           if(isSubscribed){
                             prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", false);
                             fcm.unsubscribeFromTopic("${rooms[names[index]]}_${prefs.getString('localeCode')}");
                           } else{
-                            if(snapshot.data[names[index]].available > 0){
+                            if(snapshot.data[names[index]].available < 0){
                               Fluttertoast.showToast(msg: "열람실 좌석이 없을 때만 이용할 수 있다냥!");
                             } else{
-                              prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", false);
+                              prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", true);
                               fcm.subscribeToTopic("${rooms[names[index]]}_${prefs.getString('localeCode')}");
                               Fluttertoast.showToast(msg: "${names[index]}의 좌석 알람을 신청했다냥!");
                             }
