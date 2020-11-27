@@ -14,6 +14,7 @@ class SettingScreen extends StatelessWidget{
       appBar: MainAppBar(),
       body: Container(
         color: Theme.of(context).backgroundColor,
+        padding: EdgeInsets.only(top: 70),
         child: SettingsList(
           backgroundColor: Theme.of(context).backgroundColor,
 
