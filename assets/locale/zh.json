@@ -31,5 +31,6 @@
   "bus_stop_terminal": "客运站",
   "bound_station": "开往电铁站方向",
   "bound_terminal": "开往客运站方向",
-  "bound_cycle": "循环大巴"
+  "bound_cycle": "循环大巴",
+  "plz_enable_ad": "광고 차단을 해제해 달라냥!"
 }

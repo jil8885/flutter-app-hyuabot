@@ -31,5 +31,6 @@
   "bus_stop_terminal": "Metro",
   "bound_station": "For station",
   "bound_terminal": "For terminal",
-  "bound_cycle": "Cycle"
+  "bound_cycle": "Cycle",
+  "plz_enable_ad": "Please disable adblock!!"
 }

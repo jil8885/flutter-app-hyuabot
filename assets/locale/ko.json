@@ -31,5 +31,6 @@
   "bus_stop_terminal": "예술인",
   "bound_station": "한대앞행",
   "bound_terminal": "예술인행",
-  "bound_cycle": "순환버스"
+  "bound_cycle": "순환버스",
+  "plz_enable_ad": "광고 차단을 해제해 달라냥!"
 }
