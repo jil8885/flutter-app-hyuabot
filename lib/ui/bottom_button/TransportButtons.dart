@@ -33,6 +33,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
 
   @override
   Widget build(BuildContext context) {
+    final _shuttleSheet = TransportSheets("assets/images/shared/sheet-header-shuttle.png", _shuttleSheets(context), 0.35);
+    final _metroSheet = TransportSheets("assets/images/shared/sheet-header-metro.png", _metroSheets(context), 0.65);
+    final _busSheet = TransportSheets("assets/images/shared/sheet-header-bus.png", _busSheets(context), 0.55);
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -41,9 +44,9 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _makeFuncButton(context, Translations.of(context).trans("shuttle_btn"), 0, "assets/images/shared/sheet-header-shuttle.png", 0.35, _shuttleSheets(context)),
-              _makeFuncButton(context, Translations.of(context).trans("metro_btn"), 1, "assets/images/shared/sheet-header-metro.png", 0.65, _metroSheets(context)),
-              _makeFuncButton(context, Translations.of(context).trans("bus_btn"), 2, "assets/images/shared/sheet-header-bus.png", 0.65, _busSheets(context)),
+              _makeFuncButton(context, Translations.of(context).trans("shuttle_btn"), 0, _shuttleSheet, allShuttleController, 60),
+              _makeFuncButton(context, Translations.of(context).trans("metro_btn"), 1, _metroSheet, metroController, 60),
+              _makeFuncButton(context, Translations.of(context).trans("bus_btn"), 2, _busSheet, busController, 60),
             ],
           ),
         ),
@@ -51,8 +54,11 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
     );
   }
 
-  Widget _makeFuncButton(BuildContext context, String buttonText, int index, String assetPath, double height ,[Widget contents]){
+  Widget _makeFuncButton(BuildContext context, String buttonText, int index, Widget contents, controller, int second){
     contents ??= Container();
+    timer = Timer.periodic(Duration(seconds: second), (timer) {
+      controller.fetch();
+    });
     return StreamBuilder<int>(
       stream: subButtonController.subButtonIndex,
       builder: (context, snapshot) {
@@ -65,28 +71,12 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
             elevation: 6,
             onPressed: (){
               timer.cancel();
-              switch(index){
-                case 0:
-                  shuttleSheetOpened = true;
-                  metroSheetOpened = false;
-                  busSheetOpened = false;
-                  break;
-                case 1:
-                  shuttleSheetOpened = false;
-                  metroSheetOpened = true;
-                  busSheetOpened = false;
-                  break;
-                case 2:
-                  shuttleSheetOpened = false;
-                  metroSheetOpened = false;
-                  busSheetOpened = true;
-                  break;
-              }
               subButtonController.updateSubButtonIndex(index);
               showMaterialModalBottomSheet(
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context, scrollController) => TransportSheets(assetPath, contents, height));
+                  duration: Duration(milliseconds: 500),
+                  builder: (context, scrollController) => contents);
             },
           ),
         );
@@ -95,12 +85,6 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
   }
 
   Widget _shuttleSheets(BuildContext context){
-    timer = Timer.periodic(Duration(seconds: 60), (timer) {
-      if(shuttleSheetOpened) {
-        allShuttleController.fetch();
-      }
-    });
-
     return StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
       stream: allShuttleController.allShuttleInfo,
       builder: (context, snapshot) {
@@ -131,12 +115,6 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
                 builder: (context) => CustomPaint(
                   painter: ShuttleLanes(Translations.of(context).trans('bound_cycle'), context, _result["C"]), size: Size(MediaQuery.of(context).size.width, 75),),
               ),
-              // Container(
-              //   height: 20,
-              //   padding: EdgeInsets.symmetric(horizontal: 35),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.end,
-              //     children: [IconButton(icon: Icon(Icons.refresh), onPressed: (){allShuttleController.fetch();})
             ],
           );
         }
@@ -145,12 +123,6 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
   }
 
   Widget _metroSheets(BuildContext context){
-    timer = Timer.periodic(Duration(seconds: 60), (timer) {
-      if(metroSheetOpened){
-        metroController.fetch();
-      }
-    });
-
     return StreamBuilder<Map<String, dynamic>>(
         stream: metroController.allMetroInfo,
         builder: (context, snapshot) {
@@ -203,11 +175,6 @@ class TransportMenuStates extends State<TransportMenuButtons> with TickerProvide
 
 
   Widget _busSheets(BuildContext context){
-    timer = Timer.periodic(Duration(seconds: 60), (timer) {
-      if(busSheetOpened){
-        busController.fetch();
-      }
-    });
 
     return StreamBuilder<Map<String, dynamic>>(
         stream: busController.allBusInfo,

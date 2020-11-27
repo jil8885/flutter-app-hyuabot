@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:chatbot/config/Networking.dart' as conf;
-import 'package:chatbot/main.dart';
 import 'package:chatbot/model/ReadingRoom.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
@@ -25,6 +24,10 @@ class ReadingRoomController{
 
       _allReadingRoomSubject.add(data);
     }
+  }
+
+  void refresh() async{
+    _allReadingRoomSubject.add(_allReadingRoomSubject.value);
   }
 
   Stream<Map<String, dynamic>> get allReadingRoom => _allReadingRoomSubject.stream;

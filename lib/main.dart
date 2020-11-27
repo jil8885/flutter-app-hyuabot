@@ -40,14 +40,11 @@ final fcm = FirebaseMessaging();
 
 
 ChatListChanged chatController;
-bool shuttleSheetOpened = false;
-bool metroSheetOpened = false;
-bool busSheetOpened = false;
-bool readingRoomOpened = false;
 String localeCode;
 SharedPreferences prefs;
 Timer timer;
 Database database;
+
 
 Future<dynamic> _backgroundMsgHandler (Map<String, dynamic> message) async {
   String name = message['notification']['title'];
@@ -85,7 +82,6 @@ Future<dynamic> _backgroundMsgHandler (Map<String, dynamic> message) async {
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   copyDatabase();
-
   if(!kReleaseMode) {
     print(await fcm.getToken());
   }
@@ -140,7 +136,6 @@ void copyDatabase() async{
   var databasesPath = await getDatabasesPath();
   var path = join(databasesPath, "telephone.db");
   prefs = await SharedPreferences.getInstance();
-  localeCode = prefs.getString("localeCode");
 // delete existing if any
   await deleteDatabase(path);
 
@@ -158,6 +153,10 @@ void copyDatabase() async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    localeCode = prefs.getString("localeCode");
+    if(localeCode == null){
+      prefs.setString("localeCode", "ko_KR");
+    }
     return AdaptiveTheme(
       light: lightTheme,
       dark: darkTheme,

@@ -28,7 +28,6 @@ class ChatListChanged{
 
   void fetchMenu(String restaurant, BuildContext context) async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    ThemeData themeData = Theme.of(context);
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "restaurant": restaurant}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
 
@@ -77,7 +76,7 @@ class ChatListChanged{
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Text(menu.menu, style: Theme.of(context).textTheme.bodyText2,),
-              Text('${menu.price}원', style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.left,)
+              Text('${menu.price}원', style: TextStyle(color: Colors.white), textAlign: TextAlign.left,)
           ],)
         );
       }

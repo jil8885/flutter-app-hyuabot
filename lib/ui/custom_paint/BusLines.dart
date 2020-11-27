@@ -1,4 +1,3 @@
-import 'package:chatbot/config/Common.dart';
 import 'package:chatbot/model/Bus.dart';
 import 'package:flutter/material.dart';
 
@@ -61,8 +60,12 @@ class BusLanes extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(covariant BusLanes paint) {
+    if(paint.realtimeList != this.realtimeList || paint.timetableList != this.timetableList){
+      return true;
+    } else {
+      return false;
+    }
   }
 
   void drawBus(Canvas canvas, double dx, double dy, Paint paint){

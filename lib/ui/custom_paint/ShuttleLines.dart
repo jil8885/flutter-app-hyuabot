@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:chatbot/config/Common.dart';
 import 'package:chatbot/config/Localization.dart';
 import 'package:chatbot/main.dart';
@@ -303,7 +301,7 @@ class ShuttleStops extends CustomPainter{
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
-    final rect = Rect.fromLTWH(65, 10, size.width - 85, size.height - 10);
+    final rect = Rect.fromLTWH(65, 10, size.width - 100, size.height - 10);
     canvas.drawRRect(RRect.fromRectAndRadius(rect, Radius.circular(40)), paint);
     drawText(canvas, size, Translations.of(context).trans("bus_stop_dorm"), 90, size.height * 0.625);
     drawText(canvas, size, Translations.of(context).trans("bus_stop_school"), 90 + (size.width - 150) * .25, size.height * 0.625);

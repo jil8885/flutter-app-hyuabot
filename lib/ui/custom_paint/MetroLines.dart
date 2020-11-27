@@ -110,8 +110,12 @@ class MetroLanesRealtime extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(covariant MetroLanesRealtime paint) {
+    if(paint.data != this.data){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   void drawTrain(Canvas canvas, double dx, double dy, Paint paint){
@@ -144,10 +148,6 @@ class MetroLanesTimeTable extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 4.0;
 
-    final metroStation = Paint()
-      ..color = lineColor
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 4.0;
     // 주 사각형
     canvas.drawRRect(RRect.fromRectAndRadius(
         Rect.fromLTWH(20, 10, size.width - 40, size.height - 20),
@@ -306,8 +306,12 @@ class MetroLanesTimeTable extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(covariant MetroLanesTimeTable paint) {
+    if(paint.data != this.data){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   void drawTrain(Canvas canvas, double dx, double dy, Paint paint){

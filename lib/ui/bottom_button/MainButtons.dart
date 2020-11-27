@@ -19,8 +19,8 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import '../ChatMessage.dart';
 
 class MainMenuButtons extends StatefulWidget {
-  HomeScreenStates homePage;
-  double padding;
+  final HomeScreenStates homePage;
+  final double padding;
 
   MainMenuButtons(this.homePage, this.padding);
   @override
@@ -101,12 +101,6 @@ class MainButtonState extends State<MainMenuButtons>{
   }
 
   Widget _makeFuncButton(BuildContext context, String msgText, String logoPath, String icon, String iconPressed, String buttonText, int index){
-    double _buttonWidth = 0;
-    if(buttonText.length == 2){
-      _buttonWidth = 70;
-    } else{
-      _buttonWidth = 80;
-    }
     return StreamBuilder<Map<String, dynamic>>(
       stream: mainButtonController.mainButtonIndex,
       builder: (context, snapshot) {
@@ -149,6 +143,7 @@ class MainButtonState extends State<MainMenuButtons>{
                                         contentPadding: EdgeInsets.all(8),
                                         suffixIcon: Icon(Icons.search, color: Colors.white,),
                                         labelText: "검색어를 입력해주세요",
+                                        labelStyle: TextStyle(color: Colors.white),
                                         hintText: "검색어",
                                         hintStyle: TextStyle(color: Colors.grey[300]),
                                         enabledBorder: UnderlineInputBorder(
@@ -235,9 +230,7 @@ class MainButtonState extends State<MainMenuButtons>{
 
   Widget _readingRoomSheets(BuildContext context) {
     timer = Timer.periodic(Duration(seconds: 120), (timer) {
-      if (readingRoomOpened) {
-        readingRoomController.fetch();
-      }
+      readingRoomController.fetch();
     });
 
     Map<String, String> rooms = {"제1열람실": "room_1", "제2열람실": "room_2", "제3열람실": "room_3", "제4열람실": "room_4"};
@@ -295,17 +288,17 @@ class MainButtonState extends State<MainMenuButtons>{
                               snapshot.data[names[index]].active,
                           center: Text("${snapshot.data[names[index]]
                               .available}/${snapshot.data[names[index]]
-                              .active}", style: TextStyle(color: Colors.black),),
+                              .active}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
                           linearStrokeCap: LinearStrokeCap.roundAll,
                           backgroundColor: Colors.white,
-                          progressColor: Colors.green,
+                          progressColor: Colors.lightGreen,
                         ),),
                         IconButton(icon: isSubscribed ? Icon(Icons.alarm, color: Colors.white):Icon(Icons.alarm, color: Colors.grey), onPressed: (){
                           if(isSubscribed){
                             prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", false);
                             fcm.unsubscribeFromTopic("${rooms[names[index]]}_${prefs.getString('localeCode')}");
                           } else{
-                            if(snapshot.data[names[index]].available < 0){
+                            if(snapshot.data[names[index]].available > 0){
                               Fluttertoast.showToast(msg: "열람실 좌석이 없을 때만 이용할 수 있다냥!");
                             } else{
                               prefs.setBool("${rooms[names[index]]}_${prefs.getString('localeCode')}", true);
@@ -313,7 +306,7 @@ class MainButtonState extends State<MainMenuButtons>{
                               Fluttertoast.showToast(msg: "${names[index]}의 좌석 알람을 신청했다냥!");
                             }
                           }
-                          readingRoomController.fetch();
+                          readingRoomController.refresh();
                         })
                         // Text("${snapshot.data[names[index]].available}/${snapshot.data[names[index]].active}", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),),
                       ],
