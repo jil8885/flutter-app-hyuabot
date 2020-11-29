@@ -38,3 +38,8 @@ flutter:
   assets:
     - assets/launcher/
     - assets/images/
+  fonts:
+    - family: Godo
+      fonts:
+        - asset: fonts/GodoB.otf
+        - asset: fonts/GodoM.otf

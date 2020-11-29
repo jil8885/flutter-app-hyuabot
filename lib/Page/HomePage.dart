@@ -24,15 +24,15 @@ class _HomePageState extends State<HomePage>{
     });
   }
 
-  Widget _menuButton(double width, double height, String assetName, String menuName, Widget newPage){
+  Widget _menuButton(double width, double height, String assetName, String menuName, Widget newPage, Color color){
     return Column(
       children: [
         GestureDetector(
           onTap: (){Get.to(newPage);},
-          child: Image.asset(assetName, width: width, height: height,),
+          child: Container(child: Image.asset(assetName, width: width, height: height,), decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),),
         ),
         SizedBox(height: 5,),
-        Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),))
+        Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13, fontFamily: 'Godo'),))
       ],
     );
   }
@@ -77,12 +77,12 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", Container(), _primaryColor.withOpacity(0.3)),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
           ],
@@ -92,10 +92,10 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container()),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), _primaryColor.withOpacity(0.3)),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), _primaryColor.withOpacity(0.3)),
           ],
         ),
       ),
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage>{
             List<dynamic> terminal = snapshot.data["YesulIn"].shuttleListTerminal..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
             List<dynamic> schoolResidence = snapshot.data["Shuttlecock_I"].shuttleListStation..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
             List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
-            List<String> stopList = ["기숙사(한대앞)", "기숙사(예술인)", "셔틀콕(한대앞)", "셔틀콕(예술인)", "한대앞", "예술인", "기숙사 건너편"];
+            List<String> stopList = ["기숙사 → 한대앞", "기숙사 → 예술인", "셔틀콕 → 한대앞", "셔틀콕 → 예술인", "한대앞", "예술인", "기숙사 건너편"];
             List<ShuttleStopDepartureInfo> data = [snapshot.data["Residence"], snapshot.data["Residence"], snapshot.data["Shuttlecock_O"], snapshot.data["Shuttlecock_O"], snapshot.data["Subway"], snapshot.data["YesulIn"], snapshot.data["Shuttlecock_I"]];
             return ListView.builder(
               padding: EdgeInsets.all(5),
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage>{
       floatingActionButton: FloatingActionButton.extended(
         elevation: 3,
         onPressed: () => Get.to(SettingPage()),
-        label: Text("설정", textAlign: TextAlign.center, style: TextStyle(color:Colors.white),),
+        label: Text("설정", textAlign: TextAlign.center, style: TextStyle(color:Colors.white, fontFamily: 'Godo'),),
         icon: Icon(Icons.settings),
         backgroundColor: _primaryColor,
       ),
@@ -155,16 +155,10 @@ class _HomePageState extends State<HomePage>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text('메뉴',
-                      style: TextStyle(
-                          fontSize: 16)),
+                  Text('메뉴', style: TextStyle(fontSize: 16, fontFamily: 'Godo')),
                   GestureDetector(
                       onTap: _expand,
-                      child: Text(
-                        _isExpanded ? "줄이기" : "전체 보기",
-                        style: TextStyle(
-                          color: _primaryColor,
-                        ),
+                      child: Text(_isExpanded ? "줄이기" : "전체 보기", style: TextStyle(color: _primaryColor, fontFamily: 'Godo'),
                       )),
                 ],
               ),
@@ -176,38 +170,15 @@ class _HomePageState extends State<HomePage>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("셔틀", style: TextStyle(fontSize: 16)),
+                  Text("셔틀", style: TextStyle(fontSize: 16, fontFamily: 'Godo')),
                   GestureDetector(
                       onTap: (){Get.to(Container());},
-                      child: Text(
-                        "전체 정류장 정보 보기",
-                        style: TextStyle(
-                          color: _primaryColor,
-                        ),
+                      child: Text("전체 정류장 정보 보기", style: TextStyle(color: _primaryColor, fontFamily: 'Godo'),
                       )),
                 ],
               ),
             ),
             _shuttleCardList,
-            Divider(),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("오늘의 학식",
-                      style: TextStyle(
-                          fontSize: 16)),
-                  GestureDetector(
-                      onTap: () {
-                        //Navigator.of(context).pushNamed(RECOMMEND_UI);
-                        print('Showing all');
-                      },
-                      child: Text('전체 학식 보기', style: TextStyle(color: Theme.of(context).accentColor,),))
-                ],
-              ),
-            ),
-            // recommendations(),
           ],
         ),
       ),

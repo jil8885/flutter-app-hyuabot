@@ -50,7 +50,6 @@ class CustomShuttleCard extends StatelessWidget {
     }
 
     return Card(
-      elevation: 3,
       shape:
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: Colors.white,
@@ -65,22 +64,22 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height/40),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height/40, fontFamily: 'Godo'),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Flexible(
                   child: Container(width: _width / 2.5,
-                      child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30,), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                      child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
                 ),
-                SizedBox(height: 20,),
-                Container(width: _width / 2.25,
-                    child: Text(thisBusString, style: TextStyle(fontSize: _height/40,), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
+                SizedBox(height: 25,),
+                Container(width: _width / 2.5,
+                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
                 ),
                 SizedBox(height: 5),
-                Container(width: _width / 2.25,
-                    child: Text(nextBusString, style: TextStyle(fontSize: _height/40,), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                Container(width: _width / 2.5,
+                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
               ],
             ),
             SizedBox(
