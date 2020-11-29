@@ -64,22 +64,22 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height/40, fontFamily: 'Godo'),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Flexible(
                   child: Container(width: _width / 2.5,
-                      child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                      child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
                 ),
                 SizedBox(height: 25,),
                 Container(width: _width / 2.5,
-                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
+                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
                 ),
                 SizedBox(height: 5),
                 Container(width: _width / 2.5,
-                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo'), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
               ],
             ),
             SizedBox(

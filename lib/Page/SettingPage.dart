@@ -1,5 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -9,7 +10,7 @@ class SettingPage extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor,
         padding: EdgeInsets.all(10.0),
         child: SettingsList(
           backgroundColor: Colors.transparent,
@@ -29,17 +30,17 @@ class SettingPage extends StatelessWidget{
                             SimpleDialogOption(child: Text("시스템(자동)", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                               AdaptiveTheme.of(context).setSystem();
                               Navigator.pop(context);
-                              // adController.reloadAd(forceRefresh: true);
+                              adController.reloadAd(forceRefresh: true);
                             },),
                             SimpleDialogOption(child: Text("주간", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                               AdaptiveTheme.of(context).setLight();
                               Navigator.pop(context);
-                              // adController.reloadAd(forceRefresh: true);
+                              adController.reloadAd(forceRefresh: true);
                             },),
                             SimpleDialogOption(child: Text("야간", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                               AdaptiveTheme.of(context).setDark();
                               Navigator.pop(context);
-                              // adController.reloadAd(forceRefresh: true);
+                              adController.reloadAd(forceRefresh: true);
                             },),
                           ],
                         ))

@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
         initial: savedThemeMode ?? AdaptiveThemeMode.system,
         builder: (theme, builder) => GetMaterialApp(
           debugShowCheckedModeBanner: false,
+          theme: theme,
           home: HomePage(),
       )
     );
