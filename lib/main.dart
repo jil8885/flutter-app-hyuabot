@@ -2,10 +2,15 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Theme.dart';
 import 'package:flutter_app_hyuabot_v2/Page/HomePage.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 
-void main() {
-  runApp(MyApp());
+import 'Config/GlobalVars.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  savedThemeMode = await AdaptiveTheme.getThemeMode();
+  runApp(Phoenix(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,9 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return AdaptiveTheme(
         light: lightTheme,
-        initial: null,
+        dark: darkTheme,
+        initial: savedThemeMode ?? AdaptiveThemeMode.system,
         builder: (theme, builder) => GetMaterialApp(
-          title: 'Flutter Demo',
           debugShowCheckedModeBanner: false,
           home: HomePage(),
       )

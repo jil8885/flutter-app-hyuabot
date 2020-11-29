@@ -1,4 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
+import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_app_hyuabot_v2/Page/SettingPage.dart';
@@ -10,6 +16,7 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage>{
   bool _isExpanded = false;
+  Timer _shuttleTimer;
 
   void _expand() {
     setState(() {
@@ -22,12 +29,31 @@ class _HomePageState extends State<HomePage>{
       children: [
         GestureDetector(
           onTap: (){Get.to(newPage);},
-          child: Image.asset(null, width: width, height: height,),
+          child: Image.asset(assetName, width: width, height: height,),
         ),
         SizedBox(height: 5,),
-        Flexible(child: Text(menuName, style: TextStyle(height: 13),))
+        Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),))
       ],
     );
+  }
+
+  Widget _homeShuttleItems(BuildContext context, String title, List<String> departureInfo, ShuttleStopDepartureInfo data) {
+    return GestureDetector(
+      onTap: () {
+        // 셔틀 정보로 이동
+      },
+      child: CustomShuttleCard(
+        title: title,
+        timetable: departureInfo,
+        data: data
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {shuttleController.fetch();});
+    super.initState();
   }
 
   @override
@@ -35,6 +61,11 @@ class _HomePageState extends State<HomePage>{
     // 화면 너비, 크기 조정
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
+    Color _primaryColor = Theme.of(context).accentColor;
+
+    // 메뉴 아이콘 너비, 높이
+    double _itemWidth = _width / 6;
+    double _itemHeight = _height / 12;
 
     Widget _menuWidget = Container(
       margin: EdgeInsets.symmetric(horizontal: 10),
@@ -46,12 +77,12 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_width / 12, _width / 12, null, "셔틀버스", Container()),
-            _menuButton(_width / 12, _width / 12, null, "노선버스", Container()),
-            _menuButton(_width / 12, _width / 12, null, "지하철", Container()),
-            _menuButton(_width / 12, _width / 12, null, "학식", Container()),
-            _menuButton(_width / 12, _width / 12, null, "열람실", Container()),
-            _menuButton(_width / 12, _width / 12, null, "전화부", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", Container()),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
           ],
@@ -61,12 +92,45 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_width / 12, _width / 12, null, "셔틀버스", Container()),
-            _menuButton(_width / 12, _width / 12, null, "노선버스", Container()),
-            _menuButton(_width / 12, _width / 12, null, "지하철", Container()),
-            _menuButton(_width / 12, _width / 12, null, "학식", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container()),
           ],
         ),
+      ),
+    );
+
+    Widget _shuttleCardList = Container(
+      height: _height / 4.5,
+      width: _width,
+      child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
+        stream: shuttleController.allShuttleInfo,
+        builder: (context, snapshot){
+          if(snapshot.hasError || !snapshot.hasData){
+            return Center(child: CircularProgressIndicator());
+          } else {
+            List<dynamic> residenceStn = snapshot.data["Residence"].shuttleListStation..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+            List<dynamic> residenceTerminal = snapshot.data["Residence"].shuttleListTerminal..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+            List<dynamic> schoolStn = snapshot.data["Shuttlecock_O"].shuttleListStation..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> schoolTerminal = snapshot.data["Shuttlecock_O"].shuttleListTerminal..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> station = snapshot.data["Subway"].shuttleListStation..addAll(snapshot.data["Subway"].shuttleListCycle)..sort();
+            List<dynamic> terminal = snapshot.data["YesulIn"].shuttleListTerminal..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
+            List<dynamic> schoolResidence = snapshot.data["Shuttlecock_I"].shuttleListStation..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
+            List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
+            List<String> stopList = ["기숙사(한대앞)", "기숙사(예술인)", "셔틀콕(한대앞)", "셔틀콕(예술인)", "한대앞", "예술인", "기숙사 건너편"];
+            List<ShuttleStopDepartureInfo> data = [snapshot.data["Residence"], snapshot.data["Residence"], snapshot.data["Shuttlecock_O"], snapshot.data["Shuttlecock_O"], snapshot.data["Subway"], snapshot.data["YesulIn"], snapshot.data["Shuttlecock_I"]];
+            return ListView.builder(
+              padding: EdgeInsets.all(5),
+              shrinkWrap: true,
+              itemCount: 7,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index){
+                return _homeShuttleItems(context, stopList[index], allShuttleList[index].map((e) => e.toString()).toList(), data[index]);
+              },
+            );
+          }
+        },
       ),
     );
 
@@ -76,10 +140,10 @@ class _HomePageState extends State<HomePage>{
         onPressed: () => Get.to(SettingPage()),
         label: Text("설정", textAlign: TextAlign.center, style: TextStyle(color:Colors.white),),
         icon: Icon(Icons.settings),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: _primaryColor,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      appBar: AppBar(),
+      appBar: MainAppBar(),
       body: Container(
         height: _height,
         width: _width,
@@ -87,7 +151,7 @@ class _HomePageState extends State<HomePage>{
           children: [
             // clipShape(),
             Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 20),
+              margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -97,12 +161,11 @@ class _HomePageState extends State<HomePage>{
                   GestureDetector(
                       onTap: _expand,
                       child: Text(
-                        _isExpanded ? "Show less" : "Show all",
+                        _isExpanded ? "줄이기" : "전체 보기",
                         style: TextStyle(
-                          color: Colors.orange[200],
+                          color: _primaryColor,
                         ),
                       )),
-                  IconButton(icon: _isExpanded? Icon(Icons.arrow_drop_up, color: Colors.orange[200],) : Icon(Icons.arrow_drop_down, color: Colors.orange[200],), onPressed: _expand)
                 ],
               ),
             ),
@@ -113,31 +176,26 @@ class _HomePageState extends State<HomePage>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("Trending",
-                      style: TextStyle(
-                          fontSize: 16)),
+                  Text("셔틀", style: TextStyle(fontSize: 16)),
                   GestureDetector(
-                      onTap: () {
-                        // Navigator.of(context).pushNamed(TRENDING_UI);
-                        print('Showing all');
-                      },
+                      onTap: (){Get.to(Container());},
                       child: Text(
-                        'Show all',
+                        "전체 정류장 정보 보기",
                         style: TextStyle(
-                          color: Colors.orange[300],
+                          color: _primaryColor,
                         ),
-                      ))
+                      )),
                 ],
               ),
             ),
-            // trendingProducts(),
+            _shuttleCardList,
             Divider(),
             Container(
               margin: EdgeInsets.only(left: 30, right: 30, top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text("Recommendations",
+                  Text("오늘의 학식",
                       style: TextStyle(
                           fontSize: 16)),
                   GestureDetector(
@@ -145,42 +203,15 @@ class _HomePageState extends State<HomePage>{
                         //Navigator.of(context).pushNamed(RECOMMEND_UI);
                         print('Showing all');
                       },
-                      child: Text(
-                        'Show all',
-                        style: TextStyle(
-                          color: Colors.orange[300],
-                        ),
-                      ))
+                      child: Text('전체 학식 보기', style: TextStyle(color: Theme.of(context).accentColor,),))
                 ],
               ),
             ),
             // recommendations(),
-            Divider(),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("Today's Deals",
-                      style: TextStyle(
-                          fontSize: 16)),
-                  GestureDetector(
-                      onTap: () {
-                        //Navigator.of(context).pushNamed(DEALS_UI);
-                        print('Showing all');
-                      },
-                      child: Text(
-                        'Show all',
-                        style: TextStyle(
-                          color: Colors.orange[300],
-                        ),
-                      ))
-                ],
-              ),
-            ),
           ],
         ),
       ),
     );
   }
+
 }

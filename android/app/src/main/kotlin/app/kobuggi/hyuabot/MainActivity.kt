@@ -1,4 +1,4 @@
-package app.kobuggi.flutter_app_hyuabot_v2
+package app.kobuggi.hyuabot
 
 import io.flutter.embedding.android.FlutterActivity
 
