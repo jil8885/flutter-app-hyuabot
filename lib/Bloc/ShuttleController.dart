@@ -17,8 +17,6 @@ class FetchAllShuttleController{
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     Map<String, dynamic> responseJson = jsonDecode(response.body);
 
-    // Map<String, ShuttleStopDepartureInfo> shuttleStopInfoList = getShuttleList(responseJson);
-    _allShuttleInfoSubject.add({});
     Map<String, ShuttleStopDepartureInfo> data = {};
     for(String key in responseJson.keys){
       data[key] = ShuttleStopDepartureInfo.fromJson(responseJson[key]);

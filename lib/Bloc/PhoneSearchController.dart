@@ -1,8 +1,4 @@
-import 'package:path/path.dart';
-
 import 'package:rxdart/rxdart.dart';
-import 'package:sqflite/sqflite.dart';
-
 
 class FetchPhoneController{
   final _allPhoneInfoSubject = BehaviorSubject<List<PhoneNum>>();

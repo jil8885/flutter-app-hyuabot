@@ -5,6 +5,7 @@ import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
@@ -32,7 +33,7 @@ class _HomePageState extends State<HomePage>{
       children: [
         GestureDetector(
           onTap: (){Get.to(newPage);},
-          child: Container(child: Image.asset(assetName, width: width, height: height,), decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)),),
+          child: Container(child: Image.asset(assetName, width: width, height: height,), decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)), padding: EdgeInsets.all(10),),
         ),
         SizedBox(height: 5,),
         Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13, fontFamily: 'Godo'),))
@@ -70,8 +71,8 @@ class _HomePageState extends State<HomePage>{
     Color _primaryColor = Theme.of(context).accentColor;
 
     // 메뉴 아이콘 너비, 높이
-    double _itemWidth = _width / 6;
-    double _itemHeight = _height / 12;
+    double _itemWidth = _width / 10;
+    double _itemHeight = _width / 10;
 
     Widget _menuWidget = Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
@@ -83,7 +84,7 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
@@ -117,13 +118,13 @@ class _HomePageState extends State<HomePage>{
           if(snapshot.hasError || !snapshot.hasData){
             return Center(child: CircularProgressIndicator());
           } else {
-            List<dynamic> residenceStn = snapshot.data["Residence"].shuttleListStation..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
-            List<dynamic> residenceTerminal = snapshot.data["Residence"].shuttleListTerminal..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
-            List<dynamic> schoolStn = snapshot.data["Shuttlecock_O"].shuttleListStation..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
-            List<dynamic> schoolTerminal = snapshot.data["Shuttlecock_O"].shuttleListTerminal..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
-            List<dynamic> station = snapshot.data["Subway"].shuttleListStation..addAll(snapshot.data["Subway"].shuttleListCycle)..sort();
-            List<dynamic> terminal = snapshot.data["YesulIn"].shuttleListTerminal..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
-            List<dynamic> schoolResidence = snapshot.data["Shuttlecock_I"].shuttleListStation..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
+            List<dynamic> residenceStn = List.from(snapshot.data["Residence"].shuttleListStation)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+            List<dynamic> residenceTerminal = List.from(snapshot.data["Residence"].shuttleListTerminal)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+            List<dynamic> schoolStn = List.from(snapshot.data["Shuttlecock_O"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> schoolTerminal = List.from(snapshot.data["Shuttlecock_O"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> station = List.from(snapshot.data["Subway"].shuttleListStation)..addAll(snapshot.data["Subway"].shuttleListCycle)..sort();
+            List<dynamic> terminal = List.from(snapshot.data["YesulIn"].shuttleListTerminal)..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
+            List<dynamic> schoolResidence = List.from(snapshot.data["Shuttlecock_I"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
             List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
             List<String> stopList = ["기숙사 → 한대앞", "기숙사 → 예술인", "셔틀콕 → 한대앞", "셔틀콕 → 예술인", "한대앞", "예술인", "셔틀콕 건너편"];
             List<ShuttleStopDepartureInfo> data = [snapshot.data["Residence"], snapshot.data["Residence"], snapshot.data["Shuttlecock_O"], snapshot.data["Shuttlecock_O"], snapshot.data["Subway"], snapshot.data["YesulIn"], snapshot.data["Shuttlecock_I"]];
@@ -195,7 +196,11 @@ class _HomePageState extends State<HomePage>{
                 children: <Widget>[
                   Text("셔틀", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
                   GestureDetector(
-                      onTap: (){Get.to(Container());},
+                      onTap: (){
+                        _shuttleTimer.cancel();
+                        shuttleController.fetch();
+                        Get.to(ShuttlePage());
+                        },
                       child: Text("전체 정류장 정보 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
                       )),
                 ],

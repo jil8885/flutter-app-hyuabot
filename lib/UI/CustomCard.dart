@@ -20,9 +20,11 @@ class CustomShuttleCard extends StatelessWidget {
     String thisBusString = "";
     String nextBusString = "";
 
+    Widget _remainedText;
+
     if(timetable.length >= 2){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
-      remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}분 후';
+      remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
       thisBusString = "이번 버스 : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
         thisBusString += "(순환)";
@@ -37,7 +39,7 @@ class CustomShuttleCard extends StatelessWidget {
       }
     } else if(timetable.length == 1){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
-      remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}분 후';
+      remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
       thisBusString = "이번 버스 : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
         thisBusString += "(순환)";
@@ -47,6 +49,23 @@ class CustomShuttleCard extends StatelessWidget {
       nextBusString = "막차입니다.";
     } else {
       thisBusString = "운영 종료";
+    }
+
+    if(timetable.length > 1){
+      _remainedText = Flexible(
+        child: Container(width: _width / 2.5,
+            child: Row(
+              children: [
+                Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+                Text("분 후", style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+              ],
+            )),
+      );
+    } else {
+      _remainedText = Flexible(
+        child: Container(width: _width / 2.5,
+            child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+      );
     }
 
     return Card(
@@ -64,15 +83,12 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),
+                  style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Flexible(
-                  child: Container(width: _width / 2.5,
-                      child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
-                ),
+                _remainedText,
                 SizedBox(height: 25,),
                 Container(width: _width / 2.5,
                     child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
