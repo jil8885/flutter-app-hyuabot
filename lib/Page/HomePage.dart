@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
@@ -9,11 +8,10 @@ import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
+
 
 
 import 'package:flutter_app_hyuabot_v2/Page/SettingPage.dart';
@@ -31,30 +29,6 @@ class _HomePageState extends State<HomePage>{
     setState(() {
       _isExpanded ? _isExpanded = false : _isExpanded = true;
     });
-  }
-
-  void _fetchFood() async {
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    http.Response response = await http.get(url);
-    Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-    for(String name in responseJson.keys){
-      if(name.contains("erica")){
-        allMenus[name] = {"breakfast": [], "lunch": [], "dinner": []};
-        for(String time in responseJson[name].keys){
-          switch(time){
-            case "조식":
-              allMenus[name]['breakfast'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
-              break;
-            case "중식":
-              allMenus[name]['lunch'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
-              break;
-            case "석식":
-              allMenus[name]['dinner'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
-              break;
-          }
-        }
-      }
-    }
   }
 
   Widget _menuButton(double width, double height, String assetName, String menuName, Widget newPage, Color color){
@@ -102,12 +76,13 @@ class _HomePageState extends State<HomePage>{
     adController.setTestDeviceIds(["8F53CD4DC1C32BBF724766A8608006FF"]);
     adController.reloadAd(forceRefresh: true, numberAds: 1);
     adController.setAdUnitID(AdManager.bannerAdUnitId);
-    _fetchFood();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    foodController.fetchFood();
+
     // 화면 너비, 크기 조정
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
@@ -193,22 +168,32 @@ class _HomePageState extends State<HomePage>{
       height: _height / 4.5,
       width: _width,
       padding: EdgeInsets.symmetric(horizontal: 15),
-      child: ListView.builder(
-        padding: EdgeInsets.all(5),
-        shrinkWrap: true,
-        itemCount: 5,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index){
-          DateTime _now = DateTime.now();
-          if(_now.hour < 11 && allMenus[_cafeteriaKeys[index]]['breakfast'].isNotEmpty){
-            return _foodItems(context, _cafeteriaNames[index], "조식", allMenus[_cafeteriaKeys[index]]['breakfast'].elementAt(0));
-          } else if (_now.hour > 15 && allMenus[_cafeteriaKeys[index]]['dinner'].isNotEmpty){
-            return _foodItems(context, _cafeteriaNames[index], "석식", allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
-          } else if (allMenus[_cafeteriaKeys[index]]['lunch'].isNotEmpty){
-            return _foodItems(context, _cafeteriaNames[index], "중식", allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
+      child: StreamBuilder<Object>(
+        stream: foodController.allFoodInfo,
+        builder: (context, snapshot) {
+          if(snapshot.hasError || !snapshot.hasData){
+            return CircularProgressIndicator();
           }
-          return _foodItems(context, _cafeteriaNames[index], "중식", null);
-        },
+          // food info
+          Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
+          return ListView.builder(
+            padding: EdgeInsets.all(5),
+            shrinkWrap: true,
+            itemCount: 5,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index){
+              DateTime _now = DateTime.now();
+              if(_now.hour < 11 && allMenus[_cafeteriaKeys[index]]['breakfast'].isNotEmpty){
+                return _foodItems(context, _cafeteriaNames[index], "조식", allMenus[_cafeteriaKeys[index]]['breakfast'].elementAt(0));
+              } else if (_now.hour > 15 && allMenus[_cafeteriaKeys[index]]['dinner'].isNotEmpty){
+                return _foodItems(context, _cafeteriaNames[index], "석식", allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
+              } else if (allMenus[_cafeteriaKeys[index]]['lunch'].isNotEmpty){
+                return _foodItems(context, _cafeteriaNames[index], "중식", allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
+              }
+              return _foodItems(context, _cafeteriaNames[index], "중식", null);
+            },
+          );
+        }
       ),
     );
 
