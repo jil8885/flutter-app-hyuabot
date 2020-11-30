@@ -1,15 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
+import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
 
 import 'package:flutter_app_hyuabot_v2/Page/SettingPage.dart';
 
@@ -26,6 +31,30 @@ class _HomePageState extends State<HomePage>{
     setState(() {
       _isExpanded ? _isExpanded = false : _isExpanded = true;
     });
+  }
+
+  void _fetchFood() async {
+    final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
+    http.Response response = await http.get(url);
+    Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+    for(String name in responseJson.keys){
+      if(name.contains("erica")){
+        allMenus[name] = {"breakfast": [], "lunch": [], "dinner": []};
+        for(String time in responseJson[name].keys){
+          switch(time){
+            case "조식":
+              allMenus[name]['breakfast'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              break;
+            case "중식":
+              allMenus[name]['lunch'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              break;
+            case "석식":
+              allMenus[name]['dinner'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              break;
+          }
+        }
+      }
+    }
   }
 
   Widget _menuButton(double width, double height, String assetName, String menuName, Widget newPage, Color color){
@@ -54,12 +83,26 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
+  Widget _foodItems(BuildContext context, String title, String time, FoodMenu data) {
+    return GestureDetector(
+      onTap: () {
+        // 셔틀 정보로 이동
+      },
+      child: CustomFoodCard(
+          title: title,
+          time: time,
+          data: data
+      ),
+    );
+  }
+
   @override
   void initState() {
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {shuttleController.fetch();});
     adController.setTestDeviceIds(["8F53CD4DC1C32BBF724766A8608006FF"]);
     adController.reloadAd(forceRefresh: true, numberAds: 1);
     adController.setAdUnitID(AdManager.bannerAdUnitId);
+    _fetchFood();
     super.initState();
   }
 
@@ -73,6 +116,10 @@ class _HomePageState extends State<HomePage>{
     // 메뉴 아이콘 너비, 높이
     double _itemWidth = _width / 10;
     double _itemHeight = _width / 10;
+
+    // 식당 이름들
+    final _cafeteriaNames = ["학생식당", "교직원식당", "푸드코트", "창업보육센터", "창의인재원식당"];
+    final _cafeteriaKeys = ["student_erica", "teacher_erica", "foodcoart_erica", "changbo_erica", "dorm_erica"];
 
     Widget _menuWidget = Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
@@ -142,6 +189,29 @@ class _HomePageState extends State<HomePage>{
       ),
     );
 
+    Widget _homeFoodMenu = Container(
+      height: _height / 4.5,
+      width: _width,
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      child: ListView.builder(
+        padding: EdgeInsets.all(5),
+        shrinkWrap: true,
+        itemCount: 5,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index){
+          DateTime _now = DateTime.now();
+          if(_now.hour < 11 && allMenus[_cafeteriaKeys[index]]['breakfast'].isNotEmpty){
+            return _foodItems(context, _cafeteriaNames[index], "조식", allMenus[_cafeteriaKeys[index]]['breakfast'].elementAt(0));
+          } else if (_now.hour > 15 && allMenus[_cafeteriaKeys[index]]['dinner'].isNotEmpty){
+            return _foodItems(context, _cafeteriaNames[index], "석식", allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
+          } else if (allMenus[_cafeteriaKeys[index]]['lunch'].isNotEmpty){
+            return _foodItems(context, _cafeteriaNames[index], "중식", allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
+          }
+          return _foodItems(context, _cafeteriaNames[index], "중식", null);
+        },
+      ),
+    );
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         elevation: 3,
@@ -152,63 +222,85 @@ class _HomePageState extends State<HomePage>{
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: MainAppBar(),
-      body: Container(
-        height: _height,
-        width: _width,
-        child: Column(
-          children: [
-            Container(
-              height: 90,
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: NativeAdmob(
-                adUnitID: AdManager.bannerAdUnitId,
-                numberAds: 1,
-                controller: adController,
-                type: NativeAdmobType.banner,
-                error: Center(child: Text("광고 불러오기 실패", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
-                options: NativeAdmobOptions(
-                  adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
-                  bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                  headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                  advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          width: _width,
+          child: Column(
+            children: [
+              Container(
+                height: 90,
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: NativeAdmob(
+                  adUnitID: AdManager.bannerAdUnitId,
+                  numberAds: 1,
+                  controller: adController,
+                  type: NativeAdmobType.banner,
+                  error: Center(child: Text("광고 불러오기 실패", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
+                  options: NativeAdmobOptions(
+                    adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
+                    bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                    headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                    advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('메뉴', style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
-                  GestureDetector(
-                      onTap: _expand,
-                      child: Text(_isExpanded ? "줄이기" : "전체 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
-                      )),
-                ],
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('메뉴', style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+                    GestureDetector(
+                        onTap: _expand,
+                        child: Text(_isExpanded ? "줄이기" : "전체 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
+                        )),
+                  ],
+                ),
               ),
-            ),
-            _menuWidget,
-            Divider(),
-            Container(
-              margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("셔틀", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
-                  GestureDetector(
-                      onTap: (){
-                        _shuttleTimer.cancel();
-                        shuttleController.fetch();
-                        Get.to(ShuttlePage());
+              _menuWidget,
+              Divider(),
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("셔틀", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+                    GestureDetector(
+                        onTap: (){
+                          _shuttleTimer.cancel();
+                          shuttleController.fetch();
+                          Get.to(ShuttlePage());
+                          },
+                        child: Text("전체 정류장 정보 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
+                        )),
+                  ],
+                ),
+              ),
+              SizedBox(height: 10,),
+              _shuttleCardList,
+              Divider(),
+              Container(
+                margin: EdgeInsets.only(left: 30, right: 30, top: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("현재의 학식", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+                    GestureDetector(
+                        onTap: (){
+
                         },
-                      child: Text("전체 정류장 정보 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
-                      )),
-                ],
+                        child: Text("전체 학식 메뉴 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
+                        )
+                    ),
+                  ],
+                ),
               ),
-            ),
-            SizedBox(height: 10,),
-            _shuttleCardList,
-          ],
+              SizedBox(height: 10,),
+              _homeFoodMenu,
+              SizedBox(height: 60,)
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 class CustomShuttleCard extends StatelessWidget {
@@ -104,6 +105,50 @@ class CustomShuttleCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CustomFoodCard extends StatelessWidget {
+  double _width;
+  double _height;
+  String title;
+  String time;
+  FoodMenu data;
+
+  CustomFoodCard({this.title, this.time, this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    _width= MediaQuery.of(context).size.width;
+    _height = MediaQuery.of(context).size.height;
+
+    String _menu = "메뉴를 준비중입니다";
+    String _price = "0";
+    if(data == null){
+      _menu = "준비된 메뉴가 없습니다";
+    } else {
+      _menu = data.menu;
+      _price = data.price;
+    }
+    return Card(
+      shape:
+      RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      color: Colors.white,
+      child: Container(
+        padding: EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10),
+        width: _width * .75,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text('$title($time)', style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),),
+            SizedBox(height: 20,),
+            Text(_menu, style: TextStyle(fontSize: _height/60, fontFamily: 'Godo', color: Colors.black),),
+            Flexible(child: Container(),),
+            Text('$_price 원', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).accentColor),)
+          ],
+        ),
+      )
     );
   }
 }
