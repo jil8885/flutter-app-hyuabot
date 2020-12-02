@@ -10,7 +10,7 @@ class BusCardPaint extends CustomPainter{
   BusCardPaint(this.data, this.lineColor, this.context, this.timeTableOffered);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Godo'), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 14, fontFamily: 'Godo'), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);

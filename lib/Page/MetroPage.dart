@@ -35,8 +35,8 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
       elevation: 3,
       child: Container(
         width: width - 50,
-        height: height / 6.5,
-        padding: EdgeInsets.symmetric(horizontal: 30),
+        height: height / 5.5,
+        padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -48,7 +48,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
             ),
             Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
             Divider(color: Colors.grey),
-            Container(child: CustomPaint(painter: content,))
+            Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10),)
           ],
         ),
       ),
@@ -96,25 +96,8 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
                     Expanded(child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Center(child: Text("수인분당선은 실시간 API 문제로 시간표만 제공합니다", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),)],
+                      children: [Center(child: Text("수인분당선은 실시간 API 문제로 시간표만 제공합니다", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
                     ),),
-                    Container(
-                      height: 90,
-                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      child: NativeAdmob(
-                        adUnitID: AdManager.bannerAdUnitId,
-                        numberAds: 1,
-                        controller: adController,
-                        type: NativeAdmobType.banner,
-                        error: Center(child: Text("광고 불러오기 실패", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
-                        options: NativeAdmobOptions(
-                          adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
-                          bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                          headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                          advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               );

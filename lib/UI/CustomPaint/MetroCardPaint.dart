@@ -10,7 +10,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
   MetroRealtimeCardPaint(this.data, this.lineColor, this.context);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Godo'), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 12, fontFamily: 'Godo'), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
@@ -105,23 +105,7 @@ class MetroTimeTableCardPaint extends CustomPainter{
   MetroTimeTableCardPaint(this.data, this.lineColor, this.context);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 16, fontFamily: 'Godo'), text: text);
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
-    tp.layout();
-    Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
-    tp.paint(canvas, location);
-  }
-
-  void drawInfo(Canvas canvas, Offset offset, int numOfStop, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Colors.grey, fontSize: 12, fontFamily: 'Godo'), text: '$numOfStop번째 전');
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
-    tp.layout();
-    Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
-    tp.paint(canvas, location);
-  }
-
-  void drawSeat(Canvas canvas, Offset offset, int seats, Color lineColor, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: lineColor, fontSize: 12, fontFamily: 'Godo'), text: '$seats석');
+    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 12, fontFamily: 'Godo'), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);

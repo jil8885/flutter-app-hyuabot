@@ -315,6 +315,7 @@ class _HomePageState extends State<HomePage>{
   void dispose() {
     _shuttleTimer.cancel();
     _shuttleController.dispose();
+    _foodInfoController.dispose();
     super.dispose();
   }
 }
