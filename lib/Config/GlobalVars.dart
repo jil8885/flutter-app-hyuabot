@@ -6,13 +6,6 @@ import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
 
 AdaptiveThemeMode savedThemeMode;
-
-// Controllers
-final busController = FetchBusInfoController();
-final shuttleController = FetchAllShuttleController();
-final metroController = FetchMetroInfoController();
-final foodController = FetchFoodInfoController();
-
 // Ad manager
 final adController = NativeAdmobController();
 

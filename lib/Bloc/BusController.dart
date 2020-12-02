@@ -41,5 +41,9 @@ class FetchBusInfoController{
     _allBusInfoSubject.add(data);
   }
 
+  void dispose(){
+    _allBusInfoSubject.close();
+  }
+
   Stream<Map<String, dynamic>> get allBusInfo => _allBusInfoSubject.stream;
 }

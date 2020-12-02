@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/BusCardPaint.dart';
@@ -17,6 +18,7 @@ class BusPage extends StatefulWidget {
 }
 class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
   Timer _busTimer;
+  FetchBusInfoController _busInfoController;
 
 
   Widget _busCard(double width, String busStop, String terminalStop, String lineName, Color lineColor, Map<String, dynamic> data, bool timeTableOffered){
@@ -54,8 +56,9 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
+    _busInfoController = FetchBusInfoController();
     _busTimer = Timer.periodic(Duration(minutes: 1), (timer) {
-      busController.fetch();
+      _busInfoController.fetch();
     });
     super.initState();
   }
@@ -68,7 +71,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: StreamBuilder<Map<String, dynamic>>(
-          stream: busController.allBusInfo,
+          stream: _busInfoController.allBusInfo,
           builder: (context, snapshot) {
             if(snapshot.hasError){
               return Center(child: Text("버스 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
@@ -81,9 +84,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20),)
-                    ],
+                    children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 10),)],
                   ),
                   _busCard(_width, "한양대게스트하우스", "상록수역", "10-1", Color(0xff009e96), snapshot.data['10-1'], true),
                   _busCard(_width, "한양대게스트하우스", "강남역", "3102", Color(0xffe60012), snapshot.data['3102'], true),
@@ -120,6 +121,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
   @override
   void dispose() {
     _busTimer.cancel();
+    _busInfoController.dispose();
     super.dispose();
   }
 }
