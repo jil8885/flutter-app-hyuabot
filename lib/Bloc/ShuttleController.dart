@@ -24,5 +24,9 @@ class FetchAllShuttleController{
     _allShuttleInfoSubject.add(data);
   }
 
+  void dispose(){
+    _allShuttleInfoSubject.close();
+  }
+
   Stream<Map<String, ShuttleStopDepartureInfo>> get allShuttleInfo => _allShuttleInfoSubject.stream;
 }

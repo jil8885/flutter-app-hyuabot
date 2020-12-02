@@ -14,8 +14,11 @@ class FetchPhoneController{
     // await database.close();
     // _allPhoneInfoSubject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
   }
-
   Stream<List<PhoneNum>> get allPhoneInfo => _allPhoneInfoSubject.stream;
+
+  void dispose(){
+    _allPhoneInfoSubject.close();
+  }
 }
 class PhoneNum{
   final String name;

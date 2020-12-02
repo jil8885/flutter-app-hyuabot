@@ -5,11 +5,6 @@ import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
 import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
-import 'package:http/http.dart' as http;
-
-import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
-import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
-
 
 class FetchFoodInfoController{
   // ignore: close_sinks
@@ -46,5 +41,8 @@ class FetchFoodInfoController{
     _allFoodInfoSubject.add(allMenus);
   }
 
+  void dispose(){
+    _allFoodInfoSubject.close();
+  }
   Stream<Map<String, Map<String, List<FoodMenu>>>> get allFoodInfo => _allFoodInfoSubject.stream;
 }
