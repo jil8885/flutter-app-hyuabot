@@ -1,117 +1,141 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/ShuttlePaint.dart';
-import 'package:flutter_native_admob/flutter_native_admob.dart';
-import 'package:flutter_native_admob/native_admob_options.dart';
+import 'package:get/get.dart';
 
 class ShuttlePage extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    final double _statusBarHeight = MediaQuery.of(context).padding.top;
-    final List<String> _busStopList = ["기숙사", "셔틀콕", "한대앞", "예술인", "셔틀콕 건너편"];
-    final TextStyle _theme1 = Theme.of(context).textTheme.bodyText1;
-    final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
-    Timer.periodic(Duration(minutes: 1), (timer) {
-      shuttleController.fetch();
-    });
-    
-    return Material(
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        child: Column(
-          children: [
-            SizedBox(height: _statusBarHeight,),
-            Container(
-              height: MediaQuery.of(context).size.width * .15,
-              child: Row(children: [
-                  SizedBox(width: 90, child: Text("정류장", style: Theme.of(context).textTheme.bodyText2, textAlign: TextAlign.center,),),
-                  SizedBox(width: MediaQuery.of(context).size.width * .075,),
-                  Text("한대앞행", style: _theme2,),
-                  SizedBox(width: MediaQuery.of(context).size.width * .0875,),
-                  Text("예술인행", style: _theme2,),
-                  SizedBox(width: MediaQuery.of(context).size.width * .0875,),
-                  Text("순환버스", style: _theme2,),
-                ],
-              ),
-              color: Theme.of(context).accentColor,
-            ),
-            Expanded(
-              child: Stack(
+  final int initialPage;
+  ShuttlePage(this.initialPage);
+
+  Widget bothDirectionStop(BuildContext context, String stopName, List<String> timeList){
+    return Container(
+      padding: EdgeInsets.all(15),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+            color: Theme.of(context).backgroundColor,
+            elevation: 1,
+            child: Container(
+              height: 60,
+              margin: EdgeInsets.symmetric(vertical: 15),
+              width: MediaQuery.of(context).size.width - 30,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
-                    stream: shuttleController.allShuttleInfo,
-                    builder: (context, snapshot) {
-                      if(snapshot.hasError){
-                        return CircularProgressIndicator();
-                      }
-                      return CustomPaint(
-                        painter: ShuttlePaint(snapshot.data, context),
-                        size: MediaQuery.of(context).size,
-                      );
-                    }
-                  ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ListView.separated(
-                        itemCount: 5,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index){
-                          return GestureDetector(
-                            onTap: (){
-                              print(_busStopList[index]);
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * .1,
-                              width: MediaQuery.of(context).size.width,
-                              margin: EdgeInsets.symmetric(horizontal: 15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  ListTile(
-                                    title: Text(_busStopList[index].replaceAll(" ", "\n"), style: TextStyle(color: _theme1.color, fontFamily: "Godo", fontSize: 18), textAlign: TextAlign.left)
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) => Container(height: 0.1, color: Colors.grey, margin: EdgeInsets.symmetric(horizontal: 20),),
-                      ),
-                      SizedBox(height: 45,),
-                      Text("셔틀 시간표는 시간표 기반으로 제공합니다.\n정류장에 1~2분 먼저 도착하는 것을 권장합니다.", style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                      SizedBox(height: 25,),
-                      Text("정류장 위치 및 전체 시간표, 첫막차 정보는\n정류장을 클릭하시면 확인할 수 있습니다.", style: Theme.of(context).textTheme.bodyText1, textAlign: TextAlign.center,),
-                      Expanded(child: Container(),),
-                      Container(
-                        height: 85,
-                        padding: EdgeInsets.symmetric(horizontal: 30),
-                        child: NativeAdmob(
-                          adUnitID: AdManager.bannerAdUnitId,
-                          numberAds: 1,
-                          controller: adController,
-                          type: NativeAdmobType.banner,
-                          error: Center(child: Text("광고 불러오기 실패", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
-                          options: NativeAdmobOptions(
-                            adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
-                            bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                            headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                            advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                          ),
-                        ),
-                      ),
+                      Text(stopName, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 25),),
                     ],
                   ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("평일 ${timeList[0]}", style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                      Text("주말 ${timeList[1]}", style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                    ],
+                  )
                 ],
-              )
-            )
-          ],
+              ),
+            ),
+          ),
+          Divider(),
+          Container(
+            margin: EdgeInsets.only(left: 15, right: 15, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text("한대앞 방면", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+              ],
+            ),
+          ),
+          SizedBox(height: 10,),
+        ],
+      ),
+    );
+  }
+
+  Widget oneDirectionStop(BuildContext context, String stopName, List<String> timeList){
+    return Container(
+      padding: EdgeInsets.all(15),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), bottomRight: Radius.circular(30))),
+            color: Theme.of(context).backgroundColor,
+            elevation: 1,
+            child: Container(
+              height: 60,
+              margin: EdgeInsets.symmetric(vertical: 15),
+              width: MediaQuery.of(context).size.width - 30,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(stopName, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 25),),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("평일 ${timeList[0]}", style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                      Text("주말 ${timeList[1]}", style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> _busStopList = ["기숙사", "셔틀콕", "한대앞", "예술인", "셔틀콕 건너편"];
+
+    return Scaffold(
+      body: Container(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: DefaultTabController(
+            length: 5,
+            initialIndex: initialPage,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();},)],
+                ),
+                TabBar(
+                  isScrollable: true,
+                  labelPadding: EdgeInsets.only(left: 25, right: 25, top: 30, bottom: 10),
+                  indicator: UnderlineTabIndicator(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 2), insets: EdgeInsets.symmetric(horizontal: 10)),
+                  tabs: _busStopList.map((e) => Text(e, style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),)).toList()
+                ),
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      bothDirectionStop(context, "기숙사", ["07:45/21:45", "08:45/21:45"]),
+                      bothDirectionStop(context, "셔틀콕", ["07:50/21:50", "08:50/21:50"]),
+                      oneDirectionStop(context, "한대앞", ["08:00/22:00", "09:00/22:00"]),
+                      oneDirectionStop(context, "예술인", ["08:05/22:05", "09:05/22:05"]),
+                      oneDirectionStop(context, "셔틀콕 건너편", ["08:15/22:15", "09:15/22:15"]),
+                    ],
+                  ),
+                )
+              ],
+            ),
         ),
       ),
     );

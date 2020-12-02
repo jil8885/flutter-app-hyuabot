@@ -20,24 +20,25 @@ class SettingPage extends StatelessWidget{
               tiles: [
                 SettingsTile(
                   title: "테마",
+                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
                   leading: Icon(Icons.wb_sunny),
                   onTap: ()=>{
                     showDialog(
                         context: context,
-                        child: SimpleDialog(
-                          title: Text("테마를 선택해주세요."),
+                        builder: (_) => SimpleDialog(
+                          title: Text("테마를 선택해주세요.", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),),
                           children: [
-                            SimpleDialogOption(child: Text("시스템(자동)", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                            SimpleDialogOption(child: Text("시스템(자동)", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setSystem();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text("주간", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                            SimpleDialogOption(child: Text("주간", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setLight();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text("야간", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                            SimpleDialogOption(child: Text("야간", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setDark();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
