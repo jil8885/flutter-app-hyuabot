@@ -1,11 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
+import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:flutter_app_hyuabot_v2/Page/BusPage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/MetroPage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/ReadingRoomPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
@@ -23,6 +29,9 @@ class HomePage extends StatefulWidget{
 
 class _HomePageState extends State<HomePage>{
   bool _isExpanded = false;
+  FetchAllShuttleController _shuttleController;
+  FetchFoodInfoController _foodInfoController;
+
   Timer _shuttleTimer;
 
   void _expand() {
@@ -35,7 +44,7 @@ class _HomePageState extends State<HomePage>{
     return Column(
       children: [
         GestureDetector(
-          onTap: (){Get.to(newPage);},
+          onTap: (){Get.to(newPage, duration: kThemeAnimationDuration);},
           child: Container(child: Image.asset(assetName, width: width, height: height,), decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)), padding: EdgeInsets.all(10),),
         ),
         SizedBox(height: 5,),
@@ -47,7 +56,19 @@ class _HomePageState extends State<HomePage>{
   Widget _homeShuttleItems(BuildContext context, String title, List<String> departureInfo, ShuttleStopDepartureInfo data) {
     return GestureDetector(
       onTap: () {
-        // 셔틀 정보로 이동
+        int page = 0;
+        if(title.contains("기숙사")){
+          page = 0;
+        } else if (title.contains("셔틀콕") && !title.contains("건너편")){
+          page = 1;
+        } else if (title.contains("한대앞")){
+          page = 2;
+        } else if (title.contains("예술인")){
+          page = 3;
+        } else if (title.contains("건너편")){
+          page = 4;
+        }
+        Get.to(ShuttlePage(page));
       },
       child: CustomShuttleCard(
         title: title,
@@ -57,10 +78,10 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
-  Widget _foodItems(BuildContext context, String title, String time, FoodMenu data) {
+  Widget _foodItems(BuildContext context, String title, String time, int index, FoodMenu data) {
     return GestureDetector(
       onTap: () {
-        // 셔틀 정보로 이동
+        Get.to(FoodPage(index));
       },
       child: CustomFoodCard(
           title: title,
@@ -72,16 +93,17 @@ class _HomePageState extends State<HomePage>{
 
   @override
   void initState() {
-    _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {shuttleController.fetch();});
+    _shuttleController = FetchAllShuttleController();
+    _foodInfoController = FetchFoodInfoController();
+    _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
     adController.setTestDeviceIds(["8F53CD4DC1C32BBF724766A8608006FF"]);
-    adController.reloadAd(forceRefresh: true, numberAds: 1);
+    adController.reloadAd(forceRefresh: true, numberAds: 5);
     adController.setAdUnitID(AdManager.bannerAdUnitId);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    foodController.fetchFood();
 
     // 화면 너비, 크기 조정
     double _width = MediaQuery.of(context).size.width;
@@ -106,11 +128,11 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", ReadingRoomPage(1), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
@@ -121,10 +143,10 @@ class _HomePageState extends State<HomePage>{
           crossAxisCount: 4,
           shrinkWrap: true,
           children: [
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
           ],
         ),
       ),
@@ -135,7 +157,7 @@ class _HomePageState extends State<HomePage>{
       width: _width,
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
-        stream: shuttleController.allShuttleInfo,
+        stream: _shuttleController.allShuttleInfo,
         builder: (context, snapshot){
           if(snapshot.hasError || !snapshot.hasData){
             return Center(child: CircularProgressIndicator());
@@ -164,19 +186,19 @@ class _HomePageState extends State<HomePage>{
       ),
     );
 
-    Widget _homeFoodMenu = Container(
-      height: _height / 4.5,
-      width: _width,
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: StreamBuilder<Object>(
-        stream: foodController.allFoodInfo,
-        builder: (context, snapshot) {
-          if(snapshot.hasError || !snapshot.hasData){
-            return CircularProgressIndicator();
-          }
-          // food info
-          Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
-          return ListView.builder(
+    Widget _homeFoodMenu = StreamBuilder<Object>(
+      stream: _foodInfoController.allFoodInfo,
+      builder: (context, snapshot) {
+        if(snapshot.hasError || !snapshot.hasData){
+          return CircularProgressIndicator();
+        }
+        // food info
+        Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
+        return Container(
+          height: _height / 4.5,
+          width: _width,
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: ListView.builder(
             padding: EdgeInsets.all(5),
             shrinkWrap: true,
             itemCount: 5,
@@ -184,17 +206,17 @@ class _HomePageState extends State<HomePage>{
             itemBuilder: (context, index){
               DateTime _now = DateTime.now();
               if(_now.hour < 11 && allMenus[_cafeteriaKeys[index]]['breakfast'].isNotEmpty){
-                return _foodItems(context, _cafeteriaNames[index], "조식", allMenus[_cafeteriaKeys[index]]['breakfast'].elementAt(0));
+                return _foodItems(context, _cafeteriaNames[index], "조식", index, allMenus[_cafeteriaKeys[index]]['breakfast'].elementAt(0));
               } else if (_now.hour > 15 && allMenus[_cafeteriaKeys[index]]['dinner'].isNotEmpty){
-                return _foodItems(context, _cafeteriaNames[index], "석식", allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
+                return _foodItems(context, _cafeteriaNames[index], "석식", index, allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
               } else if (allMenus[_cafeteriaKeys[index]]['lunch'].isNotEmpty){
-                return _foodItems(context, _cafeteriaNames[index], "중식", allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
+                return _foodItems(context, _cafeteriaNames[index], "중식", index, allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
               }
-              return _foodItems(context, _cafeteriaNames[index], "중식", null);
+              return _foodItems(context, _cafeteriaNames[index], "중식", index, null);
             },
-          );
-        }
-      ),
+          ),
+        );
+      }
     );
 
     return Scaffold(
@@ -202,7 +224,7 @@ class _HomePageState extends State<HomePage>{
         elevation: 3,
         onPressed: () => Get.to(SettingPage()),
         label: Text("설정", textAlign: TextAlign.center, style: TextStyle(color:Colors.white, fontFamily: 'Godo'),),
-        icon: Icon(Icons.settings),
+        icon: Icon(Icons.settings, color:Colors.white),
         backgroundColor: _primaryColor,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -253,9 +275,7 @@ class _HomePageState extends State<HomePage>{
                     Text("셔틀", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
                         onTap: (){
-                          _shuttleTimer.cancel();
-                          shuttleController.fetch();
-                          Get.to(ShuttlePage());
+                          Get.to(ShuttlePage(0));
                           },
                         child: Text("전체 정류장 정보 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
                         )),
@@ -273,7 +293,7 @@ class _HomePageState extends State<HomePage>{
                     Text("현재의 학식", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
                         onTap: (){
-
+                          Get.to(FoodPage(0));
                         },
                         child: Text("전체 학식 메뉴 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
                         )
@@ -291,4 +311,10 @@ class _HomePageState extends State<HomePage>{
     );
   }
 
+  @override
+  void dispose() {
+    _shuttleTimer.cancel();
+    _shuttleController.dispose();
+    super.dispose();
+  }
 }

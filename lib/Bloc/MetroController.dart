@@ -38,5 +38,9 @@ class FetchMetroInfoController{
     _allMetroInfoSubject.add(data);
   }
 
+  void dispose(){
+    _allMetroInfoSubject.close();
+  }
+
   Stream<Map<String, dynamic>> get allMetroInfo => _allMetroInfoSubject.stream;
 }
