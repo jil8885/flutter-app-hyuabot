@@ -52,13 +52,13 @@ class CustomShuttleCard extends StatelessWidget {
       thisBusString = "운영 종료";
     }
 
-    if(timetable.length > 1){
+    if(timetable.isNotEmpty){
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
             child: Row(
               children: [
-                Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
-                Text("분 후", style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+                Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+                Text("분 후", style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
               ],
             )),
       );
@@ -70,11 +70,10 @@ class CustomShuttleCard extends StatelessWidget {
     }
 
     return Card(
-      shape:
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      color: Theme.of(context).backgroundColor == Colors.white? Colors.white : Colors.black87,
       child: Container(
-        padding: EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10),
+        padding: EdgeInsets.only(left: 18, top: 10, right: 18, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -84,7 +83,7 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),
+                  style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
                 ),
                 SizedBox(
                   height: 10,
@@ -92,11 +91,11 @@ class CustomShuttleCard extends StatelessWidget {
                 _remainedText,
                 SizedBox(height: 25,),
                 Container(width: _width / 2.5,
-                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
+                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
                 ),
                 SizedBox(height: 5),
                 Container(width: _width / 2.5,
-                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
               ],
             ),
             SizedBox(
@@ -134,18 +133,18 @@ class CustomFoodCard extends StatelessWidget {
     return Card(
       shape:
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor == Colors.white? Colors.white : Colors.black87,
       child: Container(
         padding: EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10),
         width: _width * .75,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text('$title($time)', style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Colors.black),),
+            Text('$title($time)', style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             SizedBox(height: 20,),
-            Text(_menu, style: TextStyle(fontSize: _height/60, fontFamily: 'Godo', color: Colors.black),),
+            Text(_menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             Flexible(child: Container(),),
-            Text('$_price 원', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).accentColor),)
+            Text('$_price 원', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).accentColor == Colors.grey ? Color.fromARGB(255, 20, 75, 170) : Theme.of(context).accentColor),)
           ],
         ),
       )

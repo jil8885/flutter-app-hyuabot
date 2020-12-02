@@ -14,12 +14,13 @@ ThemeData lightTheme = ThemeData(
 );
 
 ThemeData darkTheme = ThemeData(
-    accentColor: Color.fromARGB(255, 20, 75, 170),
-    backgroundColor: Colors.black,
-    cardColor: Colors.white70,
-    brightness: Brightness.dark,
-    textTheme: TextTheme(
-      bodyText1: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Godo"),
-      bodyText2: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Godo"),
-    )
+  accentColor: Colors.grey,
+  // accentColor: Color.fromARGB(255, 20, 75, 170),
+  backgroundColor: Colors.black,
+  cardColor: Colors.white70,
+  brightness: Brightness.dark,
+  textTheme: TextTheme(
+    bodyText1: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Godo"),
+    bodyText2: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Godo"),
+  )
 );
