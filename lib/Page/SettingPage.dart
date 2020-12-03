@@ -2,6 +2,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:get/get.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 
@@ -46,6 +47,29 @@ class SettingPage extends StatelessWidget{
                           ],
                         ))
                   },),
+                SettingsTile(
+                  title: "언어",
+                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
+                  leading: Icon(Icons.language),
+                ),
+                SettingsTile(
+                  title: "도와주신 분",
+                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
+                  leading: Icon(Icons.people),
+                  onTap: () => {
+                    Get.defaultDialog(
+                      title: "도와주신 분",
+                      titleStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color,),
+                      content: Column(
+                        children: [
+                          Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
+                          SizedBox(height: 5,),
+                          Text("중국학과16 이용찬(번역)", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
+                        ],
+                      ),
+                    )
+                  },
+                )
                 // SettingsTile(
                 //   title: Translations.of(context).trans("language_title"),
                 //   leading: Icon(Icons.language),

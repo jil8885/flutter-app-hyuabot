@@ -86,7 +86,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20),)
+                        IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
                       ],
                     ),
                     _metroCard(_width, _height, Color(0xff00a5de), "한대앞역(4호선)", "서울·당고개", snapshot.data['main']['up']),

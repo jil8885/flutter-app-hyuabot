@@ -31,5 +31,9 @@ class ReadingRoomController{
     _allReadingRoomSubject.add(_allReadingRoomSubject.value);
   }
 
+  void dispose(){
+    _allReadingRoomSubject.close();
+  }
+
   Stream<Map<String, dynamic>> get allReadingRoom => _allReadingRoomSubject.stream;
 }

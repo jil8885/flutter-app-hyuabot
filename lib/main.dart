@@ -9,10 +9,12 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   savedThemeMode = await AdaptiveTheme.getThemeMode();
+  prefManager = await SharedPreferences.getInstance();
   runApp(Phoenix(child: MyApp()));
 }
 

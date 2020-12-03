@@ -33,20 +33,27 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Text(busStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Colors.black),),
-            ),
-            Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
-            Divider(color: Colors.grey),
+            SizedBox(height: 5,),
             Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 32, fontFamily: "Godo"),), padding: const EdgeInsets.only(top: 5, bottom: 10), height: 50, width: width / 2.5,),
-                CustomPaint(painter: BusCardPaint(data, lineColor, context, timeTableOffered),)
+                Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 25, fontFamily: "Godo"),), padding: const EdgeInsets.only(top: 10), width: width / 4.5,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Text(busStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Colors.black),),
+                    ),
+                    Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
+                  ],
+                ),
               ],
+            ),
+            Divider(color: Colors.grey),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: CustomPaint(painter: BusCardPaint(data, lineColor, context, timeTableOffered), size: Size(width - 50, 50), ),
             )
           ],
         ),
@@ -84,7 +91,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 10),)],
+                    children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 30),)],
                   ),
                   _busCard(_width, "한양대게스트하우스", "상록수역", "10-1", Color(0xff009e96), snapshot.data['10-1'], true),
                   _busCard(_width, "한양대게스트하우스", "강남역", "3102", Color(0xffe60012), snapshot.data['3102'], true),

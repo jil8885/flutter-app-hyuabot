@@ -1,125 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
-class ShuttlePaint extends CustomPainter{
-  final Map<String, ShuttleStopDepartureInfo> data;
+class ShuttleCardPaint extends CustomPainter{
+  final List<dynamic> timetableList;
+  final ShuttleStopDepartureInfo data;
+  final Color lineColor;
   final BuildContext context;
-  ShuttlePaint(this.data, this.context);
 
-  void drawStop(Offset pos, Canvas canvas){
-    final _greyCircle = Paint()
-      ..color = Colors.grey
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 6.0;
+  ShuttleCardPaint(this.timetableList, this.data, this.lineColor, this.context);
 
-    final _greyLine = Paint()
-      ..color = Colors.grey
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 2.0;
-
-    final _whiteCircle = Paint()
-      ..color = Colors.white
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 6.0;
-
-    canvas.drawCircle(pos, 8, _greyCircle);
-    canvas.drawCircle(pos, 6, _whiteCircle);
-    canvas.drawLine(Offset(pos.dx - 2, pos.dy - 1), Offset(pos.dx, pos.dy + 1), _greyLine);
-    canvas.drawLine(Offset(pos.dx + 2, pos.dy - 1), Offset(pos.dx, pos.dy + 1), _greyLine);
-  }
-
-  void drawText(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: Theme.of(context).textTheme.bodyText1, text: text);
+  void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
+    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 12, fontFamily: 'Godo'), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
-    Offset location = Offset(offset.dx - 40 - tp.width * .5, offset.dy - tp.height * .5);
+    Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
   }
 
+  String _getDirection(String time, ShuttleStopDepartureInfo data){
+    if(data.shuttleListTerminal.contains(time) || data.shuttleListStation.contains(time)){
+      return '직행';
+    } else {
+      return '순환';
+    }
+  }
+  
   @override
   void paint(Canvas canvas, Size size) {
     // Paint for line
     final _line = Paint()
       ..color = Colors.grey
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 6.0;
+      ..strokeWidth = 2.0;
 
-    // 노선
-    canvas.drawLine(Offset(size.width - 50, 60), Offset(size.width - 50, 350), _line);
-    canvas.drawLine(Offset(size.width * .7625 - 50, 60), Offset(size.width * .7625 - 50, 350), _line);
-    canvas.drawLine(Offset(size.width * .525 - 50, 60), Offset(size.width * .525 - 50, 350), _line);
+    // Paint for White circle
+    final _white = Paint()
+      ..color = Colors.white
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.0;
 
-    // 정류장
-    drawStop(Offset(size.width * .525 - 50, 60), canvas);
-    drawStop(Offset(size.width * .525 - 50, 60 + 290 * .25), canvas);
-    drawStop(Offset(size.width * .525 - 50, 60 + 290 * .5), canvas);
-    drawStop(Offset(size.width * .525 - 50, 350), canvas);
+    // Paint for line Circle
+    final _colorPaint = Paint()
+      ..color = lineColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = 2.0;
 
-    drawStop(Offset(size.width * .7625 - 50, 60), canvas);
-    drawStop(Offset(size.width * .7625 - 50, 60 + 290 * .25), canvas);
-    drawStop(Offset(size.width * .7625 - 50, 60 + 290 * .75), canvas);
-    drawStop(Offset(size.width * .7625 - 50, 350), canvas);
+    double _dashWidth = 3;
+    double _dashSpace = 2;
+    double _start = 10;
+    final space = (_dashSpace + _dashWidth);
 
-    drawStop(Offset(size.width - 50, 60), canvas);
-    drawStop(Offset(size.width - 50, 60 + 290 * .25), canvas);
-    drawStop(Offset(size.width - 50, 60 + 290 * .5), canvas);
-    drawStop(Offset(size.width - 50, 60 + 290 * .75), canvas);
-    drawStop(Offset(size.width - 50, 350), canvas);
-
-    // 버스 오브젝트
-    // 시간표 오브젝트 - Stops
-
-    final _stops = ["Residence", "Shuttlecock_O", "Subway", "YesulIn", "Shuttlecock_I"];
-
-
-
-    for(int i = 0; i < _stops.length; i++){
-      if(data[_stops[i]].shuttleListStation.length > 1){
-        drawText(canvas, Offset(size.width * .525 - 50, 60 + 290 * .25 * i), data[_stops[i]].shuttleListStation.elementAt(0), context);
-      }
-
-      if(data[_stops[i]].shuttleListTerminal.length > 1){
-        drawText(canvas, Offset(size.width * .7625 - 50, 60 + 290 * .25 * i), data[_stops[i]].shuttleListTerminal.elementAt(0), context);
-      }
-
-      if(data[_stops[i]].shuttleListCycle.length > 1){
-        drawText(canvas, Offset(size.width - 50, 60 + 290 * .25 * i), data[_stops[i]].shuttleListCycle.elementAt(0), context);
-      }
+    while (_start < 35) {
+      canvas.drawLine(Offset(10, _start), Offset(10, _start + _dashSpace), _line);
+      _start += space;
     }
 
-    if(data["Shuttlecock_O"].shuttleListStation.isEmpty){
-      drawText(canvas, Offset(size.width * .525 - 55, 415), "운행 종료", context);
-    } else {
-      for(int i = 0; i < _stops.length; i++) {
-        if (data[_stops[i]].shuttleListStation.isEmpty && _stops[i] != "YesulIn") {
-          drawText(canvas, Offset(size.width * .525 - 50, 60 + 290 * .25 * i), "운행 종료", context);
-        }
-      }
-    }
+    canvas.drawCircle(Offset(10, 10), 5.0, _colorPaint);
+    canvas.drawCircle(Offset(10, 35), 5.0, _line);
+    canvas.drawCircle(Offset(10, 35), 3.0, _white);
 
-    if(data["Shuttlecock_O"].shuttleListTerminal.isEmpty){
-      drawText(canvas, Offset(size.width * .7625 - 55, 350), "운행 종료", context);
-    } else {
-      for(int i = 0; i < _stops.length; i++) {
-        if (data[_stops[i]].shuttleListTerminal.isEmpty && _stops[i] != "Subway") {
-          drawText(canvas, Offset(size.width * .7625 - 50, 60 + 290 * .25 * i), "운행 종료", context);
-        }
-      }
-    }
+    String status;
+    DateTime now = DateTime.now();
 
-    if(data["Shuttlecock_O"].shuttleListCycle.isEmpty){
-      drawText(canvas, Offset(size.width - 55, 350), "운행 종료", context);
+    if(timetableList.length >= 2){
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      drawRemainedTime(canvas, Offset(25, 10), status, context);
+      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      drawRemainedTime(canvas, Offset(25, 35), status, context);
+    } else if(timetableList.length == 1){
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      drawRemainedTime(canvas, Offset(25, 10), status, context);
+      drawRemainedTime(canvas, Offset(25, 35), '막차', context);
     } else {
-      for(int i = 0; i < _stops.length; i++) {
-        if (data[_stops[i]].shuttleListCycle.isEmpty) {
-          drawText(canvas, Offset(size.width - 50, 60 + 290 * .25 * i), "운행 종료", context);
-        }
-      }
+      drawRemainedTime(canvas, Offset(25, 10), '운행 종료', context);
     }
   }
 
   @override
-  bool shouldRepaint(covariant ShuttlePaint oldDelegate) {
+  bool shouldRepaint(covariant ShuttleCardPaint oldDelegate) {
     if(oldDelegate.data != this.data){
       return true;
     } else{
