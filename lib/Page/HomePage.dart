@@ -10,6 +10,7 @@ import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 import 'package:flutter_app_hyuabot_v2/Page/BusPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/MapPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/MetroPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/PhoneSearchPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ReadingRoomPage.dart';
@@ -125,7 +126,7 @@ class _HomePageState extends State<HomePage>{
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-map.png", "지도", MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
           ],
         ),
@@ -223,6 +224,7 @@ class _HomePageState extends State<HomePage>{
       appBar: MainAppBar(),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
+        physics: BouncingScrollPhysics(),
         child: Container(
           width: _width,
           child: Column(
