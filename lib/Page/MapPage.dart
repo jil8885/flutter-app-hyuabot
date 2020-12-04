@@ -33,7 +33,7 @@ class _MapPageState extends State<MapPage>{
                 padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                 child: Container(child: Stack(children: [
                   snapshot.data,
-                  
+
                 ],))
             ),
           );

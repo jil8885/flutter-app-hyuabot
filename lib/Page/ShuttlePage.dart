@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
@@ -15,11 +16,12 @@ class ShuttlePage extends StatefulWidget {
 class _ShuttlePageState extends State<ShuttlePage>{
   FetchAllShuttleController _shuttleController;
   Timer _shuttleTimer;
+  BuildContext _context;
 
   Widget _shuttleCard(double width, double height, String currentStop, String terminalStop, List timeTable, ShuttleStopDepartureInfo data){
     CustomPainter content = ShuttleCardPaint(timeTable, data, Color.fromARGB(255, 20, 75, 170), context);
     return Card(
-      color: Colors.white,
+      color: Theme.of(_context).backgroundColor == Colors.white ? Colors.white : Colors.black,
       elevation: 3,
       child: Container(
         width: width * .9,
@@ -32,9 +34,9 @@ class _ShuttlePageState extends State<ShuttlePage>{
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Colors.black),),
+              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
             ),
-            Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
+            Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
             Divider(color: Colors.grey),
             Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10),)
           ],
@@ -47,6 +49,7 @@ class _ShuttlePageState extends State<ShuttlePage>{
   void initState() {
     _shuttleController = FetchAllShuttleController();
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
+    _context = context;
     super.initState();
   }
 

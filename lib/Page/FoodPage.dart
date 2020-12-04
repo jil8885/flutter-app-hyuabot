@@ -29,7 +29,7 @@ class FoodPageState extends State<FoodPage>{
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('$price 원', style: TextStyle(fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).accentColor == Colors.grey ? Color.fromARGB(255, 20, 75, 170) : Theme.of(context).accentColor),),
+              Text('$price 원', style: TextStyle(fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.grey),),
             ],
           )
         ],
@@ -137,7 +137,7 @@ class FoodPageState extends State<FoodPage>{
       padding: const EdgeInsets.only(top: 10),
       child: Card(
         elevation: 3,
-        color: Colors.white,
+        color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -182,7 +182,6 @@ class FoodPageState extends State<FoodPage>{
   @override
   Widget build(BuildContext context) {
     final TextStyle _theme1 = Theme.of(context).textTheme.bodyText1;
-    final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
 
     return Scaffold(
       body: Container(

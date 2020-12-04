@@ -19,11 +19,12 @@ class BusPage extends StatefulWidget {
 class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
   Timer _busTimer;
   FetchBusInfoController _busInfoController;
+  BuildContext _context;
 
 
   Widget _busCard(double width, String busStop, String terminalStop, String lineName, Color lineColor, Map<String, dynamic> data, bool timeTableOffered){
     return Card(
-      color: Colors.white,
+      color: Theme.of(_context).backgroundColor == Colors.black ? Colors.black : Colors.white,
       elevation: 3,
       child: Container(
         width: width - 50,
@@ -43,7 +44,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 5),
-                      child: Text(busStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Colors.black),),
+                      child: Text(busStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
                     ),
                     Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
                   ],
@@ -63,6 +64,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
+    _context = context;
     _busInfoController = FetchBusInfoController();
     _busTimer = Timer.periodic(Duration(minutes: 1), (timer) {
       _busInfoController.fetch();

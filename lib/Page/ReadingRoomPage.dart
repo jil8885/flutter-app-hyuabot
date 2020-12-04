@@ -58,17 +58,17 @@ class ReadingRoomState extends State<ReadingRoomPage>{
               Row(
                 children: [
                   SizedBox(width: 30,),
-                  Text(name, style: TextStyle(color: Colors.black, fontSize: 24, fontFamily: 'Godo'), textAlign: TextAlign.center,),
+                  Text(name, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24, fontFamily: 'Godo'), textAlign: TextAlign.center,),
                 ],
               ),
               Row(
                 children: [
                   Text.rich(TextSpan(children: [
-                    TextSpan(text: available.toString(), style: TextStyle(color: Colors.black, fontFamily: 'Godo', fontSize: 22)),
+                    TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontFamily: 'Godo', fontSize: 22)),
                     TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontFamily: 'Godo', fontSize: 22)),
                   ])),
                   SizedBox(width: 50,),
-                  IconButton(icon: Icon(Icons.alarm_on_rounded, color: Colors.black,), onPressed: (){
+                  IconButton(icon: Icon(Icons.alarm_on_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
                     if(available < 1){
                       setState(() {
                         _fcmController.subscribeToTopic(prefKey);

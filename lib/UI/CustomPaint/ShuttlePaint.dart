@@ -11,7 +11,7 @@ class ShuttleCardPaint extends CustomPainter{
   ShuttleCardPaint(this.timetableList, this.data, this.lineColor, this.context);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Colors.black, fontSize: 12, fontFamily: 'Godo'), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: 'Godo'), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);

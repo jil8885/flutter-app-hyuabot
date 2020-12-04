@@ -31,7 +31,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
     }
 
     return Card(
-      color: Colors.white,
+      color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
       elevation: 3,
       child: Container(
         width: width - 50,
@@ -44,7 +44,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Colors.black),),
+              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),
             ),
             Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
             Divider(color: Colors.grey),
