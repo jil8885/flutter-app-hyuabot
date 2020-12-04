@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
 
 class FetchFoodInfoController{
-  // ignore: close_sinks
   final _allFoodInfoSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
   FetchFoodInfoController(){
     fetchFood();

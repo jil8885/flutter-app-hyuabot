@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage>{
   Widget _foodItems(BuildContext context, String title, String time, int index, FoodMenu data) {
     return GestureDetector(
       onTap: () {
-        Get.to(FoodPage(index));
+        Get.to(FoodPage());
       },
       child: CustomFoodCard(
           title: title,
@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage>{
 
     // 식당 이름들
     final _cafeteriaNames = ["학생식당", "교직원식당", "푸드코트", "창업보육센터", "창의인재원식당"];
-    final _cafeteriaKeys = ["student_erica", "teacher_erica", "foodcoart_erica", "changbo_erica", "dorm_erica"];
+    final _cafeteriaKeys = ["student_erica", "teacher_erica", "food_court_erica", "changbo_erica", "dorm_erica"];
 
     Widget _menuWidget = Container(
       margin: EdgeInsets.symmetric(horizontal: 15),
@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage>{
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "열람실", ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "전화부", PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             // _menuButton(_width / 12, _width / 12, null, "셔틀", Container()),
@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage>{
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "셔틀버스", ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "노선버스", BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
             _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "지하철", MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(0), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+            _menuButton(_itemWidth, _itemHeight, "assets/images/hanyang-food.png", "학식", FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
           ],
         ),
       ),
@@ -285,7 +285,7 @@ class _HomePageState extends State<HomePage>{
                     Text("현재의 학식", style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
                         onTap: (){
-                          Get.to(FoodPage(0));
+                          Get.to(FoodPage());
                         },
                         child: Text("전체 학식 메뉴 보기", style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
                         )
