@@ -3,15 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'Localization.dart';
 
-class TranslationsDelegate extends LocalizationsDelegate<Translations> {
+class TranslationsDelegate extends LocalizationsDelegate<TranslationManager> {
   const TranslationsDelegate();
 
   @override
   bool isSupported(Locale locale) => ['ko', 'en', 'zh'].contains(locale.languageCode);
 
   @override
-  Future<Translations> load(Locale locale) async {
-    Translations localizations = new Translations(locale);
+  Future<TranslationManager> load(Locale locale) async {
+    TranslationManager localizations = new TranslationManager(locale);
     await localizations.load();
 
     print("Load ${locale.languageCode}");

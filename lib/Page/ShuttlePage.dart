@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
@@ -17,29 +17,33 @@ class _ShuttlePageState extends State<ShuttlePage>{
   FetchAllShuttleController _shuttleController;
   Timer _shuttleTimer;
   BuildContext _context;
-
   Widget _shuttleCard(double width, double height, String currentStop, String terminalStop, List timeTable, ShuttleStopDepartureInfo data){
     CustomPainter content = ShuttleCardPaint(timeTable, data, Color.fromARGB(255, 20, 75, 170), context);
-    return Card(
-      color: Theme.of(_context).backgroundColor == Colors.white ? Colors.white : Colors.black,
-      elevation: 3,
-      child: Container(
-        width: width * .9,
-        height: height / 5.5,
-        padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
-            ),
-            Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
-            Divider(color: Colors.grey),
-            Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10),)
-          ],
+    return InkWell(
+      onTap: (){
+        print(currentStop);
+        print(terminalStop);
+        },
+      child: Card(
+        color: Theme.of(_context).backgroundColor == Colors.white ? Colors.white : Colors.black,
+        elevation: 3,
+        child: Container(
+          width: width * .9,
+          padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 10, bottom: 5),
+                child: Text(TranslationManager.of(_context).trans(currentStop), style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+              ),
+              Text(TranslationManager.of(_context).trans(terminalStop), style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+              Divider(color: Colors.grey),
+              Container(child: CustomPaint(painter: content, size: Size(100, 40),), padding: EdgeInsets.only(bottom: 10),)
+            ],
+          ),
         ),
       ),
     );
@@ -64,7 +68,7 @@ class _ShuttlePageState extends State<ShuttlePage>{
             stream: _shuttleController.allShuttleInfo,
             builder: (context, snapshot) {
               if(snapshot.hasError){
-                return Center(child: Text("셔틀 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
+                return Center(child: Text(TranslationManager.of(context).trans("failed_to_load_shuttle"), style: Theme.of(context).textTheme.bodyText1,),);
               } else if(!snapshot.hasData){
                 return Center(child: CircularProgressIndicator(),);
               }
@@ -88,32 +92,34 @@ class _ShuttlePageState extends State<ShuttlePage>{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _shuttleCard(_width / 2, _height, "기숙사", "한대앞역", residenceStn, snapshot.data["Residence"]),
-                        _shuttleCard(_width / 2, _height, "기숙사", "예술인A", residenceTerminal, snapshot.data["Residence"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_station", residenceStn, snapshot.data["Residence"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_terminal", residenceTerminal, snapshot.data["Residence"]),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _shuttleCard(_width / 2, _height, "셔틀콕", "한대앞역", schoolStn, snapshot.data["Shuttlecock_O"]),
-                        _shuttleCard(_width / 2, _height, "셔틀콕", "예술인A", schoolTerminal, snapshot.data["Shuttlecock_O"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_station", schoolStn, snapshot.data["Shuttlecock_O"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_terminal", schoolTerminal, snapshot.data["Shuttlecock_O"]),
                       ],
-                    ),                      Row(
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _shuttleCard(_width / 2, _height, "한대앞역", "셔틀콕·기숙사", station, snapshot.data["Subway"]),
-                        _shuttleCard(_width / 2, _height, "예술인A", "셔틀콕·기숙사", terminal, snapshot.data["YesulIn"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_station", "bound_bus_school", station, snapshot.data["Subway"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_terminal", "bound_bus_school", terminal, snapshot.data["YesulIn"]),
                       ],
-                    ),                      Row(
+                    ),
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _shuttleCard(_width / 2, _height, "셔틀콕 건너편", "기숙사", schoolResidence, snapshot.data["Shuttlecock_I"]),
+                        _shuttleCard(_width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, snapshot.data["Shuttlecock_I"]),
                       ],
                     ),
                     Expanded(child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Center(child: Text("터치하면 전체 시간표를 볼 수 있습니다.", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                      children: [Center(child: Text(TranslationManager.of(context).trans("touch_shuttle_timetable"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
                     ),),
                   ],
                 ),

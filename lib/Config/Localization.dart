@@ -4,19 +4,19 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Translations {
-  Translations(this.locale);
+class TranslationManager {
+  TranslationManager(this.locale);
 
   final Locale locale;
 
-  static Translations of(BuildContext context) {
-    return Localizations.of<Translations>(context, Translations);
+  static TranslationManager of(BuildContext context) {
+    return Localizations.of<TranslationManager>(context, TranslationManager);
   }
 
   Map<String, String> _sentences;
 
   Future<bool> load() async {
-    String data = await rootBundle.loadString('assets/locale/${this.locale.languageCode}.json'); // 경로 유의
+    String data = await rootBundle.loadString('assets/locale/${this.locale.languageCode}.json');
     Map<String, dynamic> _result = json.decode(data);
 
     this._sentences = new Map();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 class ShuttleCardPaint extends CustomPainter{
@@ -20,9 +21,9 @@ class ShuttleCardPaint extends CustomPainter{
 
   String _getDirection(String time, ShuttleStopDepartureInfo data){
     if(data.shuttleListTerminal.contains(time) || data.shuttleListStation.contains(time)){
-      return '직행';
+      return TranslationManager.of(context).trans("is_direct");
     } else {
-      return '순환';
+      return TranslationManager.of(context).trans("is_cycle");
     }
   }
   
@@ -64,12 +65,12 @@ class ShuttleCardPaint extends CustomPainter{
     DateTime now = DateTime.now();
 
     if(timetableList.length >= 2){
-      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${TranslationManager.of(context).trans("minute")} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status, context);
-      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} ${TranslationManager.of(context).trans("minute")} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 35), status, context);
     } else if(timetableList.length == 1){
-      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} 분 (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${TranslationManager.of(context).trans("minute")} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status, context);
       drawRemainedTime(canvas, Offset(25, 35), '막차', context);
     } else {
