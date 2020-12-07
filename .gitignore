@@ -47,3 +47,7 @@ lib/Config/AdManager.dart
 android/settings_aar.gradle
 
 android/app/google-services.json
+
+android/app/src/main/AndroidManifest.xml
+
+lib/Bloc/FireStoreController.dart

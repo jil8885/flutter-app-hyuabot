@@ -25,11 +25,11 @@ class FoodPageState extends State<FoodPage>{
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(menu, style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white,), textAlign: TextAlign.left,),
-          SizedBox(height: 5,),
+          SizedBox(height: 15,),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('$price 원', style: TextStyle(fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.grey),),
+              Text('$price 원', style: TextStyle(fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
             ],
           )
         ],
@@ -164,7 +164,16 @@ class FoodPageState extends State<FoodPage>{
               ),
               secondChild: Column(children: allFoodWidget,)
             ),
-            IconButton(icon: _isExpanded[name] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){setState(() {_isExpanded[name] = !_isExpanded[name];});})
+            InkWell(
+              onTap: (){setState(() {_isExpanded[name] = !_isExpanded[name];});},
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(icon: _isExpanded[name] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){setState(() {_isExpanded[name] = !_isExpanded[name];});}),
+                ],
+              ),
+            )
           ],
         )
       ),
