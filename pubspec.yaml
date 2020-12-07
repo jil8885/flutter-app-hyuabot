@@ -28,6 +28,9 @@ dependencies:
   flutter_native_admob: ^2.1.0+3
   fluttertoast: ^7.1.5
   naver_map_plugin: ^0.9.0
+  firebase_core: 0.5.3
+  firebase_analytics: ^6.3.0
+  cloud_firestore: ^0.14.4
 
 
 dev_dependencies:
@@ -40,6 +43,7 @@ flutter:
   assets:
     - assets/launcher/
     - assets/images/
+    - assets/locale/
   fonts:
     - family: Godo
       fonts:
