@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
@@ -26,40 +27,40 @@ class CustomShuttleCard extends StatelessWidget {
     if(timetable.length >= 2){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "이번 버스 : ${timetable.elementAt(0)}";
+      thisBusString = "${TranslationManager.of(context).trans("this_bus")} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(순환)";
+        thisBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(직행)";
+        thisBusString += "(${TranslationManager.of(context).trans("is_direct")})";
       }
-      nextBusString = "다음 버스 : ${timetable.elementAt(1)}";
+      nextBusString = "${TranslationManager.of(context).trans("next_bus")} : ${timetable.elementAt(1)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(1))){
-        nextBusString += "(순환)";
+        nextBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(1)) || data.shuttleListTerminal.contains(timetable.elementAt(1))){
-        nextBusString += "(직행)";
+        nextBusString += "(${TranslationManager.of(context).trans("is_direct")})";
       }
     } else if(timetable.length == 1){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "이번 버스 : ${timetable.elementAt(0)}";
+      thisBusString = "${TranslationManager.of(context).trans("this_bus")} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(순환)";
+        thisBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(직행)";
+        thisBusString += "(${TranslationManager.of(context).trans("is_direct")})";
       }
-      nextBusString = "막차입니다.";
+      nextBusString = TranslationManager.of(context).trans("is_last_bus");
     } else {
-      thisBusString = "운영 종료";
+      thisBusString = TranslationManager.of(context).trans("out_of_service");
     }
 
     if(timetable.isNotEmpty){
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
-            child: Row(
-              children: [
-                Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
-                Text("분 후", style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
-              ],
+            child: Text.rich(
+              TextSpan(children: [
+                TextSpan(text: "$remainedTimeString ", style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold)),
+                TextSpan(text: TranslationManager.of(context).trans("min_after"), style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+              ],),
             )),
       );
     } else {
@@ -144,7 +145,7 @@ class CustomFoodCard extends StatelessWidget {
             SizedBox(height: 20,),
             Text(_menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             Flexible(child: Container(),),
-            Text('$_price 원', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).accentColor == Colors.grey ? Color.fromARGB(255, 20, 75, 170) : Theme.of(context).accentColor),)
+            Text('$_price 원', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
           ],
         ),
       )

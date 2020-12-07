@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
@@ -18,31 +18,20 @@ class ReadingRoomPage extends StatefulWidget {
   State<StatefulWidget> createState() => ReadingRoomState();
 }
 
-Future<dynamic> backgroundMessageHandler(Map<String, dynamic> message) async {
-  print("onBackground: $message");
-
-  if (message.containsKey('data')) {
-    // Handle data message
-    final dynamic data = message['data'];
-  }
-
-  if (message.containsKey('notification')) {
-    // Handle notification message
-    final dynamic notification = message['notification'];
-  }
-
-  // Or do other work.
-}
-
 class ReadingRoomState extends State<ReadingRoomPage>{
-  ReadingRoomController _readingRoomController;
-
   // FCM controller
   FirebaseMessaging _fcmController;
-  Timer _fetchTimer;
+  FirebaseFirestore _firestore;
+  CollectionReference query;
 
 
   Widget _readingRoomCard(String name, int active, int available, TextStyle theme, String prefKey) {
+    if(available > 0){
+      prefManager.setBool(prefKey, false);
+    }
+    if(prefManager.getBool(prefKey) == null){
+      prefManager.setBool(prefKey, false);
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
@@ -68,14 +57,21 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                     TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontFamily: 'Godo', fontSize: 22)),
                   ])),
                   SizedBox(width: 50,),
-                  IconButton(icon: Icon(Icons.alarm_on_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
-                    if(available < 1){
-                      setState(() {
-                        _fcmController.subscribeToTopic(prefKey);
-                        Fluttertoast.showToast(msg: "$name의 좌석 알림이 설정되었다냥!");
-                      });
-                    } else{
-                      Fluttertoast.showToast(msg: "자리가 없을 때만 설정이 가능하다냥!");
+                  IconButton(icon: Icon(prefManager.get(prefKey) ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
+                    if(prefManager.getBool(prefKey)){
+                      _fcmController.unsubscribeFromTopic(prefKey);
+                      prefManager.setBool(prefKey, false);
+                      Fluttertoast.showToast(msg: "$name의 좌석 알림이 해제되었다냥!");
+                      setState(() {});
+                    } else {
+                      if(available < 1){
+                          _fcmController.subscribeToTopic(prefKey);
+                          prefManager.setBool(prefKey, true);
+                          Fluttertoast.showToast(msg: "$name의 좌석 알림이 설정되었다냥!");
+                          setState(() {});
+                      } else{
+                        Fluttertoast.showToast(msg: "자리가 없을 때만 설정이 가능하다냥!");
+                      }
                     }
                   }),
                   SizedBox(width: 30,)
@@ -92,14 +88,8 @@ class ReadingRoomState extends State<ReadingRoomPage>{
   @override
   void initState() {
     _fcmController = FirebaseMessaging();
-    _fcmController.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-      },
-      onBackgroundMessage: backgroundMessageHandler
-    );
-    _readingRoomController = ReadingRoomController();
-    _fetchTimer = Timer.periodic(Duration(minutes: 1), (timer){_readingRoomController.fetch();});
+    _firestore = FirebaseFirestore.instance;
+    query = _firestore.collection('reading_room').doc('erica').collection('rooms');
     super.initState();
   }
 
@@ -109,13 +99,23 @@ class ReadingRoomState extends State<ReadingRoomPage>{
     final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
 
     return Scaffold(
-      body: StreamBuilder<Map<String, ReadingRoomInfo>>(
-        stream: _readingRoomController.allReadingRoom,
-        builder: (context, snapshot) {
-          if(snapshot.hasError){
-            return Center(child: Text("셔틀 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
-          } else if(!snapshot.hasData){
+      body: StreamBuilder<QuerySnapshot>(
+        stream: query.snapshots(),
+        builder: (context, stream) {
+          // if (stream.connectionState == ConnectionState.waiting) {
+          //   return Center(child: CircularProgressIndicator());
+          // }
+          if (stream.hasError) {
+            return Center(child: Text("열람실 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
+          }
+          if(!stream.hasData){
             return Center(child: CircularProgressIndicator(),);
+          }
+          QuerySnapshot snapshot = stream.data;
+          Map<String, ReadingRoomInfo> data = {};
+          for(QueryDocumentSnapshot doc in snapshot.docs){
+            Map<String, dynamic> docData  = doc.data();
+            data[docData['name']] = ReadingRoomInfo.fromJson(docData);
           }
           return Container(
             padding: EdgeInsets.only(top: _statusBarHeight),
@@ -135,10 +135,10 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                       physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       children: [
-                        _readingRoomCard("제1열람실", snapshot.data["제1열람실"].active, snapshot.data["제1열람실"].available, _theme2, "reading_room_1"),
-                        _readingRoomCard("제2열람실", snapshot.data["제2열람실"].active, snapshot.data["제2열람실"].available, _theme2, "reading_room_2"),
-                        _readingRoomCard("제3열람실", snapshot.data["제3열람실"].active, snapshot.data["제3열람실"].available, _theme2, "reading_room_3"),
-                        _readingRoomCard("제4열람실", snapshot.data["제4열람실"].active, snapshot.data["제4열람실"].available, _theme2, "reading_room_4"),
+                        _readingRoomCard("제1열람실", data["제1열람실"].active, data["제1열람실"].available, _theme2, "reading_room_1"),
+                        _readingRoomCard("제2열람실", data["제2열람실"].active, data["제2열람실"].available, _theme2, "reading_room_2"),
+                        _readingRoomCard("제3열람실", data["제3열람실"].active, data["제3열람실"].available, _theme2, "reading_room_3"),
+                        _readingRoomCard("제4열람실", data["제4열람실"].active, data["제4열람실"].available, _theme2, "reading_room_4"),
                       ],
                     ),
                   ),
@@ -175,8 +175,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
 
   @override
   void dispose() {
-    _fetchTimer.cancel();
-    _readingRoomController.dispose();
+    _firestore.terminate();
     super.dispose();
   }
 }

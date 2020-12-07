@@ -1,3 +1,4 @@
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 
@@ -17,7 +18,7 @@ class FetchFoodInfoController{
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
 
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    http.Response response = await http.get(url);
+    http.Response response = await http.post(url, body: jsonEncode({'language': prefManager.getString("localeCode").split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     for(String name in responseJson.keys){
       if(name.contains("erica")){
