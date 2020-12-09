@@ -50,6 +50,7 @@ class SettingPage extends StatelessWidget{
                   },),
                 SettingsTile(
                   title: TranslationManager.of(context).trans("language_title"),
+                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
                   leading: Icon(Icons.language),
                   onTap: ()=>{
                     showDialog(

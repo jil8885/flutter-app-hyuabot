@@ -187,13 +187,13 @@ class _HomePageState extends State<HomePage>{
       stream: _foodInfoController.allFoodInfo,
       builder: (context, snapshot) {
         if(snapshot.hasError || !snapshot.hasData){
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
         // food info
         Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
         _foodTimer.cancel();
         return Container(
-          height: _height / 4.5,
+          height: _height / 4,
           width: _width,
           padding: EdgeInsets.symmetric(horizontal: 15),
           child: ListView.builder(
