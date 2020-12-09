@@ -3,17 +3,25 @@ package app.kobuggi.hyuabot
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import io.flutter.plugin.common.EventChannel
 
 class BackgroundFirebaseMessagingService : FirebaseMessagingService(){
     override fun onMessageReceived(msg: RemoteMessage) {
         if(msg.data.containsKey("name") && msg.data.containsKey("type")){
             if (msg.data["type"] == "reading_room"){
+                val prefs: SharedPreferences = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
+                with(prefs.edit()){
+                    putBoolean(msg.data["name"]!!, false)
+                    commit()
+                }
+
                 sendLibraryNotification("휴아봇", msg.data["name"]!!)
             }
         }
@@ -29,7 +37,6 @@ class BackgroundFirebaseMessagingService : FirebaseMessagingService(){
         builder.setContentText(body)
         FirebaseMessaging.getInstance().unsubscribeFromTopic(body)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(10, builder.build())
-
     }
 
     private fun getNotificationBuilder(id: String, name: String) : NotificationCompat.Builder {
