@@ -31,6 +31,7 @@ dependencies:
   firebase_core: 0.5.3
   firebase_analytics: ^6.3.0
   cloud_firestore: ^0.14.4
+  modal_bottom_sheet: ^1.0.0+1
 
 
 dev_dependencies:
@@ -44,6 +45,7 @@ flutter:
     - assets/launcher/
     - assets/images/
     - assets/locale/
+    - assets/databases/
   fonts:
     - family: Godo
       fonts:

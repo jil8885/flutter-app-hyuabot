@@ -40,7 +40,7 @@
   "map_btn": "Map",
   "shuttle_list": "Shuttle",
   "show_all_shuttle": "Show all shuttle info",
-  "min_after": "min(s) after",
+  "min_after": "mins left",
   "this_bus": "This bus",
   "next_bus": "Next bus",
   "is_direct": "Direct",
@@ -54,5 +54,16 @@
   "dinner": "Dinner",
   "minute": "min(s)",
   "touch_shuttle_timetable": "Touch to see whole timetable.",
-  "failed_to_load_shuttle": "Failed to load shuttle information."
+  "failed_to_load_shuttle": "Failed to load shuttle information.",
+  "menu_price": "₩",
+  "menu_not_uploaded": "Menu is not prepared.",
+  "korean": "Korean",
+  "japanese": "Japanese",
+  "chinese": "Chinese",
+  "american": "Western",
+  "fast_food": "Fast food",
+  "other_food": "Other food",
+  "bakery": "Bakery",
+  "cafe": "Cafe",
+  "pub": "Pub"
 }
