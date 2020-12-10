@@ -5,6 +5,9 @@ import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+
+
 class CustomShuttleCard extends StatelessWidget {
 
   final String title;
@@ -177,6 +180,46 @@ class CustomStoreCard extends StatelessWidget {
     _width= MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
 
+    Widget _callButton;
+    if(info.number != null){
+      _callButton = Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton(
+            onPressed: (){
+              UrlLauncher.launch("tel://${info.number}");
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Icon(Icons.call_made_rounded),
+                SizedBox(width: 5,),
+                Text('전화 걸기'),
+              ],
+            ), ),
+        ],
+      );
+    } else {
+      _callButton = Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RaisedButton(
+            onPressed: null,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Icon(Icons.call_made_rounded),
+                SizedBox(width: 5,),
+                Text('전화 번호 미제공'),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: Theme.of(context).backgroundColor == Colors.white? Colors.white : Colors.black87,
@@ -184,10 +227,10 @@ class CustomStoreCard extends StatelessWidget {
         padding: EdgeInsets.only(left: 18, top: 10, right: 18, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-
+              // crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
                   info.name,
@@ -196,13 +239,10 @@ class CustomStoreCard extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                Container(width: _width / 2.5,
-                    child: Text(info.menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
-                )
+                Text(info.menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+                SizedBox(height: 10,),
+                Expanded(child: _callButton)
               ],
-            ),
-            SizedBox(
-              width: 10,
             ),
           ],
         ),

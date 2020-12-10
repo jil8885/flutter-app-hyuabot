@@ -17,13 +17,13 @@ import 'package:get/get.dart';
 
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:path/path.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   savedThemeMode = await AdaptiveTheme.getThemeMode();
-  prefManager = await SharedPreferences.getInstance();
+  prefManager = await StreamingSharedPreferences.instance;
   Firebase.initializeApp();
   copyDatabase();
   runApp(Phoenix(child: MyApp()));
@@ -36,7 +36,7 @@ void copyDatabase() async {
   try {
     await Directory(dirname(path)).create(recursive: true);
   } catch (_) {}
-
+  prefManager = await StreamingSharedPreferences.instance;
   ByteData data = await rootBundle.load(join("assets/databases", "information.db"));
   List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
   await new File(path).writeAsBytes(bytes, flush: true);
@@ -48,6 +48,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    Preference<String> _localeCode = prefManager.getString("localeCode", defaultValue: "ko");
+
     return AdaptiveTheme(
         light: lightTheme,
         dark: darkTheme,
@@ -61,8 +64,7 @@ class MyApp extends StatelessWidget {
           supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
           localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
-            var localeCode = prefManager.getString("localeCode");
-            switch(localeCode){
+            switch(_localeCode.getValue()){
               case 'ko_KR':
                 return const Locale('ko', 'KR');
                 break;
