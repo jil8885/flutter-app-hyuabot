@@ -18,7 +18,7 @@ class BackgroundFirebaseMessagingService : FirebaseMessagingService(){
             if (msg.data["type"] == "reading_room"){
                 val prefs: SharedPreferences = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE)
                 with(prefs.edit()){
-                    putBoolean(msg.data["name"]!!, false)
+                    putBoolean("flutter." + msg.data["name"]!!, false)
                     commit()
                 }
 

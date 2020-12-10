@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
@@ -12,6 +10,7 @@ import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class ReadingRoomPage extends StatefulWidget {
   @override
@@ -23,15 +22,10 @@ class ReadingRoomState extends State<ReadingRoomPage>{
   FirebaseMessaging _fcmController;
   FirebaseFirestore _firestore;
   CollectionReference query;
+  final ReadingRoomStatus readingRoomStatus = ReadingRoomStatus(prefManager);
 
 
-  Widget _readingRoomCard(String name, int active, int available, TextStyle theme, String prefKey) {
-    if(available > 0){
-      prefManager.setBool(prefKey, false);
-    }
-    if(prefManager.getBool(prefKey) == null){
-      prefManager.setBool(prefKey, false);
-    }
+  Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive, String prefKey) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
@@ -57,8 +51,8 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                     TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontFamily: 'Godo', fontSize: 22)),
                   ])),
                   SizedBox(width: 50,),
-                  IconButton(icon: Icon(prefManager.get(prefKey) ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
-                    if(prefManager.getBool(prefKey)){
+                  IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
+                    if(alarmActive){
                       _fcmController.unsubscribeFromTopic(prefKey);
                       prefManager.setBool(prefKey, false);
                       Fluttertoast.showToast(msg: "$name의 좌석 알림이 해제되었다냥!");
@@ -135,10 +129,10 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                       physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       children: [
-                        _readingRoomCard("제1열람실", data["제1열람실"].active, data["제1열람실"].available, _theme2, "reading_room_1"),
-                        _readingRoomCard("제2열람실", data["제2열람실"].active, data["제2열람실"].available, _theme2, "reading_room_2"),
-                        _readingRoomCard("제3열람실", data["제3열람실"].active, data["제3열람실"].available, _theme2, "reading_room_3"),
-                        _readingRoomCard("제4열람실", data["제4열람실"].active, data["제4열람실"].available, _theme2, "reading_room_4"),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom1, builder: (context, alarmActive) => _readingRoomCard("제1열람실", data["제1열람실"].active, data["제1열람실"].available, _theme2, alarmActive, "reading_room_1")),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom2, builder: (context, alarmActive) => _readingRoomCard("제2열람실", data["제2열람실"].active, data["제2열람실"].available, _theme2, alarmActive, "reading_room_2")),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom3, builder: (context, alarmActive) => _readingRoomCard("제3열람실", data["제3열람실"].active, data["제3열람실"].available, _theme2, alarmActive, "reading_room_3")),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom4, builder: (context, alarmActive) => _readingRoomCard("제4열람실", data["제4열람실"].active, data["제4열람실"].available, _theme2, alarmActive, "reading_room_4")),
                       ],
                     ),
                   ),
@@ -178,4 +172,18 @@ class ReadingRoomState extends State<ReadingRoomPage>{
     _firestore.terminate();
     super.dispose();
   }
+}
+
+class ReadingRoomStatus{
+  ReadingRoomStatus(StreamingSharedPreferences preferences)
+      : readingRoom1 = prefManager.getBool('reading_room_1', defaultValue: false),
+        readingRoom2 = prefManager.getBool('reading_room_2', defaultValue: false),
+        readingRoom3 = prefManager.getBool('reading_room_3', defaultValue: false),
+        readingRoom4 = prefManager.getBool('reading_room_4', defaultValue: false);
+
+  final Preference<bool> readingRoom1;
+  final Preference<bool> readingRoom2;
+  final Preference<bool> readingRoom3;
+  final Preference<bool> readingRoom4;
+
 }
