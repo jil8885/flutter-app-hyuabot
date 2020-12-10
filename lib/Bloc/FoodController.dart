@@ -6,6 +6,7 @@ import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
 import 'dart:convert';
 import 'package:rxdart/rxdart.dart';
+import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class FetchFoodInfoController{
   final _allFoodInfoSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
@@ -13,12 +14,13 @@ class FetchFoodInfoController{
     fetchFood();
   }
 
-  void fetchFood() async {
+  fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
-
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    http.Response response = await http.post(url, body: jsonEncode({'language': (prefManager.getString("localeCode") ?? 'ko').split("_")[0]}));
+    Preference<String> _localeCode = prefManager.getString('localeCode', defaultValue: 'ko');
+    http.Response response;
+    response = await http.post(url, body: jsonEncode({'language': _localeCode.getValue().split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     for(String name in responseJson.keys){
       if(name.contains("erica")){

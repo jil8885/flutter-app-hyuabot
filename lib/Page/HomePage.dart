@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage>{
     _foodInfoController = FetchFoodInfoController();
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
     _foodTimer = Timer.periodic(Duration(seconds: 30), (timer) {_foodInfoController.fetchFood();});
-    adController.setTestDeviceIds(["8F53CD4DC1C32BBF724766A8608006FF"]);
+    adController.setTestDeviceIds(["05C3940E8036273FC97F1B6362B7E5FE"]);
     adController.reloadAd(forceRefresh: true, numberAds: 5);
     adController.setAdUnitID(AdManager.bannerAdUnitId);
     super.initState();

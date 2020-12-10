@@ -4,13 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MetroController.dart';
-import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
-import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/BusCardPaint.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/MetroCardPaint.dart';
-import 'package:flutter_native_admob/flutter_native_admob.dart';
-import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
 
 class MetroPage extends StatefulWidget {

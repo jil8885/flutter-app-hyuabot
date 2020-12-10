@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
@@ -23,6 +20,7 @@ class _MapPageState extends State<MapPage>{
   @override
   void initState(){
     super.initState();
+    Fluttertoast.showToast(msg: "버튼을 눌러 카테고리를 선택하세요!");
   }
 
   _getMarkers(String category) async {
@@ -38,7 +36,6 @@ class _MapPageState extends State<MapPage>{
   Widget build(BuildContext context) {
     _dataBaseController = DataBaseController(context);
     _context = context;
-    Fluttertoast.showToast(msg: "버튼을 눌러 카테고리를 선택하세요!");
     return Scaffold(
       floatingActionButton: FloatingActionButton(child: Icon(Icons.category, color: Colors.white,), backgroundColor: Color(0xff2db400), onPressed: _menuButtonPressed,),
       body: Container(
