@@ -1,10 +1,8 @@
-import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
@@ -18,14 +16,30 @@ class ReadingRoomPage extends StatefulWidget {
 }
 
 class ReadingRoomState extends State<ReadingRoomPage>{
-  // FCM controller
-  FirebaseMessaging _fcmController;
   FirebaseFirestore _firestore;
   CollectionReference query;
   final ReadingRoomStatus readingRoomStatus = ReadingRoomStatus(prefManager);
 
 
-  Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive, String prefKey) {
+  Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive) {
+    String _alarmOnString;
+    String _alarmOffString;
+
+    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+      case "ko_KR":
+        _alarmOnString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 설정되었다냥!";
+        _alarmOffString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 해제되었다냥!";
+        break;
+      case "en_US":
+        _alarmOnString = "Alarm on for ${TranslationManager.of(context).trans(name)}";
+        _alarmOffString = "Alarm off for ${TranslationManager.of(context).trans(name)}";
+        break;
+      case "zh":
+        _alarmOnString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 설정되었다냥!";
+        _alarmOffString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 해제되었다냥!";
+        break;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Card(
@@ -41,30 +55,28 @@ class ReadingRoomState extends State<ReadingRoomPage>{
               Row(
                 children: [
                   SizedBox(width: 30,),
-                  Text(name, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24, fontFamily: 'Godo'), textAlign: TextAlign.center,),
+                  Text(TranslationManager.of(context).trans(name), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
                 ],
               ),
               Row(
                 children: [
                   Text.rich(TextSpan(children: [
-                    TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontFamily: 'Godo', fontSize: 22)),
-                    TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontFamily: 'Godo', fontSize: 22)),
+                    TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
+                    TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontSize: 22)),
                   ])),
                   SizedBox(width: 50,),
                   IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
                     if(alarmActive){
-                      _fcmController.unsubscribeFromTopic(prefKey);
-                      prefManager.setBool(prefKey, false);
-                      Fluttertoast.showToast(msg: "$name의 좌석 알림이 해제되었다냥!");
-                      setState(() {});
+                      fcmManager.unsubscribeFromTopic(name);
+                      prefManager.setBool(name, false);
+                      Fluttertoast.showToast(msg: _alarmOffString);
                     } else {
                       if(available < 1){
-                          _fcmController.subscribeToTopic(prefKey);
-                          prefManager.setBool(prefKey, true);
-                          Fluttertoast.showToast(msg: "$name의 좌석 알림이 설정되었다냥!");
-                          setState(() {});
+                        fcmManager.subscribeToTopic(name);
+                          prefManager.setBool(name, true);
+                          Fluttertoast.showToast(msg: _alarmOnString);
                       } else{
-                        Fluttertoast.showToast(msg: "자리가 없을 때만 설정이 가능하다냥!");
+                        Fluttertoast.showToast(msg: TranslationManager.of(context).trans("seat_remained_error"));
                       }
                     }
                   }),
@@ -81,7 +93,6 @@ class ReadingRoomState extends State<ReadingRoomPage>{
 
   @override
   void initState() {
-    _fcmController = FirebaseMessaging();
     _firestore = FirebaseFirestore.instance;
     query = _firestore.collection('reading_room').doc('erica').collection('rooms');
     super.initState();
@@ -96,11 +107,8 @@ class ReadingRoomState extends State<ReadingRoomPage>{
       body: StreamBuilder<QuerySnapshot>(
         stream: query.snapshots(),
         builder: (context, stream) {
-          // if (stream.connectionState == ConnectionState.waiting) {
-          //   return Center(child: CircularProgressIndicator());
-          // }
           if (stream.hasError) {
-            return Center(child: Text("열람실 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
+            return Center(child: Text(TranslationManager.of(context).trans("fail_to_load_library"), style: Theme.of(context).textTheme.bodyText1,),);
           }
           if(!stream.hasData){
             return Center(child: CircularProgressIndicator(),);
@@ -129,17 +137,17 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                       physics: BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       children: [
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom1, builder: (context, alarmActive) => _readingRoomCard("제1열람실", data["제1열람실"].active, data["제1열람실"].available, _theme2, alarmActive, "reading_room_1")),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom2, builder: (context, alarmActive) => _readingRoomCard("제2열람실", data["제2열람실"].active, data["제2열람실"].available, _theme2, alarmActive, "reading_room_2")),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom3, builder: (context, alarmActive) => _readingRoomCard("제3열람실", data["제3열람실"].active, data["제3열람실"].available, _theme2, alarmActive, "reading_room_3")),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom4, builder: (context, alarmActive) => _readingRoomCard("제4열람실", data["제4열람실"].active, data["제4열람실"].available, _theme2, alarmActive, "reading_room_4")),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom1, builder: (context, alarmActive) => _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, alarmActive)),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom2, builder: (context, alarmActive) => _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, alarmActive)),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom3, builder: (context, alarmActive) => _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, alarmActive)),
+                        PreferenceBuilder(preference: readingRoomStatus.readingRoom4, builder: (context, alarmActive) => _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, alarmActive)),
                       ],
                     ),
                   ),
                   Expanded(child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Center(child: Text("열람실 좌석이 없을 때 좌석 알람을 받을 수 있어요!", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                    children: [Center(child: Text(TranslationManager.of(context).trans("how_use_library_page"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
                   ),),
                   Container(
                     height: 90,
@@ -149,7 +157,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                       numberAds: 1,
                       controller: adController,
                       type: NativeAdmobType.banner,
-                      error: Center(child: Text("광고 불러오기 실패", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
+                      error: Center(child: Text(TranslationManager.of(context).trans('plz_enable_ad'), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
                       options: NativeAdmobOptions(
                         adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
                         bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),

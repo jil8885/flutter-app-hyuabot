@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 
@@ -6,6 +7,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Config/LocalizationDelegate.dart';
@@ -25,6 +27,14 @@ void main() async {
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   prefManager = await StreamingSharedPreferences.instance;
   Firebase.initializeApp();
+  fcmManager = FirebaseMessaging();
+  fcmManager.configure(
+    onMessage: (Map<String, dynamic> message) async{
+      final dynamic data = message['data'];
+      prefManager.setBool(data["name"], false);
+    },
+    onBackgroundMessage: backgroundMessageHandler
+  );
   copyDatabase();
   runApp(Phoenix(child: MyApp()));
 }
@@ -40,6 +50,18 @@ void copyDatabase() async {
   ByteData data = await rootBundle.load(join("assets/databases", "information.db"));
   List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
   await new File(path).writeAsBytes(bytes, flush: true);
+}
+
+Future<dynamic> backgroundMessageHandler(Map<String, dynamic> message) async {
+  if (message.containsKey('data')) {
+    final dynamic data = message['data'];
+    prefManager.setBool(data["name"], false);
+    // fcmManager.unsubscribeFromTopic(data["name"]);
+  }
+
+  if (message.containsKey('notification')) {
+    final dynamic notification = message['notification'];
+  }
 }
 
 

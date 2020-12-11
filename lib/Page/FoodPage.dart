@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +17,12 @@ class FoodPageState extends State<FoodPage>{
   final Map<String, bool> _isExpanded = {"student_erica": false, "teacher_erica": false, "food_court_erica": false, "changbo_erica": false, "dorm_erica": false};
 
   Widget _foodItem(String menu, String price){
+    String _priceString;
+    if(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue() == "ko_KR"){
+      _priceString = '$price 원';
+    } else {
+      _priceString = '₩ $price';
+    }
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
@@ -22,12 +30,12 @@ class FoodPageState extends State<FoodPage>{
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(menu, style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white,), textAlign: TextAlign.left,),
+          Text(menu, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white,), textAlign: TextAlign.left,),
           SizedBox(height: 15,),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('$price 원', style: TextStyle(fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
+              Text(_priceString, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
             ],
           )
         ],
@@ -36,14 +44,14 @@ class FoodPageState extends State<FoodPage>{
   }
 
   Widget _cafeteriaCard(Map<String, List<FoodMenu>> data, String name){
-    String kind = "중식";
+    String kind = TranslationManager.of(context).trans("lunch");
     List<FoodMenu> currentFood = [];
     if(_now.hour < 11 && data['breakfast'].isNotEmpty){
       currentFood = data['breakfast'];
-      kind = "조식";
+      kind = TranslationManager.of(context).trans("breakfast");
     } else if (_now.hour > 15 && data['dinner'].isNotEmpty){
       currentFood = data['dinner'];
-      kind = "석식";
+      kind = TranslationManager.of(context).trans("dinner");
     } else if (data['lunch'].isNotEmpty){
       currentFood = data['lunch'];
     } else {
@@ -56,7 +64,7 @@ class FoodPageState extends State<FoodPage>{
     } else {
       currentFoodWidget = [
         SizedBox(height: 10,),
-        Container(child: Center(child: Text("식단이 제공되지 않습니다.", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
+        Container(child: Center(child: Text(TranslationManager.of(context).trans("menu_not_uploaded"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
       ];
     }
 
@@ -69,7 +77,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("조식", style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(TranslationManager.of(context).trans("breakfast"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -86,7 +94,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("중식", style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(TranslationManager.of(context).trans("lunch"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -103,7 +111,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("석식", style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(TranslationManager.of(context).trans("dinner"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -123,12 +131,12 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("중식", style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text(TranslationManager.of(context).trans("lunch"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         ),
         SizedBox(height: 10,),
-        Container(child: Center(child: Text("식단이 제공되지 않습니다.", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
+        Container(child: Center(child: Text(TranslationManager.of(context).trans("menu_not_uploaded"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
       ];
     }
     return Padding(
@@ -150,7 +158,7 @@ class FoodPageState extends State<FoodPage>{
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(kind, style: TextStyle(fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text(kind, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
                       ],
                     ),
                   ),
@@ -197,7 +205,7 @@ class FoodPageState extends State<FoodPage>{
             stream: _foodInfoController.allFoodInfo,
             builder: (context, snapshot) {
               if(snapshot.hasError){
-                return Center(child: Text("학식 정보를 불러오는데 실패했습니다.", style: Theme.of(context).textTheme.bodyText1,),);
+                return Center(child: Text(TranslationManager.of(context).trans("fail_to_load_food"), style: Theme.of(context).textTheme.bodyText1,),);
               } else if(!snapshot.hasData){
                 return Center(child: CircularProgressIndicator(),);
               }
@@ -228,7 +236,7 @@ class FoodPageState extends State<FoodPage>{
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("학생식당", style: TextStyle(color: _theme1.color, fontSize: 20, fontFamily: 'Godo'), textAlign: TextAlign.center,)
+                                Text(TranslationManager.of(context).trans("student_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
                             _cafeteriaCard(snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
@@ -236,7 +244,7 @@ class FoodPageState extends State<FoodPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("교직원식당", style: TextStyle(color: _theme1.color, fontSize: 20, fontFamily: 'Godo'), textAlign: TextAlign.center,)
+                                Text(TranslationManager.of(context).trans("teacher_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
                             _cafeteriaCard(snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
@@ -244,7 +252,7 @@ class FoodPageState extends State<FoodPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("푸드코트", style: TextStyle(color: _theme1.color, fontSize: 20, fontFamily: 'Godo'), textAlign: TextAlign.center,)
+                                Text(TranslationManager.of(context).trans("food_court"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
                             _cafeteriaCard(snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
@@ -252,7 +260,7 @@ class FoodPageState extends State<FoodPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("창업보육센터", style: TextStyle(color: _theme1.color, fontSize: 20, fontFamily: 'Godo'), textAlign: TextAlign.center,)
+                                Text(TranslationManager.of(context).trans("changbo_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
                             _cafeteriaCard(snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
@@ -260,7 +268,7 @@ class FoodPageState extends State<FoodPage>{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("창의인재원식당", style: TextStyle(color: _theme1.color, fontSize: 20, fontFamily: 'Godo'), textAlign: TextAlign.center,)
+                                Text(TranslationManager.of(context).trans("dorm_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
                             _cafeteriaCard(snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),

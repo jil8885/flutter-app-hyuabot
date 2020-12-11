@@ -22,25 +22,25 @@ class SettingPage extends StatelessWidget{
               tiles: [
                 SettingsTile(
                   title: TranslationManager.of(context).trans("theme_title"),
-                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
                   leading: Icon(Icons.wb_sunny),
                   onTap: ()=>{
                     showDialog(
                         context: context,
                         builder: (_) => SimpleDialog(
-                          title: Text(TranslationManager.of(context).trans("theme_dialog_title"), style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),),
+                          title: Text(TranslationManager.of(context).trans("theme_dialog_title"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),
                           children: [
-                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_system"), style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
+                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_system"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setSystem();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_light"), style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
+                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_light"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setLight();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_dark"), style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
+                            SimpleDialogOption(child: Text(TranslationManager.of(context).trans("set_theme_dark"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
                               AdaptiveTheme.of(context).setDark();
                               Navigator.pop(context);
                               adController.reloadAd(forceRefresh: true);
@@ -50,7 +50,7 @@ class SettingPage extends StatelessWidget{
                   },),
                 SettingsTile(
                   title: TranslationManager.of(context).trans("language_title"),
-                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
                   leading: Icon(Icons.language),
                   onTap: ()=>{
                     showDialog(
@@ -75,17 +75,17 @@ class SettingPage extends StatelessWidget{
                   },),
                 SettingsTile(
                   title: TranslationManager.of(context).trans("thanks_for_someone"),
-                  titleTextStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),
                   leading: Icon(Icons.people),
                   onTap: () => {
                     Get.defaultDialog(
                       title: TranslationManager.of(context).trans("thanks_for_someone"),
-                      titleStyle: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color,),
+                      titleStyle: TextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
                       content: Column(
                         children: [
-                          Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
+                          Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
                           SizedBox(height: 5,),
-                          Text("중국학과16 이용찬(번역)", style: TextStyle(fontFamily: "Godo", color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
+                          Text("중국학과16 이용찬(번역)", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 16),),
                         ],
                       ),
                     )

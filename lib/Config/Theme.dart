@@ -7,9 +7,10 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     cardColor: Color.fromARGB(160, 20, 75, 170),
     brightness: Brightness.light,
+    fontFamily: "Godo",
     textTheme: TextTheme(
-      bodyText1: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Godo"),
-      bodyText2: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Godo"),
+      bodyText1: TextStyle(fontSize: 16, color: Colors.black),
+      bodyText2: TextStyle(fontSize: 16, color: Colors.white),
     )
 );
 
@@ -19,8 +20,9 @@ ThemeData darkTheme = ThemeData(
   backgroundColor: Colors.black,
   cardColor: Colors.white70,
   brightness: Brightness.dark,
+  fontFamily: "Godo",
   textTheme: TextTheme(
-    bodyText1: TextStyle(fontSize: 16, color: Colors.white, fontFamily: "Godo"),
-    bodyText2: TextStyle(fontSize: 16, color: Colors.black, fontFamily: "Godo"),
+    bodyText1: TextStyle(fontSize: 16, color: Colors.white),
+    bodyText2: TextStyle(fontSize: 16, color: Colors.black),
   )
 );

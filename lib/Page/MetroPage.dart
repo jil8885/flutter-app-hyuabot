@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MetroController.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/MetroCardPaint.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +26,19 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
       content = MetroTimeTableCardPaint(data, lineColor, context);
     }
 
+    String _boundString;
+    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+      case "ko_KR":
+        _boundString = "$terminalStop 방면";
+        break;
+      case "en_US":
+        _boundString = "Bound for $terminalStop";
+        break;
+      case "zh":
+        _boundString = "$terminalStop";
+        break;
+    }
+
     return Card(
       color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
       elevation: 3,
@@ -38,9 +53,9 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 5),
-              child: Text(currentStop, style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),
+              child: Text(currentStop, style: TextStyle(fontSize: 16, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),
             ),
-            Text("$terminalStop 방면", style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Colors.grey),),
+            Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
             Divider(color: Colors.grey),
             Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10),)
           ],
@@ -83,14 +98,14 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
                         IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
                       ],
                     ),
-                    _metroCard(_width, _height, Color(0xff00a5de), "한대앞역(4호선)", "서울·당고개", snapshot.data['main']['up']),
-                    _metroCard(_width, _height, Color(0xff00a5de), "한대앞역(4호선)", "안산·오이도", snapshot.data['main']['down']),
-                    _metroCard(_width, _height, Color(0xfff5a200), "한대앞역(수인분당선)", "왕십리·수원", snapshot.data['sub']['up']),
-                    _metroCard(_width, _height, Color(0xfff5a200), "한대앞역(수인분당선)", "오이도·인천", snapshot.data['sub']['down']),
+                    _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_seoul"), snapshot.data['main']['up']),
+                    _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_oido"), snapshot.data['main']['down']),
+                    _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_suwon"), snapshot.data['sub']['up']),
+                    _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_incheon"), snapshot.data['sub']['down']),
                     Expanded(child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Center(child: Text("수인분당선은 실시간 API 문제로 시간표만 제공합니다", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                      children: [Center(child: Text(TranslationManager.of(context).trans("subway_caution"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
                     ),),
                   ],
                 ),

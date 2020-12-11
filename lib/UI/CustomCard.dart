@@ -4,6 +4,7 @@ import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:get/get.dart';
 
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -69,15 +70,15 @@ class CustomShuttleCard extends StatelessWidget {
         child: Container(width: _width / 2.5,
             child: Text.rich(
               TextSpan(children: [
-                TextSpan(text: "$remainedTimeString ", style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold)),
-                TextSpan(text: minString, style: TextStyle(fontSize: _height/45, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                TextSpan(text: "$remainedTimeString ", style: TextStyle(fontSize: _height/30, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold)),
+                TextSpan(text: minString, style: TextStyle(fontSize: _height/45, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
               ],),
             )),
       );
     } else {
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
-            child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, fontFamily: 'Godo', color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+            child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
       );
     }
 
@@ -95,7 +96,7 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
+                  style: TextStyle(fontSize: _height/40, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
                 ),
                 SizedBox(
                   height: 10,
@@ -103,11 +104,11 @@ class CustomShuttleCard extends StatelessWidget {
                 _remainedText,
                 SizedBox(height: 25,),
                 Container(width: _width / 2.5,
-                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
+                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
                 ),
                 SizedBox(height: 5),
                 Container(width: _width / 2.5,
-                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
               ],
             ),
             SizedBox(
@@ -154,11 +155,11 @@ class CustomFoodCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Text('$title($time)', style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+            Text('$title($time)', style: TextStyle(fontSize: _height/40, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             SizedBox(height: 20,),
-            Text(_menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+            Text(_menu, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             Flexible(child: Container(),),
-            Text('$_price ${TranslationManager.of(context).trans("menu_price")}', style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
+            Text('$_price ${TranslationManager.of(context).trans("menu_price")}', style: TextStyle(fontSize: _height/50, fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
           ],
         ),
       )
@@ -195,7 +196,7 @@ class CustomStoreCard extends StatelessWidget {
               children: [
                 Icon(Icons.call_made_rounded),
                 SizedBox(width: 5,),
-                Text('전화 걸기'),
+                Text(TranslationManager.of(context).trans("map_can_call")),
               ],
             ), ),
         ],
@@ -212,7 +213,7 @@ class CustomStoreCard extends StatelessWidget {
               children: [
                 Icon(Icons.call_made_rounded),
                 SizedBox(width: 5,),
-                Text('전화 번호 미제공'),
+                Text(TranslationManager.of(context).trans("map_cant_call")),
               ],
             ),
           ),
@@ -234,12 +235,12 @@ class CustomStoreCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   info.name,
-                  style: TextStyle(fontSize: _height/40, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
+                  style: TextStyle(fontSize: _height/40, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Text(info.menu, style: TextStyle(fontSize: _height/50, fontFamily: 'Godo', color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
+                Text(info.menu, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,),
                 SizedBox(height: 10,),
                 Expanded(child: _callButton)
               ],

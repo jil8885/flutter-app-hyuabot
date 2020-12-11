@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage>{
           child: Container(child: Image.asset(assetName, width: width, height: height,), decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(10)), padding: EdgeInsets.all(10),),
         ),
         SizedBox(height: 5,),
-        Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13, fontFamily: 'Godo'), textAlign: TextAlign.center,))
+        Flexible(child: Text(menuName, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13), textAlign: TextAlign.center,))
       ],
     );
   }
@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage>{
       floatingActionButton: FloatingActionButton.extended(
         elevation: 3,
         onPressed: () => Get.to(SettingPage()),
-        label: Text(TranslationManager.of(context).trans("setting_title"), textAlign: TextAlign.center, style: TextStyle(color:Colors.white, fontFamily: 'Godo'),),
+        label: Text(TranslationManager.of(context).trans("setting_title"), textAlign: TextAlign.center, style: TextStyle(color:Colors.white),),
         icon: Icon(Icons.settings, color:Colors.white),
         backgroundColor: _primaryColor,
       ),
@@ -254,15 +254,16 @@ class _HomePageState extends State<HomePage>{
               ),
               Container(
                 margin: EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(TranslationManager.of(context).trans("menu_list"), style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
-                    GestureDetector(
-                        onTap: _expand,
-                        child: Text(_isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
-                        )),
-                  ],
+                child: GestureDetector(
+                  onTap: _expand,
+                  child: Row(
+                    children: <Widget>[
+                      Text(TranslationManager.of(context).trans("menu_list"), style: TextStyle(fontSize: 16, color:Theme.of(context).textTheme.bodyText1.color)),
+                      Expanded(child: Container()),
+                      Text(_isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               _menuWidget,
@@ -272,7 +273,7 @@ class _HomePageState extends State<HomePage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(TranslationManager.of(context).trans("shuttle_list"), style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+                    Text(TranslationManager.of(context).trans("shuttle_list"), style: TextStyle(fontSize: 16, color:Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
                         onTap: (){
                           Get.to(ShuttlePage());
@@ -290,7 +291,7 @@ class _HomePageState extends State<HomePage>{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(TranslationManager.of(context).trans("food_now"), style: TextStyle(fontSize: 16, fontFamily: 'Godo', color:Theme.of(context).textTheme.bodyText1.color)),
+                    Text(TranslationManager.of(context).trans("food_now"), style: TextStyle(fontSize: 16, color:Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
                         onTap: (){
                           Get.to(FoodPage());

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 
 class MetroRealtimeCardPaint extends CustomPainter{
@@ -10,11 +11,31 @@ class MetroRealtimeCardPaint extends CustomPainter{
   MetroRealtimeCardPaint(this.data, this.lineColor, this.context);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: 'Godo'), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
+  }
+
+  String _resultString(MetroRealtimeInfo info, String status){
+    String _result;
+    Map<String, String> langDict;
+    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+      case "ko_KR":
+        _result = '${info.terminalStation}행 ${info.remainedTime.toInt()}분 ($status)';
+        break;
+      case "en_US":
+        langDict = {"당고개": "Danggogae", "노원": "Nowon", "한성대입구": "Hansung Univ.", "사당": "Sadang", "금정": "Gumjeong", "오이도": "Oido", "안산": "Ansan"};
+        _result = '${info.remainedTime.toInt()} minutes left (Bound for ${langDict[info.terminalStation]})';
+        break;
+      case 'zh':
+        langDict = {"당고개": "Danggogae", "노원": "Nowon", "한성대입구": "Hansung Univ.", "사당": "Sadang", "금정": "Gumjeong", "오이도": "Oido", "안산": "Ansan"};
+        _result = '${info.remainedTime.toInt()} minutes left (Bound for ${langDict[info.terminalStation]})';
+        break;
+    }
+
+    return _result;
   }
 
   @override
@@ -61,7 +82,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
         status = '${data.elementAt(0).currentStation} ${data.elementAt(0).currentStatus}';
       }
 
-      drawRemainedTime(canvas, Offset(25, 10), '${data.elementAt(0).terminalStation}행 ${data.elementAt(0).remainedTime.toInt()}분 ($status)', context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status), context);
 
       if(data.elementAt(1).currentStatus.toString().contains("전역")){
         status = data.elementAt(1).currentStatus;
@@ -71,7 +92,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
         status = '${data.elementAt(1).currentStation} ${data.elementAt(1).currentStatus}';
       }
 
-      drawRemainedTime(canvas, Offset(25, 35), '${data.elementAt(1).terminalStation}행 ${data.elementAt(1).remainedTime.toInt()}분 ($status)', context);
+      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1), status), context);
     } else if(data.length == 1){
       if(data.elementAt(0).currentStatus.toString().contains("전역")){
         status = data.elementAt(0).currentStatus;
@@ -80,7 +101,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
       } else {
         status = '${data.elementAt(0).currentStation} ${data.elementAt(0).currentStatus}';
       }
-      drawRemainedTime(canvas, Offset(25, 10), '${data.elementAt(0).terminalStation}행 ${data.elementAt(0).remainedTime.toInt()}분 ($status)', context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status), context);
       drawRemainedTime(canvas, Offset(25, 35), '정보 없음', context);
     } else {
       drawRemainedTime(canvas, Offset(25, 10), '운행 종료', context);
@@ -105,11 +126,32 @@ class MetroTimeTableCardPaint extends CustomPainter{
   MetroTimeTableCardPaint(this.data, this.lineColor, this.context);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: 'Godo'), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
+  }
+
+  String _resultString(MetroTimeTableInfo info){
+    String _result;
+    Map<String, String> langDict;
+    DateTime now = DateTime.now();
+    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+      case "ko_KR":
+        _result = '${info.terminalStation}행 ${getTimeFromString(info.arrivalTime.toString(), now).difference(now).inMinutes}분';
+        break;
+      case "en_US":
+        langDict = {"왕십리": "Wangsimni", "청량리": "Cheongryangri", "죽전": "Jukjeon", "고색": "Gosaek", "인천": "Incheon", "오이도": "Oido"};
+        _result = '${getTimeFromString(info.arrivalTime.toString(), now).difference(now).inMinutes} minutes left (Bound for ${langDict[info.terminalStation]})';
+        break;
+      case "zh":
+        langDict = {"왕십리": "Wangsimni", "청량리": "Cheongryangri", "죽전": "Jukjeon", "고색": "Gosaek", "인천": "Incheon", "오이도": "Oido"};
+        _result = '${getTimeFromString(info.arrivalTime.toString(), now).difference(now).inMinutes} minutes left (Bound for ${langDict[info.terminalStation]})';
+        break;
+    }
+
+    return _result;
   }
 
   @override
@@ -148,10 +190,10 @@ class MetroTimeTableCardPaint extends CustomPainter{
 
     DateTime now = DateTime.now();
     if(data.length >= 2){
-      drawRemainedTime(canvas, Offset(25, 10), '${data.elementAt(0).terminalStation}행 ${getTimeFromString(data.elementAt(0).arrivalTime.toString(), now).difference(now).inMinutes}분', context);
-      drawRemainedTime(canvas, Offset(25, 35), '${data.elementAt(1).terminalStation}행 ${getTimeFromString(data.elementAt(1).arrivalTime.toString(), now).difference(now).inMinutes}분', context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)), context);
+      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1)), context);
     } else if(data.length == 1){
-      drawRemainedTime(canvas, Offset(25, 10), '${data.elementAt(0).terminalStation}행 ${getTimeFromString(data.elementAt(0).arrivalTime.toString(), now).difference(now).inMinutes}분', context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)), context);
     } else {
       drawRemainedTime(canvas, Offset(25, 10), '운행 종료', context);
     }

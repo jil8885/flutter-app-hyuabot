@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_point_tab_bar/pointTabBar.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -15,7 +16,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
   DataBaseController _dataBaseController;
   TextEditingController _textEditingController;
 
-  List<String> tabList = ["교내", "교외"];
+  List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
   databaseInit(){
     _dataBaseController.init();
   }
@@ -59,9 +60,9 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
       keyboardType: TextInputType.text,
 
       decoration: InputDecoration(
-        hintText: "검색할 전화번호를 입력해주세요.",
-        labelText: "검색어",
-        helperText: "검색할 상호명/기관명",
+        hintText: TranslationManager.of(context).trans("phone_hint_text"),
+        labelText: TranslationManager.of(context).trans("phone_label_text"),
+        helperText: TranslationManager.of(context).trans("phone_helper_text"),
         suffixIcon: Icon(Icons.search_rounded)
       ),
     );
@@ -76,7 +77,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text("결과가 없습니다.", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+              return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
             } else {
               return Expanded(
                 child: ListView.builder(
@@ -85,6 +86,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                       return GestureDetector(
                         onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
                         child: Card(
+                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
@@ -95,7 +97,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                   snapshot.data[index].name,
                                   style: TextStyle(
                                     fontSize: 16.0,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -104,7 +106,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                   snapshot.data[index].number,
                                   style: TextStyle(
                                     fontSize: 14.0,
-                                    color: Colors.black,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ],
@@ -131,7 +133,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
               if(snapshot.hasError || !snapshot.hasData){
                 return CircularProgressIndicator();
               } else if(snapshot.data.isEmpty){
-                return Center(child: Text("결과가 없습니다.", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+                return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
               } else {
                 return Expanded(
                   child: ListView.builder(
@@ -140,6 +142,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                         return GestureDetector(
                           onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
                           child: Card(
+                            color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Column(
@@ -150,7 +153,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                     snapshot.data[index].name,
                                     style: TextStyle(
                                       fontSize: 16.0,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -159,7 +162,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                     snapshot.data[index].number,
                                     style: TextStyle(
                                       fontSize: 14.0,
-                                      color: Colors.black,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ],
@@ -182,9 +185,9 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
         child: Column(
           children: [
             TabBar(
-              tabs: tabList.map((e) => Tab(text: e)).toList(),
+              tabs: tabList.map((e) => Tab(child: Text(TranslationManager.of(context).trans(e), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),)).toList(),
               controller: _controller,
-              indicator: PointTabIndicator(position: PointTabIndicatorPosition.bottom, color: Colors.white, insets: EdgeInsets.only(bottom: 6)),
+              indicator: PointTabIndicator(position: PointTabIndicatorPosition.bottom, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, insets: EdgeInsets.only(bottom: 6)),
             ),
             _searchKeywordInput,
             Expanded(child: TabBarView(controller: _controller, children: [_searchTabInSchool, _searchTabOutSchool],))

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:flutter_app_hyuabot_v2/Page/ShuttleTimeTablePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/ShuttlePaint.dart';
 import 'package:get/get.dart';
 
@@ -21,9 +22,8 @@ class _ShuttlePageState extends State<ShuttlePage>{
     CustomPainter content = ShuttleCardPaint(timeTable, data, Color.fromARGB(255, 20, 75, 170), context);
     return InkWell(
       onTap: (){
-        print(currentStop);
-        print(terminalStop);
-        },
+        Get.to(ShuttleTimeTablePage(currentStop, terminalStop));
+      },
       child: Card(
         color: Theme.of(_context).backgroundColor == Colors.white ? Colors.white : Colors.black,
         elevation: 3,
@@ -37,9 +37,9 @@ class _ShuttlePageState extends State<ShuttlePage>{
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 5),
-                child: Text(TranslationManager.of(_context).trans(currentStop), style: TextStyle(fontSize: 16, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+                child: Text(TranslationManager.of(_context).trans(currentStop), style: TextStyle(fontSize: 16, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
               ),
-              Text(TranslationManager.of(_context).trans(terminalStop), style: TextStyle(fontSize: 12, fontFamily: "Godo", color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+              Text(TranslationManager.of(_context).trans(terminalStop), style: TextStyle(fontSize: 12, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
               Divider(color: Colors.grey),
               Container(child: CustomPaint(painter: content, size: Size(100, 40),), padding: EdgeInsets.only(bottom: 10),)
             ],
