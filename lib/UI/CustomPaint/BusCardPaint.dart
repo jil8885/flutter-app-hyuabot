@@ -3,7 +3,7 @@ import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
-class BusCardPaint extends CustomPainter{
+class BusCardPaint extends CustomPainter {
   final Map<String, dynamic> data;
   final Color lineColor;
   final BuildContext context;
@@ -11,56 +11,46 @@ class BusCardPaint extends CustomPainter{
 
   BusCardPaint(this.data, this.lineColor, this.context, this.timeTableOffered);
 
-  void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
-    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 14, fontFamily: "Godo"), text: text);
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
-    tp.layout();
-    Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
-    tp.paint(canvas, location);
-  }
-
-  void drawInfo(Canvas canvas, Offset offset, int numOfStop, BuildContext context) {
-    String _stopString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+  void drawInfo(Canvas canvas, Offset offset, int numOfStop, int seats, String text,
+      BuildContext context) {
+    String _stopString, _seatString, _resultString;
+    switch (
+        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
       case 'ko_KR':
-        _stopString = '$numOfStop번째 전';
-        break;
-      case 'en_US':
-        _stopString = '($numOfStop Stops left)';
-        break;
-      case 'zh':
-        break;
-    }
-    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.grey : Colors.white, fontSize: 12, fontFamily: "Godo"), text: _stopString);
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
-    tp.layout();
-    Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
-    tp.paint(canvas, location);
-  }
-
-  void drawSeat(Canvas canvas, Offset offset, int seats, Color lineColor, BuildContext context) {
-    String _seatString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
-      case 'ko_KR':
+        _stopString = '$numOfStop전';
         _seatString = '$seats석';
         break;
       case 'en_US':
+        _stopString = '($numOfStop Stops left)';
         _seatString = 'Seats: $seats';
         break;
       case 'zh':
         break;
     }
 
-    TextSpan sp = TextSpan(style: TextStyle(color: lineColor, fontSize: 12, fontFamily: "Godo"), text: _seatString);
+    _resultString = text;
+    if(numOfStop >= 0){
+      _resultString += " - $_stopString";
+    }
+    if(seats >= 0){
+      _resultString += "($_seatString)";
+    }
+    TextSpan sp = TextSpan(
+        style: TextStyle(
+          color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 14, fontFamily: "Godo"),
+          text: _resultString
+    );
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
   }
 
-  String _getArrivalTime(String time){
+
+  String _getArrivalTime(String time) {
     String _timeString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch (
+        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
       case 'ko_KR':
         _timeString = '$time 출발';
         break;
@@ -73,11 +63,12 @@ class BusCardPaint extends CustomPainter{
     return _timeString;
   }
 
-  String _getTime(int time){
+  String _getTime(int time) {
     String _timeString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch (
+        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
       case 'ko_KR':
-        _timeString = '$time 분';
+        _timeString = '$time분';
         break;
       case 'en_US':
         _timeString = '$time min(s) left';
@@ -103,7 +94,9 @@ class BusCardPaint extends CustomPainter{
       ..strokeWidth = 2.0;
 
     final _inBoxColor = Paint()
-      ..color = Theme.of(context).backgroundColor == Colors.white ? Colors.grey : Colors.black
+      ..color = Theme.of(context).backgroundColor == Colors.white
+          ? Colors.grey
+          : Colors.black
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2.0;
 
@@ -135,64 +128,38 @@ class BusCardPaint extends CustomPainter{
     List<BusInfoRealtime> realtimeList = data['realtime'];
     List<BusInfoTimetable> timetableList = data['timetable'];
 
-      if(realtimeList.length >= 2){
-        drawRemainedTime(canvas, Offset(15, 10), _getTime(realtimeList.elementAt(0).time), context);
-        if(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue() == "ko_KR"){
-          drawInfo(canvas, Offset(52.5, 10), realtimeList.elementAt(0).location, context);
-          drawSeat(canvas, Offset(105, 10), realtimeList.elementAt(0).seats, lineColor, context);
-        } else {
-          drawInfo(canvas, Offset(100, 10), realtimeList.elementAt(0).location, context);
-        }
-        drawRemainedTime(canvas, Offset(15, 35), _getTime(realtimeList.elementAt(1).time), context);
-        if(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue() == "ko_KR"){
-          drawInfo(canvas, Offset(52.5, 35), realtimeList.elementAt(1).location, context);
-          drawSeat(canvas, Offset(105, 35), realtimeList.elementAt(1).seats, lineColor, context);
-        } else {
-          drawInfo(canvas, Offset(100, 35), realtimeList.elementAt(1).location, context);
-        }
-      } else if(realtimeList.length == 1){
-        drawRemainedTime(canvas, Offset(15, 10), _getTime(realtimeList.elementAt(0).time), context);
-        if(realtimeList.elementAt(0).seats != -1){
-          if(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue() == "ko_KR"){
-            canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(50, 2, 82.5, 16), Radius.circular(1.5)), _boxColor);
-            canvas.drawRect(Rect.fromLTWH(51, 3, 80.5, 14), _inBoxColor);
-            drawInfo(canvas, Offset(52.5, 10), realtimeList.elementAt(0).location, context);
-            drawSeat(canvas, Offset(105, 10), realtimeList.elementAt(0).seats, lineColor, context);
-          } else {
-            canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(50, 2, 47.5, 16), Radius.circular(1.5)), _line);
-            canvas.drawRect(Rect.fromLTWH(51, 3, 45.5, 14), _inBoxColor);
-            drawInfo(canvas, Offset(52.5, 10), realtimeList.elementAt(0).location, context);
-          }
-        } else {
-          drawInfo(canvas, Offset(100, 10), realtimeList.elementAt(0).location, context);
-        }
-        if(timetableList.isNotEmpty){
-          drawRemainedTime(canvas, Offset(15, 35), _getArrivalTime(timetableList.elementAt(0).time), context);
-        } else {
-          if(timeTableOffered) {
-            drawRemainedTime(canvas, Offset(15, 35), TranslationManager.of(context).trans("last_bus"), context);
-          } else {
-            drawRemainedTime(canvas, Offset(15, 35), TranslationManager.of(context).trans("timetable_not_offered"), context);
-          }
-        }
-      } else if (!timeTableOffered){
-        drawRemainedTime(canvas, Offset(15, 10), TranslationManager.of(context).trans("timetable_not_offered"), context);
-      } else if(timetableList.length >= 2) {
-        drawRemainedTime(canvas, Offset(15, 10), _getArrivalTime(timetableList.elementAt(0).time), context);
-        drawRemainedTime(canvas, Offset(15, 35), _getArrivalTime(timetableList.elementAt(1).time), context);
-      } else if (timetableList.length == 1){
-        drawRemainedTime(canvas, Offset(15, 10), _getArrivalTime(timetableList.elementAt(0).time), context);
-        drawRemainedTime(canvas, Offset(15, 35), TranslationManager.of(context).trans("last_bus"), context);
+    if (realtimeList.length >= 2) {
+        drawInfo(canvas, Offset(15, 10), realtimeList.elementAt(0).location, realtimeList.elementAt(0).seats, _getTime(realtimeList.elementAt(0).time), context);
+        drawInfo(canvas, Offset(15, 35), realtimeList.elementAt(1).location, realtimeList.elementAt(1).seats, _getTime(realtimeList.elementAt(1).time), context);
+    } else if (realtimeList.length == 1) {
+      drawInfo(canvas, Offset(15, 10), realtimeList.elementAt(0).location, realtimeList.elementAt(0).seats, _getTime(realtimeList.elementAt(0).time), context);
+      if (timetableList.isNotEmpty) {
+        drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
       } else {
-        drawRemainedTime(canvas, Offset(15, 10), TranslationManager.of(context).trans("out_of_service"), context);
+        if (timeTableOffered) {
+          drawInfo(canvas, Offset(15, 35), -1, -1, TranslationManager.of(context).trans("last_bus"), context);
+        } else {
+          drawInfo(canvas, Offset(15, 35), -1, -1, TranslationManager.of(context).trans("timetable_not_offered"), context);
+        }
       }
+    } else if (!timeTableOffered) {
+      drawInfo(canvas, Offset(15, 10), -1, -1, TranslationManager.of(context).trans("timetable_not_offered"), context);
+    } else if (timetableList.length >= 2) {
+      drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
+      drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(1).time), context);
+    } else if (timetableList.length == 1) {
+      drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
+      drawInfo(canvas, Offset(15, 35), -1, -1, TranslationManager.of(context).trans("last_bus"), context);
+    } else {
+      drawInfo(canvas, Offset(15, 10), -1, -1, TranslationManager.of(context).trans("out_of_service"), context);
+    }
   }
 
   @override
   bool shouldRepaint(covariant BusCardPaint oldDelegate) {
-    if(oldDelegate.data != this.data){
+    if (oldDelegate.data != this.data) {
       return true;
-    } else{
+    } else {
       return false;
     }
   }

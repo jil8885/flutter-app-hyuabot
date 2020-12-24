@@ -79,6 +79,7 @@
   "weekends": "주말",
   "fail_to_load_bus": "버스 정보를 불러오는데 실패했습니다.",
   "how_use_bus_page": "버스 시간표 등 기타 정보는\n각 노선을 터치해보세요!",
+  "timetable_not_offered_popup": "해당 노선은 시간표를 제공하지 않습니다.",
   "guest_house": "한양대게스트하우스",
   "main_gate": "한양대정문",
   "suwon_stn": "수원역",

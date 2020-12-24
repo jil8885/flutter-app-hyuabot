@@ -75,6 +75,7 @@
   "weekends": "Weekends",
   "fail_to_load_bus": "Failed to load bus information.",
   "how_use_bus_page": "Touch each line\nto see whole timetable!",
+  "timetable_not_offered_popup": "Timetable is not offered for this line.",
   "guest_house": "Guest House",
   "main_gate": "Main Gate",
   "suwon_stn": "Suwon station",

@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+import 'package:rxdart/rxdart.dart' as rxdart;
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
@@ -7,8 +7,8 @@ import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 
 class FetchAllShuttleController{
-  final _allShuttleInfoSubject = BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
-  final _allTimeTableSubject = BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
+  final _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
+  final _allTimeTableSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
 
   FetchAllShuttleController(){
     fetch();

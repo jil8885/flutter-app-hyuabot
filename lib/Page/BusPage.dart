@@ -6,9 +6,11 @@ import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
+import 'package:flutter_app_hyuabot_v2/Page/BusTimeTablePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/BusCardPaint.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class BusPage extends StatefulWidget {
@@ -35,40 +37,49 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
         _boundString = "$terminalStop";
         break;
     }
-    return Card(
-      color: Theme.of(_context).backgroundColor == Colors.black ? Colors.black : Colors.white,
-      elevation: 3,
-      child: Container(
-        width: width - 50,
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 5,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 25),), padding: const EdgeInsets.only(top: 10), width: width / 5,),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Text(busStop, style: TextStyle(fontSize: 16, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
-                    ),
-                    Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
-                  ],
-                ),
-              ],
-            ),
-            Divider(color: Colors.grey),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: CustomPaint(painter: BusCardPaint(data, lineColor, context, timeTableOffered), size: Size(width - 50, 50), ),
-            )
-          ],
+    return GestureDetector(
+      onTap: (){
+        if(timeTableOffered){
+          Get.to(BusTimeTablePage(lineName));
+        }else {
+          Fluttertoast.showToast(msg: TranslationManager.of(context).trans("timetable_not_offered_popup"));
+        }
+      },
+      child: Card(
+        color: Theme.of(_context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+        elevation: 3,
+        child: Container(
+          width: width - 50,
+          padding: EdgeInsets.symmetric(horizontal: 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 5,),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 25),), padding: const EdgeInsets.only(top: 10), width: width / 5,),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(busStop, style: TextStyle(fontSize: 16, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+                      ),
+                      Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
+                    ],
+                  ),
+                ],
+              ),
+              Divider(color: Colors.grey),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: CustomPaint(painter: BusCardPaint(data, lineColor, context, timeTableOffered), size: Size(width - 50, 50), ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -111,8 +122,8 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
                   _busCard(_width, TranslationManager.of(context).trans("guest_house"), TranslationManager.of(context).trans("gangnam_stn"), "3102", Color(0xffe60012), snapshot.data['3102'], true),
                   _busCard(_width, TranslationManager.of(context).trans("main_gate"), TranslationManager.of(context).trans("suwon_stn"), "707-1", Color(0xff0068b7), snapshot.data['707-1'], false),
                   Expanded(
-                    child: Container(),
-                    // child: Center(child: Text(TranslationManager.of(context).trans("how_use_bus_page"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color), textAlign: TextAlign.center,)),
+                    // child: Container(),
+                    child: Center(child: Text(TranslationManager.of(context).trans("how_use_bus_page"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color), textAlign: TextAlign.center,)),
                   ),
                   Container(
                     height: 90,
