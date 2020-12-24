@@ -66,10 +66,11 @@ class SettingPage extends StatelessWidget{
                               prefManager.setString("localeCode", "en_US");
                               Phoenix.rebirth(context);
                             },),
-                            SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              prefManager.setString("localeCode", "zh");
-                              Phoenix.rebirth(context);
-                            },),
+                            // 중국어 번역 이후 추가
+                            // SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
+                            //   prefManager.setString("localeCode", "zh");
+                            //   Phoenix.rebirth(context);
+                            // },),
                           ],
                         ))
                   },),

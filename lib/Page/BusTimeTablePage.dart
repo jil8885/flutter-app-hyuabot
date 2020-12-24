@@ -1,93 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
 class BusTimeTablePage extends StatefulWidget {
   final String lineName;
+  final Color lineColor;
 
-  BusTimeTablePage(this.lineName);
+  BusTimeTablePage(this.lineName, this.lineColor);
   @override
-  State<StatefulWidget> createState() => BusTimeTablePageState(lineName);
+  State<StatefulWidget> createState() => BusTimeTablePageState(lineName, lineColor);
 }
 
 class BusTimeTablePageState extends State<BusTimeTablePage>{
   final String lineName;
+  final Color lineColor;
 
   final FetchBusInfoController _busController = FetchBusInfoController();
-  BusTimeTablePageState(this.lineName);
+  final Map<String, Map<String, dynamic>> lineInfo = {
+    "10-1":{"estimated": 10, "from": "purgio_apt", "to": "sangnoksu_stn", "weekdays":"15~30", "weekends":"25~50"},
+    "3102":{"estimated": 30, "from": "songsan", "to": "gangnam_stn", "weekdays":"10~30", "weekends":"20~40"},
+  };
 
-  Map<String, List<dynamic>> _getTimetable(Map<String, BusStopDepartureInfo> data){
-    Map<String, List<dynamic>> _resultData = {};
+  BusTimeTablePageState(this.lineName, this.lineColor);
 
-    switch(destination){
-      case "bound_bus_station":
-        _resultData["weekdays"] = List.from(data["weekdays"].BusListStation)..addAll(data["weekdays"].BusListCycle)..sort();
-        _resultData["weekends"] = List.from(data["weekends"].BusListStation)..addAll(data["weekends"].BusListCycle)..sort();
-        break;
-      case "bound_bus_terminal":
-        _resultData["weekdays"] = List.from(data["weekdays"].BusListTerminal)..addAll(data["weekdays"].BusListCycle)..sort();
-        _resultData["weekends"] = List.from(data["weekends"].BusListTerminal)..addAll(data["weekends"].BusListCycle)..sort();
-        break;
-      case "bound_bus_school":
-        _resultData["weekdays"] = List.from(data["weekdays"].BusListStation)..addAll(data["weekdays"].BusListTerminal)..addAll(data["weekdays"].BusListCycle)..sort();
-        _resultData["weekends"] = List.from(data["weekends"].BusListStation)..addAll(data["weekends"].BusListTerminal)..addAll(data["weekends"].BusListCycle)..sort();
-        break;
-      case "bound_bus_dorm":
-        _resultData["weekdays"] = List.from(data["weekdays"].BusListStation)..addAll(data["weekdays"].BusListTerminal)..addAll(data["weekdays"].BusListCycle)..sort();
-        _resultData["weekends"] = List.from(data["weekends"].BusListStation)..addAll(data["weekends"].BusListTerminal)..addAll(data["weekends"].BusListCycle)..sort();
-        break;
-    }
-
-    return _resultData;
-  }
-
-  String _getTimeString(String time, int minutes){
-    DateTime now = DateTime.now();
-    DateTime arrivalTime = getTimeFromString(time, now).add(Duration(minutes: minutes));
-    return "${arrivalTime.hour.toString().padLeft(2, "0")}:${arrivalTime.minute.toString().padLeft(2, "0")}";
-  }
-
-  Widget _timeTableView(List timeTable, BusStopDepartureInfo data){
+  Widget _timeTableView(List timeTable){
     return ListView.separated(
         itemBuilder: (context, index){
-          String _label;
-          int _minutes = 10;
-          if(data.BusListCycle.contains(timeTable[index])){
-            _label = "is_cycle";
-            if(currentStop == "bus_stop_dorm"){
-              if(destination == "bound_bus_station"){_minutes = 15;}
-              else if (destination == "bound_bus_terminal"){_minutes = 20;}
-            } else if(currentStop == "bus_stop_school" && destination == "bound_bus_terminal"){_minutes = 15;}
-            else if(currentStop == "bus_stop_station"){_minutes = 15;}
-            else if(currentStop == "bus_stop_school_opposite"){_minutes = 5;}
-          }else{
-            _label = "is_direct";
-            if(currentStop == "bus_stop_dorm") {
-              _minutes = 15;
-            }
-            else if(currentStop == "bus_stop_school_opposite"){_minutes = 5;}
-          }
           return Container(
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(TranslationManager.of(context).trans(_label), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
-                Container(
-                  width: MediaQuery.of(context).size.width*.5,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("${timeTable[index]} → ", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
-                      Text(_getTimeString(timeTable[index], _minutes), style: TextStyle(color: Colors.grey, fontSize: 20)),
-                    ],
-                  ),
-                )
-              ],
+            child: Container(
+              width: MediaQuery.of(context).size.width*.5,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("${timeTable[index]["time"]}", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
+                ],
+              ),
             ),
           );
         },
@@ -96,44 +48,84 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
     );
   }
 
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     TranslationManager _manager = TranslationManager.of(context);
+    String _minuteInfo= "";
+    switch (prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+      case "ko_KR":
+        _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
+        break;
+      case "en_US":
+        _minuteInfo = "Weekdays: ${lineInfo[lineName]["weekdays"]} min/Weekends: ${lineInfo[lineName]["weekends"]} min";
+        break;
+      case "zh":
+        break;
+    }
+
     return Scaffold(
-      body: Container(
-        child: DefaultTabController(
-          length: 3,
-          child: Column(
-            children: [
-              TabBar(tabs: [Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text(_manager.trans("weekends"), style: Theme.of(context).textTheme.bodyText1,),)],),
-              StreamBuilder<Map<String, BusStopDepartureInfo>>(
-                  stream: _BusController.allTimeTableInfo,
-                  builder: (context, snapshot) {
-                    if(snapshot.hasError || !snapshot.hasData){
-                      return Expanded(child: Center(child: CircularProgressIndicator(),));
-                    }
-                    Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
-                    return Expanded(child: TabBarView(
-                      children: [
-                        Container(child: _timeTableView(_data["weekdays"], snapshot.data["weekdays"]),),
-                        Container(child: _timeTableView(_data["weekends"], snapshot.data["weekends"]),),
-                      ],
-                    ));
-                  }
-              )
-            ],
+      body: Column(
+        children: [
+          Container(
+            height: 200,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(lineName, style: TextStyle(color: Colors.white, fontSize: 28)),
+                    SizedBox(height: 30,),
+                    Text("${TranslationManager.of(context).trans(lineInfo[lineName]["from"])} → ${TranslationManager.of(context).trans(lineInfo[lineName]["to"])}", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18)),
+                    SizedBox(height: 10,),
+                    Text(_minuteInfo, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18)),
+                  ],
+                ),
+              ],
+            ),
+            color: lineColor,
           ),
-        ),
+          Expanded(
+            child: DefaultTabController(
+              length: 3,
+              child: Column(
+                children: [
+                  TabBar(tabs: [
+                    Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),),
+                    Tab(child: Text(_manager.trans("saturday"), style: Theme.of(context).textTheme.bodyText1,),),
+                    Tab(child: Text(_manager.trans("sunday"), style: Theme.of(context).textTheme.bodyText1,),),
+                  ],),
+                  StreamBuilder<Map<String, List<dynamic>>>(
+                      stream: _busController.timetableInfo,
+                      builder: (context, snapshot) {
+                        if(snapshot.hasError || !snapshot.hasData){
+                          return Expanded(child: Center(child: CircularProgressIndicator(),));
+                        }
+                        return Expanded(child: TabBarView(
+                          children: [
+                            Container(child: _timeTableView(snapshot.data["weekdays"]),),
+                            Container(child: _timeTableView(snapshot.data["saturday"]),),
+                            Container(child: _timeTableView(snapshot.data["sunday"]),),
+                          ],
+                        ));
+                      }
+                  )
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
+  @override
+  void initState() {
+    _busController.fetchTimeTable(lineName);
+    super.initState();
+  }
   @override
   void dispose() {
     _busController.dispose();

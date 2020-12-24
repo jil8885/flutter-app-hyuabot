@@ -241,6 +241,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
           }
           // food info
           Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
+          _foodTimer.cancel();
           return Container(
             height: _height / 4,
             width: _width,

@@ -40,7 +40,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
     return GestureDetector(
       onTap: (){
         if(timeTableOffered){
-          Get.to(BusTimeTablePage(lineName));
+          Get.to(BusTimeTablePage(lineName, lineColor));
         }else {
           Fluttertoast.showToast(msg: TranslationManager.of(context).trans("timetable_not_offered_popup"));
         }
