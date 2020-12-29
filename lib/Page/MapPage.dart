@@ -14,9 +14,11 @@ class MapPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MapPageState();
 }
 class _MapPageState extends State<MapPage>{
+  final _menus = ['korean', 'japanese', 'chinese', 'western', 'fast_food', 'chicken', 'pizza', 'meat', 'vietnamese', 'other_food', 'bakery', 'cafe', 'pub'];
   BuildContext _context;
   DataBaseController _dataBaseController;
   List<Marker> _markers = [];
+  int _index;
   double _width;
 
   @override
@@ -67,47 +69,47 @@ class _MapPageState extends State<MapPage>{
   _menuButtonPressed(){
     showMaterialModalBottomSheet(
         context: _context,
-        backgroundColor: Color.fromARGB(255, 20, 75, 170),
+        backgroundColor: Color.fromARGB(255, 20, 75, 170).withOpacity(0.3),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
         builder: (context) => Container(
-          margin: EdgeInsets.only(top: 20, left: 10, right: 10),
+          margin: EdgeInsets.all(10),
           height: 275,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _menuButton('korean'),
-                  _menuButton('japanese'),
-                  _menuButton('chinese'),
-                  _menuButton('western'),
-                ],              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _menuButton('fast_food'),
-                  _menuButton('chicken'),
-                  _menuButton('pizza'),
-                  _menuButton('meat'),
-
-                ],
+              Flexible(
+                child: ListWheelScrollView(
+                  itemExtent: 80,
+                  onSelectedItemChanged: (index){_index = index;},
+                  children: _menus.map((e) => _menuButton(e)).toList(),
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _menuButton('vietnamese'),
-                  _menuButton('other_food'),
-                  _menuButton('bakery'),
-                  _menuButton('cafe'),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _menuButton('pub'),
-                  SizedBox(width: 72,),
-                  SizedBox(width: 72,)
-                ],
+              FlatButton(onPressed: (){
+                String _toastString;
+                switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+                  case "ko_KR":
+                    _toastString = '${TranslationManager.of(context).trans(_menus[_index])}(으)로 전환되었습니다.';
+                    break;
+                  case "en_US":
+                    _toastString = 'Changed to ${TranslationManager.of(context).trans(_menus[_index])}.';
+                    break;
+                  case "zh":
+                    _toastString = '${TranslationManager.of(context).trans(_menus[_index])}(으)로 전환되었습니다.';
+                    break;
+                }
+                  _markers.clear();
+                  _getMarkers(_menus[_index]);
+                  Get.back();
+                  Fluttertoast.showToast(msg: _toastString);
+                }, 
+                  child: Container(
+                    color: Colors.white,
+                    height: 50,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [Text(TranslationManager.of(context).trans('save'))],
+                    ),
+                  )
               )
             ],
           )
@@ -116,40 +118,11 @@ class _MapPageState extends State<MapPage>{
   }
 
   Widget _menuButton(String menuName){
-    String _toastString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
-      case "ko_KR":
-        _toastString = '${TranslationManager.of(context).trans(menuName)}(으)로 전환되었습니다.';
-        break;
-      case "en_US":
-        _toastString = 'Changed to ${TranslationManager.of(context).trans(menuName)}.';
-        break;
-      case "zh":
-        _toastString = '${TranslationManager.of(context).trans(menuName)}(으)로 전환되었습니다.';
-        break;
-    }
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: (){
-            _markers.clear();
-            _getMarkers(menuName);
-            Get.back();
-            Fluttertoast.showToast(msg: _toastString);
-          },
-          child: Card(
-            elevation: 3,
-            color: Colors.white54,
-            clipBehavior: Clip.antiAlias,
-            child: Container(
-              height: 60,
-              width: _width/4 - 15,
-              padding: EdgeInsets.all(2),
-              child: Center(child: Text(TranslationManager.of(context).trans(menuName).replaceAll(" ", "\n"), style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center,))
-            ),
-          ),
-        ),
-      ],
+    return Container(
+      height: 60,
+      padding: EdgeInsets.all(2),
+      child: Center(child: Text(TranslationManager.of(context).trans(menuName), style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center,))
     );
   }
 }
+//
