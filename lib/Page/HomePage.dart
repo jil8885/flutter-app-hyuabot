@@ -54,15 +54,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if(state == AppLifecycleState.resumed){
-      print("resume!");
       if(!_foodTimer.isActive){_foodTimer = Timer.periodic(Duration(seconds: 10), (timer) {_foodInfoController.fetchFood();});}
       if(!_shuttleTimer.isActive){_shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});}
     }else if(state == AppLifecycleState.inactive){
-      print("inactive!");
       if(_foodTimer.isActive){_foodTimer.cancel();}
       if(_shuttleTimer.isActive){_shuttleTimer.cancel();}
     }else if(state == AppLifecycleState.paused){
-      print("resume!");
       if(_foodTimer.isActive){_foodTimer.cancel();}
       if(_shuttleTimer.isActive){_shuttleTimer.cancel();}
     }
