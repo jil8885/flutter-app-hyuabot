@@ -102,8 +102,8 @@ class _MapPageState extends State<MapPage>{
                   Fluttertoast.showToast(msg: _toastString);
                 }, 
                   child: Container(
-                    color: Colors.white,
                     height: 50,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), color: Colors.white),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.max,
