@@ -26,15 +26,16 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
     _controller = TabController(length: 2, vsync: this);
     _textEditingController = TextEditingController();
     _dataBaseController = DataBaseController();
+    _dataBaseController.init().whenComplete(() {_dataBaseController.fetchInSchoolList();});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _dataBaseController.init().whenComplete(() {_dataBaseController.fetchInSchoolList();});
     final double height = MediaQuery.of(context).padding.top;
     int lastPage = 0;
     _controller.addListener(() {
+      print("$lastPage-${_controller.index}");
       if(lastPage != _controller.index){
         lastPage = _controller.index;
         switch(_controller.index){
@@ -51,10 +52,12 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
     });
 
     _textEditingController.addListener(() {
-      if(_controller.index == 0){
-        _dataBaseController.fetchInSchoolList(_textEditingController.value.text);
-      } else {
-        _dataBaseController.fetchOutSchoolList(_textEditingController.value.text);
+      if(_textEditingController.value.text.isNotEmpty){
+        if(_controller.index == 0){
+          _dataBaseController.fetchInSchoolList(_textEditingController.value.text);
+        } else {
+          _dataBaseController.fetchOutSchoolList(_textEditingController.value.text);
+        }
       }
     });
 
@@ -127,7 +130,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
       ],
     );
 
-    Widget _searchTabOutSchool = Column(
+    final Widget _searchTabOutSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
         SizedBox(height: 15,),
