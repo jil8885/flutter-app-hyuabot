@@ -33,7 +33,7 @@ class FoodPageState extends State<FoodPage>{
           Text(menu, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white,), textAlign: TextAlign.left,),
           SizedBox(height: 15,),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(_priceString, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
             ],
@@ -144,6 +144,7 @@ class FoodPageState extends State<FoodPage>{
       child: Card(
         elevation: 3,
         color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

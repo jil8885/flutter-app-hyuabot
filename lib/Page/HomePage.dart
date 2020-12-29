@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     );
 
     final Widget _shuttleCardList = Container(
-      height: _height / 4.5,
+      height: _height / 4,
       width: _width,
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
@@ -306,6 +306,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
         physics: BouncingScrollPhysics(),
         child: Container(
           width: _width,
+          color: Theme.of(context).backgroundColor,
           child: Column(
             children: [
               Container(
@@ -346,7 +347,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     children: <Widget>[
                       Text(TranslationManager.of(context).trans("menu_list"),
                           style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 20,
                               color:
                               Theme.of(context).textTheme.bodyText1.color)),
                       Expanded(child: Container()),
@@ -361,7 +362,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                             }
                             return Text(
                               _isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"),
-                              style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo'),
+                              style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 20),
                             );
                           }
                       ),
@@ -378,7 +379,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   children: <Widget>[
                     Text(TranslationManager.of(context).trans("shuttle_list"),
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 20,
                             color:
                             Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
@@ -393,7 +394,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                                   Colors.white
                                   ? _primaryColor
                                   : Colors.white,
-                              fontFamily: 'Godo'),
+                              fontFamily: 'Godo',
+                              fontSize: 20,
+                          ),
                         )),
                   ],
                 ),
@@ -410,7 +413,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   children: <Widget>[
                     Text(TranslationManager.of(context).trans("food_now"),
                         style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 20,
                             color:
                             Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
@@ -424,7 +427,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                                   Colors.white
                                   ? _primaryColor
                                   : Colors.white,
-                              fontFamily: 'Godo'),
+                              fontFamily: 'Godo',
+                              fontSize: 20,
+                          ),
                         )),
                   ],
                 ),
@@ -472,7 +477,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
           style: TextStyle(
               color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
           textAlign: TextAlign.center,
-        ))
+        )),
+        SizedBox(
+          height: 15,
+        ),
       ],
     );
   }

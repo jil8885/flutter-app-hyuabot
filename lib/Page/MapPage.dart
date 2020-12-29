@@ -17,6 +17,7 @@ class _MapPageState extends State<MapPage>{
   BuildContext _context;
   DataBaseController _dataBaseController;
   List<Marker> _markers = [];
+  double _width;
 
   @override
   void initState(){
@@ -38,6 +39,7 @@ class _MapPageState extends State<MapPage>{
     _dataBaseController = DataBaseController(context);
     _context = context;
     _dataBaseController.init().whenComplete(() {});
+    this._width = MediaQuery.of(context).size.width;
     return Scaffold(
       floatingActionButton: FloatingActionButton(child: Icon(Icons.category, color: Colors.white,), backgroundColor: Color(0xff2db400), onPressed: _menuButtonPressed,),
       body: Container(
@@ -141,8 +143,8 @@ class _MapPageState extends State<MapPage>{
             clipBehavior: Clip.antiAlias,
             child: Container(
               height: 60,
-              width: 85,
-              padding: EdgeInsets.all(10),
+              width: _width/4 - 15,
+              padding: EdgeInsets.all(2),
               child: Center(child: Text(TranslationManager.of(context).trans(menuName).replaceAll(" ", "\n"), style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center,))
             ),
           ),

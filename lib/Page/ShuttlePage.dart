@@ -62,69 +62,75 @@ class _ShuttlePageState extends State<ShuttlePage>{
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
-            stream: _shuttleController.allShuttleInfo,
-            builder: (context, snapshot) {
-              if(snapshot.hasError){
-                return Center(child: Text(TranslationManager.of(context).trans("failed_to_load_shuttle"), style: Theme.of(context).textTheme.bodyText1,),);
-              } else if(!snapshot.hasData){
-                return Center(child: CircularProgressIndicator(),);
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+          child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
+              stream: _shuttleController.allShuttleInfo,
+              builder: (context, snapshot) {
+                if(snapshot.hasError){
+                  return Center(child: Text(TranslationManager.of(context).trans("failed_to_load_shuttle"), style: Theme.of(context).textTheme.bodyText1,),);
+                } else if(!snapshot.hasData){
+                  return Center(child: CircularProgressIndicator(),);
+                }
+                List<dynamic> residenceStn = List.from(snapshot.data["Residence"].shuttleListStation)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+                List<dynamic> residenceTerminal = List.from(snapshot.data["Residence"].shuttleListTerminal)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
+                List<dynamic> schoolStn = List.from(snapshot.data["Shuttlecock_O"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+                List<dynamic> schoolTerminal = List.from(snapshot.data["Shuttlecock_O"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
+                List<dynamic> station = List.from(snapshot.data["Subway"].shuttleListStation)..addAll(snapshot.data["Subway"].shuttleListCycle)..sort();
+                List<dynamic> terminal = List.from(snapshot.data["YesulIn"].shuttleListTerminal)..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
+                List<dynamic> schoolResidence = List.from(snapshot.data["Shuttlecock_I"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_station", residenceStn, snapshot.data["Residence"]),
+                          _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_terminal", residenceTerminal, snapshot.data["Residence"]),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_station", schoolStn, snapshot.data["Shuttlecock_O"]),
+                          _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_terminal", schoolTerminal, snapshot.data["Shuttlecock_O"]),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _shuttleCard(_width / 2, _height, "bus_stop_station", "bound_bus_school", station, snapshot.data["Subway"]),
+                          _shuttleCard(_width / 2, _height, "bus_stop_terminal", "bound_bus_school", terminal, snapshot.data["YesulIn"]),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _shuttleCard(_width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, snapshot.data["Shuttlecock_I"]),
+                        ],
+                      ),
+                      Container(
+                        height: 80,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [Center(child: Text(TranslationManager.of(context).trans("touch_shuttle_timetable"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                      ),),
+                    ],
+                  ),
+                );
               }
-              List<dynamic> residenceStn = List.from(snapshot.data["Residence"].shuttleListStation)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
-              List<dynamic> residenceTerminal = List.from(snapshot.data["Residence"].shuttleListTerminal)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();
-              List<dynamic> schoolStn = List.from(snapshot.data["Shuttlecock_O"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
-              List<dynamic> schoolTerminal = List.from(snapshot.data["Shuttlecock_O"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)..sort();
-              List<dynamic> station = List.from(snapshot.data["Subway"].shuttleListStation)..addAll(snapshot.data["Subway"].shuttleListCycle)..sort();
-              List<dynamic> terminal = List.from(snapshot.data["YesulIn"].shuttleListTerminal)..addAll(snapshot.data["YesulIn"].shuttleListCycle)..sort();
-              List<dynamic> schoolResidence = List.from(snapshot.data["Shuttlecock_I"].shuttleListStation)..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)..sort();
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_station", residenceStn, snapshot.data["Residence"]),
-                        _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_terminal", residenceTerminal, snapshot.data["Residence"]),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_station", schoolStn, snapshot.data["Shuttlecock_O"]),
-                        _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_terminal", schoolTerminal, snapshot.data["Shuttlecock_O"]),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _shuttleCard(_width / 2, _height, "bus_stop_station", "bound_bus_school", station, snapshot.data["Subway"]),
-                        _shuttleCard(_width / 2, _height, "bus_stop_terminal", "bound_bus_school", terminal, snapshot.data["YesulIn"]),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _shuttleCard(_width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, snapshot.data["Shuttlecock_I"]),
-                      ],
-                    ),
-                    Expanded(child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Center(child: Text(TranslationManager.of(context).trans("touch_shuttle_timetable"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
-                    ),),
-                  ],
-                ),
-              );
-            }
+          ),
         ),
       ),
     );

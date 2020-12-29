@@ -2,7 +2,7 @@ name: flutter_app_hyuabot_v2
 description: flutter-app-hyuabot
 
 publish_to: 'none'
-version: 0.0.1
+version: 0.0.2+2
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -26,13 +26,15 @@ dependencies:
   flutter_phoenix: ^0.1.0
   firebase_messaging: ^7.0.3
   flutter_native_admob: ^2.1.0+3
-  fluttertoast: ^7.1.5
+  fluttertoast: ^7.1.6
   naver_map_plugin: ^0.9.0
   firebase_core: 0.5.3
   firebase_analytics: ^6.3.0
   cloud_firestore: ^0.14.4
   modal_bottom_sheet: ^1.0.0+1
   flutter_point_tab_bar: 0.1.0
+  flutter_local_notifications: ^3.0.2
+
 
 dev_dependencies:
   flutter_test:

@@ -44,7 +44,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
       elevation: 3,
       child: Container(
         width: width - 50,
-        height: height / 5.5,
+        height: height / 5,
         padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -98,15 +98,26 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
                         IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
                       ],
                     ),
-                    _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_seoul"), snapshot.data['main']['up']),
-                    _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_oido"), snapshot.data['main']['down']),
-                    _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_suwon"), snapshot.data['sub']['up']),
-                    _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_incheon"), snapshot.data['sub']['down']),
-                    Expanded(child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Center(child: Text(TranslationManager.of(context).trans("subway_caution"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
-                    ),),
+                    Flexible(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_seoul"), snapshot.data['main']['up']),
+                            _metroCard(_width, _height, Color(0xff00a5de), TranslationManager.of(context).trans("station_line_4"), TranslationManager.of(context).trans("bound_oido"), snapshot.data['main']['down']),
+                            _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_suwon"), snapshot.data['sub']['up']),
+                            _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_incheon"), snapshot.data['sub']['down']),
+                            Container(
+                              height: 80,
+                              width: _width,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [Center(child: Text(TranslationManager.of(context).trans("subway_caution"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
                   ],
                 ),
               );

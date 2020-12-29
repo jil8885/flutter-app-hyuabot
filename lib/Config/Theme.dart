@@ -3,26 +3,25 @@ library config.globals;
 import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData(
-    accentColor: Color.fromARGB(255, 20, 75, 170),
-    backgroundColor: Colors.white,
-    cardColor: Color.fromARGB(160, 20, 75, 170),
+    accentColor: const Color.fromARGB(255, 20, 75, 170),
+    backgroundColor: const Color(0xffffffff),
+    cardColor: const Color(0xffffffff),
     brightness: Brightness.light,
     fontFamily: "Godo",
-    textTheme: TextTheme(
-      bodyText1: TextStyle(fontSize: 16, color: Colors.black),
-      bodyText2: TextStyle(fontSize: 16, color: Colors.white),
+    textTheme: const TextTheme(
+      bodyText1: const TextStyle(fontSize: 16, color: Colors.black),
+      bodyText2: const TextStyle(fontSize: 16, color: Colors.white),
     )
 );
 
 ThemeData darkTheme = ThemeData(
-  accentColor: Colors.grey,
-  // accentColor: Color.fromARGB(255, 20, 75, 170),
-  backgroundColor: Colors.black,
-  cardColor: Colors.white70,
+  accentColor: const Color(0xff9e9e9e),
+  backgroundColor: const Color(0xff000000),
+  cardColor: const Color(0x4dffffff),
   brightness: Brightness.dark,
   fontFamily: "Godo",
-  textTheme: TextTheme(
-    bodyText1: TextStyle(fontSize: 16, color: Colors.white),
-    bodyText2: TextStyle(fontSize: 16, color: Colors.black),
+  textTheme: const TextTheme(
+    bodyText1: const TextStyle(fontSize: 16, color: Colors.white),
+    bodyText2: const TextStyle(fontSize: 16, color: Colors.black),
   )
 );

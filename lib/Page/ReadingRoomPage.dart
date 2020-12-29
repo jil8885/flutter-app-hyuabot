@@ -49,40 +49,29 @@ class ReadingRoomState extends State<ReadingRoomPage>{
           height: 80,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
             children: [
-              Row(
-                children: [
-                  SizedBox(width: 30,),
-                  Text(TranslationManager.of(context).trans(name), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
-                ],
-              ),
-              Row(
-                children: [
-                  Text.rich(TextSpan(children: [
-                    TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
-                    TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontSize: 22)),
-                  ])),
-                  SizedBox(width: 50,),
-                  IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
-                    if(alarmActive){
-                      fcmManager.unsubscribeFromTopic(name);
-                      prefManager.setBool(name, false);
-                      Fluttertoast.showToast(msg: _alarmOffString);
-                    } else {
-                      if(available < 1){
-                        fcmManager.subscribeToTopic(name);
-                          prefManager.setBool(name, true);
-                          Fluttertoast.showToast(msg: _alarmOnString);
-                      } else{
-                        Fluttertoast.showToast(msg: TranslationManager.of(context).trans("seat_remained_error"));
-                      }
-                    }
-                  }),
-                  SizedBox(width: 30,)
-                ],
-              )
+              Text(TranslationManager.of(context).trans(name), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
+              Text.rich(TextSpan(children: [
+                TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
+                TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontSize: 22)),
+              ])),
+              IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
+                if(alarmActive){
+                  fcmManager.unsubscribeFromTopic(name);
+                  prefManager.setBool(name, false);
+                  Fluttertoast.showToast(msg: _alarmOffString);
+                } else {
+                  if(available < 100){
+                    fcmManager.subscribeToTopic(name);
+                    prefManager.setBool(name, true);
+                    Fluttertoast.showToast(msg: _alarmOnString, toastLength: Toast.LENGTH_SHORT);
+                  } else{
+                    Fluttertoast.showToast(msg: TranslationManager.of(context).trans("seat_remained_error"), toastLength: Toast.LENGTH_SHORT);
+                  }
+                }
+              }),
             ],
           ),
         ),

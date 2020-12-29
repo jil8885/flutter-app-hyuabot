@@ -84,9 +84,9 @@ class CustomShuttleCard extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: Theme.of(context).backgroundColor == Colors.white? Colors.white : Colors.black87,
+      color: Theme.of(context).cardColor,
       child: Container(
-        padding: EdgeInsets.only(left: 18, top: 10, right: 18, bottom: 10),
+        padding: EdgeInsets.all(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -147,9 +147,9 @@ class CustomFoodCard extends StatelessWidget {
     return Card(
       shape:
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      color: Theme.of(context).backgroundColor == Colors.white? Colors.white : Colors.black87,
+      color: Theme.of(context).cardColor,
       child: Container(
-        padding: EdgeInsets.only(left: 10, top: 10, right: 5, bottom: 10),
+        padding: EdgeInsets.all(16.0),
         width: _width * .75,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

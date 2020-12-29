@@ -73,10 +73,10 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
             else if(currentStop == "bus_stop_school_opposite"){_minutes = 5;}
           }
           return Container(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
+            padding: EdgeInsets.symmetric(vertical: 15),
             child: Row(
               mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(TranslationManager.of(context).trans(_label), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
                 Container(
