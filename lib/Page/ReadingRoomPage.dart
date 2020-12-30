@@ -63,7 +63,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                   prefManager.setBool(name, false);
                   Fluttertoast.showToast(msg: _alarmOffString);
                 } else {
-                  if(available < 100){
+                  if(available < 0){
                     fcmManager.subscribeToTopic(name);
                     prefManager.setBool(name, true);
                     Fluttertoast.showToast(msg: _alarmOnString, toastLength: Toast.LENGTH_SHORT);

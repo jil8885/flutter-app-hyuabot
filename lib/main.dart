@@ -32,13 +32,14 @@ void main() async {
   prefManager = await StreamingSharedPreferences.instance;
   Firebase.initializeApp();
   fcmManager = FirebaseMessaging();
-  var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
-  var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
-  flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  // var initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
+  // var initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+  // flutterLocalNotificationsPlugin.initialize(initializationSettings);
   fcmManager.configure(
     onMessage: (Map<String, dynamic> message) async{
       final dynamic data = message['data'];
       await _showNotification(data["name"]);
+      print("foreground:$data");
       prefManager.setBool(data["name"], false);
     },
     onBackgroundMessage: backgroundMessageHandler
@@ -60,11 +61,15 @@ void copyDatabase() async {
 }
 
 Future<dynamic> backgroundMessageHandler(Map<String, dynamic> message) async {
+  if(prefManager.isNull){
+    prefManager = await StreamingSharedPreferences.instance;
+  }
   if (message.containsKey('data')) {
     final dynamic data = message['data'];
     prefManager.setBool(data["name"], false);
+    print("background:$data");
     await _showNotification(data["name"]);
-    // fcmManager.unsubscribeFromTopic(data["name"]);
+    fcmManager.unsubscribeFromTopic(data["name"]);
   }
 
   if (message.containsKey('notification')) {

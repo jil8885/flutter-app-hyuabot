@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   Timer _shuttleTimer;
 
   _HomePageState(){
-    adController.setTestDeviceIds(["546EDDAE2CC55DE1869DB0E70BF1A549"]);
+    adController.setTestDeviceIds(["F99695B64D31FD9A46D8AB9319E12EA6"]);
     adController.reloadAd(forceRefresh: true, numberAds: 5);
     adController.setAdUnitID(AdManager.bannerAdUnitId);
   }
