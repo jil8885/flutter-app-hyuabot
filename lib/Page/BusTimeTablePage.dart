@@ -67,6 +67,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
       body: Column(
         children: [
           Container(
+            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
             height: 200,
             child: Row(
               mainAxisSize: MainAxisSize.max,
@@ -78,9 +79,9 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
                   children: [
                     Text(lineName, style: TextStyle(color: Colors.white, fontSize: 28)),
                     SizedBox(height: 30,),
-                    Text("${TranslationManager.of(context).trans(lineInfo[lineName]["from"])} → ${TranslationManager.of(context).trans(lineInfo[lineName]["to"])}", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18)),
+                    Text("${TranslationManager.of(context).trans(lineInfo[lineName]["from"])} → ${TranslationManager.of(context).trans(lineInfo[lineName]["to"])}", style: TextStyle(color: Colors.white, fontSize: 18)),
                     SizedBox(height: 10,),
-                    Text(_minuteInfo, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18)),
+                    Text(_minuteInfo, style: TextStyle(color: Colors.white, fontSize: 18)),
                   ],
                 ),
               ],

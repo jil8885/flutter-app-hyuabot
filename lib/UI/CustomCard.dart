@@ -70,15 +70,15 @@ class CustomShuttleCard extends StatelessWidget {
         child: Container(width: _width / 2.5,
             child: Text.rich(
               TextSpan(children: [
-                TextSpan(text: "$remainedTimeString ", style: TextStyle(fontSize: _height/30, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold)),
-                TextSpan(text: minString, style: TextStyle(fontSize: _height/45, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
+                TextSpan(text: "$remainedTimeString ", style: TextStyle(fontSize: 22.5, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontWeight: FontWeight.bold)),
+                TextSpan(text: minString, style: TextStyle(fontSize: 18, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
               ],),
             )),
       );
     } else {
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
-            child: Text(remainedTimeString, style: TextStyle(fontSize: _height/30, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+            child: Text(remainedTimeString, style: TextStyle(fontSize: 22.5, color: Colors.black), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
       );
     }
 
@@ -96,19 +96,16 @@ class CustomShuttleCard extends StatelessWidget {
               children: <Widget>[
                 Text(
                   title,
-                  style: TextStyle(fontSize: _height/40, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 _remainedText,
-                SizedBox(height: 25,),
-                Container(width: _width / 2.5,
-                    child: Text(thisBusString, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)
-                ),
+                SizedBox(height: 20,),
+                Container(child: Text(thisBusString, style: TextStyle(fontSize: 15, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
                 SizedBox(height: 5),
-                Container(width: _width / 2.5,
-                    child: Text(nextBusString, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
+                Container(child: Text(nextBusString, style: TextStyle(fontSize: 15, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
               ],
             ),
             SizedBox(

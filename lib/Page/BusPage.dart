@@ -59,17 +59,21 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
               SizedBox(height: 5,),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 25),), padding: const EdgeInsets.only(top: 10), width: width / 5,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(busStop, style: TextStyle(fontSize: 16, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
-                      ),
-                      Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
-                    ],
+                  Container(child: Text(lineName, style: TextStyle(color: lineColor, fontSize: 25),), padding: const EdgeInsets.only(top: 10),),
+                  SizedBox(width: 10,),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 5),
+                          child: Text(busStop, style: TextStyle(fontSize: 16, color: Theme.of(_context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
+                        ),
+                        Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
+                      ],
+                    ),
                   ),
                 ],
               ),

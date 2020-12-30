@@ -344,7 +344,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                     children: <Widget>[
                       Text(TranslationManager.of(context).trans("menu_list"),
                           style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               color:
                               Theme.of(context).textTheme.bodyText1.color)),
                       Expanded(child: Container()),
@@ -359,7 +359,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                             }
                             return Text(
                               _isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"),
-                              style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 20),
+                              style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
                             );
                           }
                       ),
@@ -376,7 +376,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   children: <Widget>[
                     Text(TranslationManager.of(context).trans("shuttle_list"),
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color:
                             Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
@@ -392,7 +392,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                                   ? _primaryColor
                                   : Colors.white,
                               fontFamily: 'Godo',
-                              fontSize: 20,
+                              fontSize: 18,
                           ),
                         )),
                   ],
@@ -410,7 +410,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   children: <Widget>[
                     Text(TranslationManager.of(context).trans("food_now"),
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             color:
                             Theme.of(context).textTheme.bodyText1.color)),
                     GestureDetector(
@@ -425,7 +425,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                                   ? _primaryColor
                                   : Colors.white,
                               fontFamily: 'Godo',
-                              fontSize: 20,
+                              fontSize: 18,
                           ),
                         )),
                   ],
@@ -468,15 +468,14 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
         SizedBox(
           height: 5,
         ),
-        Flexible(
-            child: Text(
+        Text(
           menuName,
           style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
+          color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
           textAlign: TextAlign.center,
-        )),
+        ),
         SizedBox(
-          height: 15,
+          height: 5,
         ),
       ],
     );

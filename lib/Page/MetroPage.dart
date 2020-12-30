@@ -44,7 +44,6 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
       elevation: 3,
       child: Container(
         width: width - 50,
-        height: height / 5,
         padding: EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -57,7 +56,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
             ),
             Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
             Divider(color: Colors.grey),
-            Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10),)
+            Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10), height: 50,)
           ],
         ),
       ),
@@ -107,12 +106,10 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
                             _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_suwon"), snapshot.data['sub']['up']),
                             _metroCard(_width, _height, Color(0xfff5a200), TranslationManager.of(context).trans("station_line_suin"), TranslationManager.of(context).trans("bound_incheon"), snapshot.data['sub']['down']),
                             Container(
+                              padding: EdgeInsets.all(10),
                               height: 80,
                               width: _width,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [Center(child: Text(TranslationManager.of(context).trans("subway_caution"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
-                              ),
+                              child: Text(TranslationManager.of(context).trans("subway_caution"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),
                             ),
                           ],
                         ),
