@@ -78,9 +78,12 @@ class _MapPageState extends State<MapPage>{
             children: [
               Flexible(
                 child: ListWheelScrollView(
-                  itemExtent: 80,
+                  itemExtent: 65,
                   onSelectedItemChanged: (index){_index = index;},
                   children: _menus.map((e) => _menuButton(e)).toList(),
+                  physics: FixedExtentScrollPhysics(),
+                  useMagnifier: true,
+                  magnification: 1.25,
                 ),
               ),
               FlatButton(onPressed: (){
@@ -121,7 +124,9 @@ class _MapPageState extends State<MapPage>{
     return Container(
       height: 60,
       padding: EdgeInsets.all(2),
-      child: Center(child: Text(TranslationManager.of(context).trans(menuName), style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center,))
+      child: Container(
+          child: Center(child: Text(TranslationManager.of(context).trans(menuName), style: TextStyle(color: Colors.white, fontSize: 15), textAlign: TextAlign.center,))
+      )
     );
   }
 }
