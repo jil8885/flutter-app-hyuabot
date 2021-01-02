@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
@@ -16,10 +18,9 @@ class ReadingRoomPage extends StatefulWidget {
 }
 
 class ReadingRoomState extends State<ReadingRoomPage>{
-  FirebaseFirestore _firestore;
-  CollectionReference query;
+  final ReadingRoomController _controller = ReadingRoomController();
   final ReadingRoomStatus readingRoomStatus = ReadingRoomStatus(prefManager);
-
+  Timer _timer;
 
   Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive) {
     String _alarmOnString;
@@ -82,8 +83,9 @@ class ReadingRoomState extends State<ReadingRoomPage>{
 
   @override
   void initState() {
-    _firestore = FirebaseFirestore.instance;
-    query = _firestore.collection('reading_room').doc('erica').collection('rooms');
+    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+      _controller.fetch();
+    });
     super.initState();
   }
 
@@ -93,21 +95,16 @@ class ReadingRoomState extends State<ReadingRoomPage>{
     final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
 
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: query.snapshots(),
-        builder: (context, stream) {
-          if (stream.hasError) {
+      body: StreamBuilder<Map<String, ReadingRoomInfo>>(
+        stream: _controller.allReadingRoom,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
             return Center(child: Text(TranslationManager.of(context).trans("fail_to_load_library"), style: Theme.of(context).textTheme.bodyText1,),);
           }
-          if(!stream.hasData){
+          if(!snapshot.hasData){
             return Center(child: CircularProgressIndicator(),);
           }
-          QuerySnapshot snapshot = stream.data;
-          Map<String, ReadingRoomInfo> data = {};
-          for(QueryDocumentSnapshot doc in snapshot.docs){
-            Map<String, dynamic> docData  = doc.data();
-            data[docData['name']] = ReadingRoomInfo.fromJson(docData);
-          }
+          Map<String, ReadingRoomInfo> data = snapshot.data;
           return Container(
             padding: EdgeInsets.only(top: _statusBarHeight),
             child: Padding(
@@ -166,7 +163,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
 
   @override
   void dispose() {
-    _firestore.terminate();
+    _timer.cancel();
     super.dispose();
   }
 }

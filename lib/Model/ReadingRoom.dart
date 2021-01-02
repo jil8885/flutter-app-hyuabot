@@ -6,6 +6,6 @@ class ReadingRoomInfo{
   ReadingRoomInfo(this.active, this.occupied, this.available);
 
   factory ReadingRoomInfo.fromJson(Map<String, dynamic> json){
-    return ReadingRoomInfo(json['activeTotal'], json['occupied'], json['available']);
+    return ReadingRoomInfo(json['active'], json['occupied'], json['available']);
   }
 }
