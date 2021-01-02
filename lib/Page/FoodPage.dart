@@ -3,6 +3,7 @@ import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
+import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
 import 'package:get/get.dart';
 
 class FoodPage extends StatefulWidget {
@@ -227,53 +228,55 @@ class FoodPageState extends State<FoodPage>{
                       ],
                     ),
                     Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        physics: BouncingScrollPhysics(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Text(TranslationManager.of(context).trans("student_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
-                              ],
-                            ),
-                            _cafeteriaCard(snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(TranslationManager.of(context).trans("teacher_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
-                              ],
-                            ),
-                            _cafeteriaCard(snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(TranslationManager.of(context).trans("food_court"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
-                              ],
-                            ),
-                            _cafeteriaCard(snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(TranslationManager.of(context).trans("changbo_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
-                              ],
-                            ),
-                            _cafeteriaCard(snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(TranslationManager.of(context).trans("dorm_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
-                              ],
-                            ),
-                            _cafeteriaCard(snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),
-                          ],
+                      child: ScrollConfiguration(
+                        behavior: CustomScrollPhysics(),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text(TranslationManager.of(context).trans("student_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                ],
+                              ),
+                              _cafeteriaCard(snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
+                              SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(TranslationManager.of(context).trans("teacher_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                ],
+                              ),
+                              _cafeteriaCard(snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
+                              SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(TranslationManager.of(context).trans("food_court"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                ],
+                              ),
+                              _cafeteriaCard(snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
+                              SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(TranslationManager.of(context).trans("changbo_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                ],
+                              ),
+                              _cafeteriaCard(snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
+                              SizedBox(height: 20,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(TranslationManager.of(context).trans("dorm_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                ],
+                              ),
+                              _cafeteriaCard(snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),
+                            ],
+                          ),
                         ),
                       ),
                     ),

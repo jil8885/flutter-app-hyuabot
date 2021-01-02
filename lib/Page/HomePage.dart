@@ -18,6 +18,7 @@ import 'package:flutter_app_hyuabot_v2/Page/SettingPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
+import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
@@ -298,147 +299,149 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: MainAppBar(),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        physics: BouncingScrollPhysics(),
-        child: Container(
-          width: _width,
-          color: Theme.of(context).backgroundColor,
-          child: Column(
-            children: [
-              Container(
-                height: 90,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                child: NativeAdmob(
-                  adUnitID: AdManager.bannerAdUnitId,
-                  numberAds: 1,
-                  controller: adController,
-                  type: NativeAdmobType.banner,
-                  error: Center(
-                      child: Text(
-                        TranslationManager.of(context).trans("plz_enable_ad"),
-                        style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color,
-                            fontSize: 14),
-                        textAlign: TextAlign.center,
-                      )),
-                  options: NativeAdmobOptions(
-                    adLabelTextStyle: NativeTextStyle(
-                      color: Theme.of(context).textTheme.bodyText1.color,
+      body: ScrollConfiguration(
+        behavior: CustomScrollPhysics(),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            width: _width,
+            color: Theme.of(context).backgroundColor,
+            child: Column(
+              children: [
+                Container(
+                  height: 90,
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                  child: NativeAdmob(
+                    adUnitID: AdManager.bannerAdUnitId,
+                    numberAds: 1,
+                    controller: adController,
+                    type: NativeAdmobType.banner,
+                    error: Center(
+                        child: Text(
+                          TranslationManager.of(context).trans("plz_enable_ad"),
+                          style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyText1.color,
+                              fontSize: 14),
+                          textAlign: TextAlign.center,
+                        )),
+                    options: NativeAdmobOptions(
+                      adLabelTextStyle: NativeTextStyle(
+                        color: Theme.of(context).textTheme.bodyText1.color,
+                      ),
+                      bodyTextStyle: NativeTextStyle(
+                          color: Theme.of(context).textTheme.bodyText1.color),
+                      headlineTextStyle: NativeTextStyle(
+                          color: Theme.of(context).textTheme.bodyText1.color),
+                      advertiserTextStyle: NativeTextStyle(
+                          color: Theme.of(context).textTheme.bodyText1.color),
                     ),
-                    bodyTextStyle: NativeTextStyle(
-                        color: Theme.of(context).textTheme.bodyText1.color),
-                    headlineTextStyle: NativeTextStyle(
-                        color: Theme.of(context).textTheme.bodyText1.color),
-                    advertiserTextStyle: NativeTextStyle(
-                        color: Theme.of(context).textTheme.bodyText1.color),
                   ),
                 ),
-              ),
-              Container(
-                margin:
-                EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
-                child: GestureDetector(
-                  onTap: _expand,
+                Container(
+                  margin:
+                  EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
+                  child: GestureDetector(
+                    onTap: _expand,
+                    child: Row(
+                      children: <Widget>[
+                        Text(TranslationManager.of(context).trans("menu_list"),
+                            style: TextStyle(
+                                fontSize: 18,
+                                color:
+                                Theme.of(context).textTheme.bodyText1.color)),
+                        Expanded(child: Container()),
+                        StreamBuilder<bool>(
+                            stream: _menuController.isExpanded,
+                            builder: (context, snapshot) {
+                              bool _isExpanded;
+                              if(!snapshot.hasData || snapshot.hasError){
+                                _isExpanded=false;
+                              }else{
+                                _isExpanded = snapshot.data;
+                              }
+                              return Text(
+                                _isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"),
+                                style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
+                              );
+                            }
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                _menuWidget,
+                Divider(),
+                Container(
+                  margin: EdgeInsets.only(left: 30, right: 30, top: 10),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(TranslationManager.of(context).trans("menu_list"),
+                      Text(TranslationManager.of(context).trans("shuttle_list"),
                           style: TextStyle(
                               fontSize: 18,
                               color:
                               Theme.of(context).textTheme.bodyText1.color)),
-                      Expanded(child: Container()),
-                      StreamBuilder<bool>(
-                          stream: _menuController.isExpanded,
-                          builder: (context, snapshot) {
-                            bool _isExpanded;
-                            if(!snapshot.hasData || snapshot.hasError){
-                              _isExpanded=false;
-                            }else{
-                              _isExpanded = snapshot.data;
-                            }
-                            return Text(
-                              _isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"),
-                              style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
-                            );
-                          }
-                      ),
+                      GestureDetector(
+                          onTap: () {
+                            Get.to(ShuttlePage());
+                          },
+                          child: Text(
+                            TranslationManager.of(context)
+                                .trans("show_all_shuttle"),
+                            style: TextStyle(
+                                color: Theme.of(context).backgroundColor ==
+                                    Colors.white
+                                    ? _primaryColor
+                                    : Colors.white,
+                                fontFamily: 'Godo',
+                                fontSize: 18,
+                            ),
+                          )),
                     ],
                   ),
                 ),
-              ),
-              _menuWidget,
-              Divider(),
-              Container(
-                margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(TranslationManager.of(context).trans("shuttle_list"),
-                        style: TextStyle(
-                            fontSize: 18,
-                            color:
-                            Theme.of(context).textTheme.bodyText1.color)),
-                    GestureDetector(
-                        onTap: () {
-                          Get.to(ShuttlePage());
-                        },
-                        child: Text(
-                          TranslationManager.of(context)
-                              .trans("show_all_shuttle"),
-                          style: TextStyle(
-                              color: Theme.of(context).backgroundColor ==
-                                  Colors.white
-                                  ? _primaryColor
-                                  : Colors.white,
-                              fontFamily: 'Godo',
-                              fontSize: 18,
-                          ),
-                        )),
-                  ],
+                SizedBox(
+                  height: 10,
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              _shuttleCardList,
-              Divider(),
-              Container(
-                margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(TranslationManager.of(context).trans("food_now"),
-                        style: TextStyle(
-                            fontSize: 18,
-                            color:
-                            Theme.of(context).textTheme.bodyText1.color)),
-                    GestureDetector(
-                        onTap: () {
-                          Get.to(FoodPage());
-                        },
-                        child: Text(
-                          TranslationManager.of(context).trans("show_all_food"),
+                _shuttleCardList,
+                Divider(),
+                Container(
+                  margin: EdgeInsets.only(left: 30, right: 30, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(TranslationManager.of(context).trans("food_now"),
                           style: TextStyle(
-                              color: Theme.of(context).backgroundColor ==
-                                  Colors.white
-                                  ? _primaryColor
-                                  : Colors.white,
-                              fontFamily: 'Godo',
                               fontSize: 18,
-                          ),
-                        )),
-                  ],
+                              color:
+                              Theme.of(context).textTheme.bodyText1.color)),
+                      GestureDetector(
+                          onTap: () {
+                            Get.to(FoodPage());
+                          },
+                          child: Text(
+                            TranslationManager.of(context).trans("show_all_food"),
+                            style: TextStyle(
+                                color: Theme.of(context).backgroundColor ==
+                                    Colors.white
+                                    ? _primaryColor
+                                    : Colors.white,
+                                fontFamily: 'Godo',
+                                fontSize: 18,
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              _homeFoodMenu,
-              SizedBox(
-                height: 60,
-              )
-            ],
+                SizedBox(
+                  height: 10,
+                ),
+                _homeFoodMenu,
+                SizedBox(
+                  height: 60,
+                )
+              ],
+            ),
           ),
         ),
       ),
