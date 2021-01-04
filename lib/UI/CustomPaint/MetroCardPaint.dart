@@ -21,7 +21,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
   String _resultString(MetroRealtimeInfo info, String status){
     String _result;
     Map<String, String> langDict;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _result = '${info.terminalStation}행 ${info.remainedTime.toInt()}분 ($status)';
         break;
@@ -137,7 +137,7 @@ class MetroTimeTableCardPaint extends CustomPainter{
     String _result;
     Map<String, String> langDict;
     DateTime now = DateTime.now();
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _result = '${info.terminalStation}행 ${getTimeFromString(info.arrivalTime.toString(), now).difference(now).inMinutes}분';
         break;

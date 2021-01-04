@@ -88,7 +88,7 @@ class _MapPageState extends State<MapPage>{
               ),
               FlatButton(onPressed: (){
                 String _toastString;
-                switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+                switch(prefManager.getString("localeCode")){
                   case "ko_KR":
                     _toastString = '${TranslationManager.of(context).trans(_menus[_index])}(으)로 전환되었습니다.';
                     break;

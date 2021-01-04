@@ -15,7 +15,7 @@ class BusCardPaint extends CustomPainter {
       BuildContext context) {
     String _stopString, _seatString, _resultString;
     switch (
-        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _stopString = '$numOfStop전';
         _seatString = '$seats석';
@@ -50,7 +50,7 @@ class BusCardPaint extends CustomPainter {
   String _getArrivalTime(String time) {
     String _timeString;
     switch (
-        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time 출발';
         break;
@@ -66,7 +66,7 @@ class BusCardPaint extends CustomPainter {
   String _getTime(int time) {
     String _timeString;
     switch (
-        prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time분';
         break;

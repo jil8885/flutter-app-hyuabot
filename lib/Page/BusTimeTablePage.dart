@@ -52,7 +52,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
   Widget build(BuildContext context) {
     TranslationManager _manager = TranslationManager.of(context);
     String _minuteInfo= "";
-    switch (prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch (prefManager.getString("localeCode")){
       case "ko_KR":
         _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
         break;

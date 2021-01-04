@@ -27,7 +27,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
     }
 
     String _boundString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _boundString = "$terminalStop 방면";
         break;

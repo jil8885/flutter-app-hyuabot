@@ -19,7 +19,7 @@ class FoodPageState extends State<FoodPage>{
 
   Widget _foodItem(String menu, String price){
     String _priceString;
-    if(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue() == "ko_KR"){
+    if(prefManager.getString("localeCode") == "ko_KR"){
       _priceString = '$price 원';
     } else {
       _priceString = '₩ $price';

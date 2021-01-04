@@ -26,7 +26,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
 
   Widget _busCard(double width, String busStop, String terminalStop, String lineName, Color lineColor, Map<String, dynamic> data, bool timeTableOffered){
     String _boundString;
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _boundString = "$terminalStop 방면";
         break;
