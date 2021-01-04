@@ -10,23 +10,30 @@ import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 class ReadingRoomPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => ReadingRoomState();
 }
 
-class ReadingRoomState extends State<ReadingRoomPage>{
-  final ReadingRoomController _controller = ReadingRoomController();
-  final ReadingRoomStatus readingRoomStatus = ReadingRoomStatus(prefManager);
+class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserver{
   Timer _timer;
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if(state == AppLifecycleState.resumed){
+      readingRoomController.fetchAlarm();
+    }else if(state == AppLifecycleState.inactive){
+
+    }else if(state == AppLifecycleState.paused){
+
+    }
+  }
   Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive) {
     String _alarmOnString;
     String _alarmOffString;
 
-    switch(prefManager.getString("localeCode", defaultValue: "ko_KR").getValue()){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _alarmOnString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 설정되었다냥!";
         _alarmOffString = "${TranslationManager.of(context).trans(name)}의 좌석 알림이 해제되었다냥!";
@@ -62,11 +69,13 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                 if(alarmActive){
                   fcmManager.unsubscribeFromTopic(name);
                   prefManager.setBool(name, false);
+                  readingRoomController.fetchAlarm();
                   Fluttertoast.showToast(msg: _alarmOffString);
                 } else {
-                  if(available < 0){
+                  if(available < 100){
                     fcmManager.subscribeToTopic(name);
                     prefManager.setBool(name, true);
+                    readingRoomController.fetchAlarm();
                     Fluttertoast.showToast(msg: _alarmOnString, toastLength: Toast.LENGTH_SHORT);
                   } else{
                     Fluttertoast.showToast(msg: TranslationManager.of(context).trans("seat_remained_error"), toastLength: Toast.LENGTH_SHORT);
@@ -84,7 +93,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
   @override
   void initState() {
     _timer = Timer.periodic(Duration(minutes: 1), (timer) {
-      _controller.fetch();
+      readingRoomController.fetch();
     });
     super.initState();
   }
@@ -96,7 +105,7 @@ class ReadingRoomState extends State<ReadingRoomPage>{
 
     return Scaffold(
       body: StreamBuilder<Map<String, ReadingRoomInfo>>(
-        stream: _controller.allReadingRoom,
+        stream: readingRoomController.allReadingRoom,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text(TranslationManager.of(context).trans("fail_to_load_library"), style: Theme.of(context).textTheme.bodyText1,),);
@@ -117,18 +126,26 @@ class ReadingRoomState extends State<ReadingRoomPage>{
                       IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
                     ],
                   ),
-                  Container(
-                    height: 400,
-                    child: ListView(
-                      physics: BouncingScrollPhysics(),
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      children: [
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom1, builder: (context, alarmActive) => _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, alarmActive)),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom2, builder: (context, alarmActive) => _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, alarmActive)),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom3, builder: (context, alarmActive) => _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, alarmActive)),
-                        PreferenceBuilder(preference: readingRoomStatus.readingRoom4, builder: (context, alarmActive) => _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, alarmActive)),
-                      ],
-                    ),
+                  StreamBuilder<Map<String, bool>>(
+                    stream: readingRoomController.allReadingRoomAlarm,
+                    builder: (context, snapshot) {
+                      if(snapshot.hasError || !snapshot.hasData){
+                        return Container(height: 400, child: Center(child: CircularProgressIndicator(),),);
+                      }
+                      return Container(
+                        height: 400,
+                        child: ListView(
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          children: [
+                            _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, snapshot.data["reading_room_1"]),
+                            _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, snapshot.data["reading_room_2"]),
+                            _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, snapshot.data["reading_room_3"]),
+                            _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, snapshot.data["reading_room_4"]),
+                          ],
+                        ),
+                      );
+                    }
                   ),
                   Expanded(child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -166,18 +183,4 @@ class ReadingRoomState extends State<ReadingRoomPage>{
     _timer.cancel();
     super.dispose();
   }
-}
-
-class ReadingRoomStatus{
-  ReadingRoomStatus(StreamingSharedPreferences preferences)
-      : readingRoom1 = prefManager.getBool('reading_room_1', defaultValue: false),
-        readingRoom2 = prefManager.getBool('reading_room_2', defaultValue: false),
-        readingRoom3 = prefManager.getBool('reading_room_3', defaultValue: false),
-        readingRoom4 = prefManager.getBool('reading_room_4', defaultValue: false);
-
-  final Preference<bool> readingRoom1;
-  final Preference<bool> readingRoom2;
-  final Preference<bool> readingRoom3;
-  final Preference<bool> readingRoom4;
-
 }

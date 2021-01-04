@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
@@ -25,6 +26,14 @@ import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
 
+Future<dynamic> backgroundMessageHandler(Map<String, dynamic> msg) async {
+  final dynamic data = msg['data'];
+  print("background:$data");
+  fcmManager.unsubscribeFromTopic(data['name']);
+  prefManager.setBool(data['name'], false);
+  readingRoomController.fetchAlarm();
+}
+
 class HomePage extends StatefulWidget{
   @override
   State<StatefulWidget> createState() => _HomePageState();
@@ -47,6 +56,17 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
+    fcmManager = FirebaseMessaging();
+    fcmManager.configure(
+      onMessage: (Map<String, dynamic> msg) async{
+        final dynamic data = msg['data'];
+        print("foreground:$data");
+        fcmManager.unsubscribeFromTopic(data['name']);
+        prefManager.setBool(data['name'], false);
+        readingRoomController.fetchAlarm();
+      },
+      onBackgroundMessage: backgroundMessageHandler
+    );
     _foodTimer = Timer.periodic(Duration(seconds: 10), (timer) {_foodInfoController.fetchFood();});
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
     WidgetsBinding.instance.addObserver(this);
