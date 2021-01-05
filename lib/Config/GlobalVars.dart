@@ -11,7 +11,10 @@ final ReadingRoomController readingRoomController = ReadingRoomController();
 
 // FCM Manager
 FirebaseMessaging fcmManager;
+String localeCode;
 
 SharedPreferences prefManager;
 
-
+String getLocale(){
+  return localeCode;
+}

@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
@@ -20,21 +18,72 @@ import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
+import 'package:flutter_app_hyuabot_v2/main.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
 
-
-Future<dynamic> backgroundMessageHandler(Map<String, dynamic> msg) async {
+Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   final dynamic data = msg['data'];
-  print("background:$data");
   fcmManager.unsubscribeFromTopic(data['name']);
   prefManager.setBool(data['name'], false);
   readingRoomController.fetchAlarm();
 }
 
+Future<dynamic> backgroundMessageHandler(Map<String, dynamic> msg) async {
+  final dynamic data = msg['data'];
+  print("background:$data");
+  _showNotificationWithNoTitle(data['name'], data['language']);
+}
+
+Future<dynamic> foregroundMessageHandler(Map<String, dynamic> msg) async{
+  final dynamic data = msg['data'];
+  print("foreground:$data");
+  fcmManager.unsubscribeFromTopic(data['name']);
+  prefManager.setBool(data['name'], false);
+  _showNotificationWithNoTitle(data['name'], data['language']);
+  readingRoomController.fetchAlarm();
+}
+
+Future<void> _showNotificationWithNoTitle(String msg, String language) async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  AndroidNotificationDetails(
+      'kobuggi.app/reading_room_notification', 'Reading Room Alarm', 'Alarm for reading room empty seats',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker');
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(
+    android: androidPlatformChannelSpecifics,
+  );
+  String _msg="Alarm";
+  TranslationManager _translator = TranslationManager(Locale(language));
+  _translator.load().whenComplete((){
+    switch(language){
+      case "ko":
+        _msg = "${_translator.trans(msg)}에서 자리가 발견되었다냥!";
+        break;
+      case "en":
+        _msg = "Empty seat found from ${_translator.trans(msg)}!";
+        break;
+      case "zh":
+        break;
+    }
+    flutterLocalNotificationsPlugin.show(0, null, _msg, platformChannelSpecifics, payload: msg);
+  });
+}
+
 class HomePage extends StatefulWidget{
+  const HomePage(
+      this.notificationAppLaunchDetails, {
+        Key key,
+      }) : super(key: key);
+
+  final NotificationAppLaunchDetails notificationAppLaunchDetails;
+  bool get didNotificationLaunchApp =>
+      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
+
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
@@ -56,16 +105,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
-    fcmManager = FirebaseMessaging();
     fcmManager.configure(
-      onMessage: (Map<String, dynamic> msg) async{
-        final dynamic data = msg['data'];
-        print("foreground:$data");
-        fcmManager.unsubscribeFromTopic(data['name']);
-        prefManager.setBool(data['name'], false);
-        readingRoomController.fetchAlarm();
-      },
-      onBackgroundMessage: backgroundMessageHandler
+      onMessage: foregroundMessageHandler,
+      onBackgroundMessage: backgroundMessageHandler,
+      onLaunch: onLaunchMessageHandler
     );
     _foodTimer = Timer.periodic(Duration(seconds: 10), (timer) {_foodInfoController.fetchFood();});
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});

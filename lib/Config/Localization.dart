@@ -30,4 +30,5 @@ class TranslationManager {
   String trans(String key) {
     return this._sentences[key];
   }
+
 }

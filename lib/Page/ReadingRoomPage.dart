@@ -67,13 +67,15 @@ class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserve
               ])),
               IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
                 if(alarmActive){
-                  fcmManager.unsubscribeFromTopic(name);
+                  fcmManager.unsubscribeFromTopic("$name.ko_KR");
+                  fcmManager.unsubscribeFromTopic("$name.en_US");
+                  fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.setBool(name, false);
                   readingRoomController.fetchAlarm();
                   Fluttertoast.showToast(msg: _alarmOffString);
                 } else {
                   if(available < 100){
-                    fcmManager.subscribeToTopic(name);
+                    fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
                     prefManager.setBool(name, true);
                     readingRoomController.fetchAlarm();
                     Fluttertoast.showToast(msg: _alarmOnString, toastLength: Toast.LENGTH_SHORT);

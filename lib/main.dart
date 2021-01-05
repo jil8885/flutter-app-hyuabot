@@ -1,9 +1,9 @@
 import 'dart:io';
-
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Config/LocalizationDelegate.dart';
@@ -16,18 +16,42 @@ import 'package:get/get.dart';
 
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+const MethodChannel readingRoomChannel = MethodChannel('kobuggi.app/reading_room_notification');
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
+
+final BehaviorSubject<String> selectNotificationSubject = BehaviorSubject<String>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // FCM
+  fcmManager = FirebaseMessaging();
+
+  // Alarm
+  final NotificationAppLaunchDetails notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  const AndroidInitializationSettings _initialSettingsAndroid = AndroidInitializationSettings("hanyang_reading_room");
+  const InitializationSettings _settings = InitializationSettings(android: _initialSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(_settings,
+      onSelectNotification: (String payload) async {
+        if (payload != null) {
+          prefManager.setBool(payload, false);
+          readingRoomController.fetchAlarm();
+        }
+        selectNotificationSubject.add(payload);
+      });
+
+  // Pref
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   prefManager = await SharedPreferences.getInstance();
   if(prefManager.getString("localeCode").isNull){
     prefManager.setString("localeCode", "ko_KR");
   }
+
   if(prefManager.getBool("reading_room_1").isNull || prefManager.getBool("reading_room_2").isNull || prefManager.getBool("reading_room_3").isNull || prefManager.getBool("reading_room_4").isNull){
     prefManager.setBool("reading_room_1", false);
     prefManager.setBool("reading_room_2", false);
@@ -36,7 +60,7 @@ void main() async {
   }
   Firebase.initializeApp();
   copyDatabase();
-  runApp(Phoenix(child: MyApp()));
+  runApp(Phoenix(child: MyApp(notificationAppLaunchDetails)));
 }
 
 void copyDatabase() async {
@@ -51,15 +75,33 @@ void copyDatabase() async {
   await new File(path).writeAsBytes(bytes, flush: true);
 }
 
+class ReceivedNotification {
+  ReceivedNotification({
+    @required this.id,
+    @required this.title,
+    @required this.body,
+    @required this.payload,
+  });
+
+  final int id;
+  final String title;
+  final String body;
+  final String payload;
+}
 
 class MyApp extends StatelessWidget {
+  MyApp(
+      this.notificationAppLaunchDetails, {
+        Key key,
+      }) : super(key: key);
+
+  final NotificationAppLaunchDetails notificationAppLaunchDetails;
   final FirebaseAnalytics analytics = FirebaseAnalytics();
+  final String _localeCode = prefManager.getString("localeCode");
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    String _localeCode = prefManager.getString("localeCode");
-
     return AdaptiveTheme(
         light: lightTheme,
         dark: darkTheme,
@@ -68,7 +110,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: darkTheme,
-          home: HomePage(),
+          home: HomePage(notificationAppLaunchDetails),
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
           supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
