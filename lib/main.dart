@@ -40,6 +40,9 @@ void main() async {
       onSelectNotification: (String payload) async {
         if (payload != null) {
           prefManager.setBool(payload, false);
+          fcmManager.unsubscribeFromTopic("$payload.ko_KR");
+          fcmManager.unsubscribeFromTopic("$payload.en_US");
+          fcmManager.unsubscribeFromTopic("$payload.zh");
           readingRoomController.fetchAlarm();
         }
         selectNotificationSubject.add(payload);
