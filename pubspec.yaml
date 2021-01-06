@@ -2,7 +2,7 @@ name: flutter_app_hyuabot_v2
 description: flutter-app-hyuabot
 
 publish_to: 'none'
-version: 0.0.5+5
+version: 0.0.8+8
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -34,6 +34,7 @@ dependencies:
   modal_bottom_sheet: ^1.0.0+1
   flutter_point_tab_bar: 0.1.0
   flutter_local_notifications: ^3.0.2
+  flutter_material_pickers: ^1.8.1
 
 
 dev_dependencies:
