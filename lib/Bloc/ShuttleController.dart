@@ -7,8 +7,8 @@ import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 
 class FetchAllShuttleController{
-  final _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
-  final _allTimeTableSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
+  rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>> _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
+  rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>> _allTimeTableSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
 
   FetchAllShuttleController(){
     fetch();
@@ -22,6 +22,9 @@ class FetchAllShuttleController{
     Map<String, ShuttleStopDepartureInfo> data = {};
     for(String key in responseJson.keys){
       data[key] = ShuttleStopDepartureInfo.fromJson(responseJson[key]);
+    }
+    if(_allShuttleInfoSubject.isClosed){
+      _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
     }
     _allShuttleInfoSubject.add(data);
   }
