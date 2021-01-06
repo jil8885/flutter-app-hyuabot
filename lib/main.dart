@@ -40,16 +40,6 @@ void main() async {
   // Pref
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   prefManager = await SharedPreferences.getInstance();
-  if(prefManager.getString("localeCode").isNull){
-    prefManager.setString("localeCode", "ko_KR");
-  }
-
-  if(prefManager.getBool("reading_room_1").isNull || prefManager.getBool("reading_room_2").isNull || prefManager.getBool("reading_room_3").isNull || prefManager.getBool("reading_room_4").isNull){
-    prefManager.setBool("reading_room_1", false);
-    prefManager.setBool("reading_room_2", false);
-    prefManager.setBool("reading_room_3", false);
-    prefManager.setBool("reading_room_4", false);
-  }
   Firebase.initializeApp();
   copyDatabase();
   runApp(Phoenix(child: MyApp(notificationAppLaunchDetails)));
@@ -99,8 +89,6 @@ class MyApp extends StatelessWidget {
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails;
   final FirebaseAnalytics analytics = FirebaseAnalytics();
-  final String _localeCode = prefManager.getString("localeCode");
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -117,6 +105,7 @@ class MyApp extends StatelessWidget {
           supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
           localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
+            final String _localeCode = prefManager.getString("localeCode");
             switch(_localeCode){
               case 'ko_KR':
                 return const Locale('ko', 'KR');

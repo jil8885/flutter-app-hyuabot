@@ -59,12 +59,14 @@ class SettingPage extends StatelessWidget{
                           title: Text(TranslationManager.of(context).trans("language_dialog_title")),
                           children: [
                             SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              prefManager.setString("localeCode", "ko_KR");
-                              Phoenix.rebirth(context);
+                              prefManager.setString("localeCode", "ko_KR").whenComplete((){
+                                Phoenix.rebirth(context);
+                              });
                             },),
                             SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
-                              prefManager.setString("localeCode", "en_US");
-                              Phoenix.rebirth(context);
+                              prefManager.setString("localeCode", "en_US").whenComplete((){
+                                Phoenix.rebirth(context);
+                              });
                             },),
                             // 중국어 번역 이후 추가
                             // SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
