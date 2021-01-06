@@ -22,9 +22,7 @@ import 'package:sqflite/sqflite.dart';
 
 const MethodChannel readingRoomChannel = MethodChannel('kobuggi.app/reading_room_notification');
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
 final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
-
 final BehaviorSubject<String> selectNotificationSubject = BehaviorSubject<String>();
 
 void main() async {
@@ -34,19 +32,10 @@ void main() async {
 
   // Alarm
   final NotificationAppLaunchDetails notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  const AndroidInitializationSettings _initialSettingsAndroid = AndroidInitializationSettings("hanyang_reading_room");
+  const AndroidInitializationSettings _initialSettingsAndroid = AndroidInitializationSettings('@mipmap/launcher_icon');
   const InitializationSettings _settings = InitializationSettings(android: _initialSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(_settings,
-      onSelectNotification: (String payload) async {
-        if (payload != null) {
-          prefManager.setBool(payload, false);
-          fcmManager.unsubscribeFromTopic("$payload.ko_KR");
-          fcmManager.unsubscribeFromTopic("$payload.en_US");
-          fcmManager.unsubscribeFromTopic("$payload.zh");
-          readingRoomController.fetchAlarm();
-        }
-        selectNotificationSubject.add(payload);
-      });
+      onSelectNotification: whenSelectNotification);
 
   // Pref
   savedThemeMode = await AdaptiveTheme.getThemeMode();
@@ -76,6 +65,16 @@ void copyDatabase() async {
   ByteData data = await rootBundle.load(join("assets/databases", "information.db"));
   List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
   await new File(path).writeAsBytes(bytes, flush: true);
+}
+
+Future whenSelectNotification(String payload) async{
+  debugPrint(payload);
+  prefManager.setBool(payload, false);
+  fcmManager.unsubscribeFromTopic("$payload.ko_KR");
+  fcmManager.unsubscribeFromTopic("$payload.en_US");
+  fcmManager.unsubscribeFromTopic("$payload.zh");
+  readingRoomController.fetchAlarm();
+  selectNotificationSubject.add(payload);
 }
 
 class ReceivedNotification {
