@@ -106,6 +106,9 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
           localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
             final String _localeCode = prefManager.getString("localeCode");
+            if(_localeCode.isNull){
+              prefManager.setString("localeCode", "ko_KR");
+            }
             switch(_localeCode){
               case 'ko_KR':
                 return const Locale('ko', 'KR');

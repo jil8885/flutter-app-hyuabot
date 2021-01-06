@@ -17,7 +17,7 @@ class FetchFoodInfoController{
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    String _localeCode = prefManager.getString('localeCode');
+    final String _localeCode = prefManager.getString("localeCode");
     http.Response response;
     response = await http.post(url, body: jsonEncode({'language': _localeCode.split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
