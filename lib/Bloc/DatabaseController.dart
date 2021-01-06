@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
@@ -60,7 +61,19 @@ class DataBaseController{
     }
     OverlayImage image = await OverlayImage.fromAssetImage(ImageConfiguration(), "assets/images/$assetName.png");
     for(Map marker in queryResult){
-      _markers.add(Marker(markerId: '$index', position: LatLng(double.parse(marker['latitude'].toString()), double.parse(marker['longitude'].toString())), onMarkerTab: _onMarkerTap, icon: image, width: 20, height: 20, captionText: catString));
+      String query = "select name from outschool where category='$catString' and latitude=${marker['latitude']} and longitude=${marker['longitude']}";
+      String storeResult = (await _database.rawQuery(query)).map((e) => e["name"]).toList().join(",");
+      _markers.add(Marker(
+          markerId: '$index',
+          position: LatLng(double.parse(marker['latitude'].toString()), double.parse(marker['longitude'].toString())),
+          icon: image,
+          width: 20,
+          height: 20,
+          captionText: catString,
+          infoWindow: storeResult,
+          onMarkerTab: _onMarkerTap
+        )
+      );
       index++;
     }
     return _markers;
@@ -75,29 +88,7 @@ class DataBaseController{
 
 
   _onMarkerTap(Marker marker, Map<String, int> iconSize){
-    fetchStore(marker.captionText, marker.position.latitude, marker.position.longitude).then(
-        (value) {
-          showMaterialModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.white.withOpacity(0.1),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-              builder: (context) => Container(
-                margin: EdgeInsets.only(left: 10, right: 10),
-                height: 135,
-                child: ListView.builder(
-                  padding: EdgeInsets.all(5),
-                  shrinkWrap: true,
-                  itemCount: value.length,
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  itemBuilder: (context, index){
-                    return CustomStoreCard(value[index]);
-                  },
-                ),
-              )
-          );
-      }
-    );
+    mapController.moveCamera(CameraUpdate.scrollTo(LatLng(marker.position.latitude, marker.position.longitude)));
   }
 
   dispose(){
