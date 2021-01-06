@@ -132,8 +132,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _shuttleController.dispose();
-    _foodInfoController.dispose();
     super.dispose();
   }
 
@@ -304,7 +302,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
           Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
           _foodTimer.cancel();
           return Container(
-            height: _height / 4,
+            height: _height / 3.5,
             width: _width,
             padding: EdgeInsets.symmetric(horizontal: 15),
             child: ListView.builder(
@@ -517,6 +515,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
   Widget _menuButton(BuildContext context, double width, double height, String assetName, String menuName, Widget newPage, Color color) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         GestureDetector(
           onTap: () {Get.to(newPage, duration: kThemeAnimationDuration);},
@@ -531,17 +530,21 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
             padding: EdgeInsets.all(10),
           ),
         ),
-        SizedBox(
-          height: 5,
-        ),
-        Text(
-          menuName,
-          style: TextStyle(
-          color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(
-          height: 5,
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              height: 30,
+              child: Center(
+                child: Text(
+                  menuName,
+                  style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );
