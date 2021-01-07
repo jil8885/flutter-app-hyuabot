@@ -75,6 +75,19 @@ class _MapPageState extends State<MapPage> {
         onConfirm: (picker, value){
           _markers.clear();
           _getMarkers(_menus[value.elementAt(0)]);
+          String _toastString;
+          switch(prefManager.getString("localeCode")){
+            case "ko_KR":
+              _toastString = '${picker.getSelectedValues()[0]}(으)로 전환되었습니다.';
+              break;
+            case "en_US":
+              _toastString = 'Changed to ${picker.getSelectedValues()[0]}.';
+              break;
+            case "zh":
+              _toastString = '${picker.getSelectedValues()[0]}(으)로 전환되었습니다.';
+              break;
+          }
+          Fluttertoast.showToast(msg: _toastString);
         }
     );
     return Scaffold(
@@ -175,7 +188,7 @@ class _MapPageState extends State<MapPage> {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Material(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     elevation: 4.0,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -197,7 +210,7 @@ class _MapPageState extends State<MapPage> {
                 return ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Material(
-                    color: Colors.white,
+                    color: Theme.of(context).backgroundColor,
                     elevation: 4.0,
                     child: Column(
                     mainAxisSize: MainAxisSize.min,
