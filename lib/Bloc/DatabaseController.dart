@@ -15,6 +15,8 @@ class DataBaseController{
   DataBaseController([this.context]);
   final _phoneSearchResultInSchool = BehaviorSubject<List<PhoneNum>>();
   final _phoneSearchResultOutSchool = BehaviorSubject<List<PhoneNum>>();
+  final _storeSearchResult = BehaviorSubject<List<StoreSearchInfo>>();
+  final _markerMapResult = BehaviorSubject<List<Marker>>();
 
   Future init() async{
     _path = await getDatabasesPath();
@@ -48,7 +50,7 @@ class DataBaseController{
   }
 
 
-  Future<List<Marker>> fetchMarkers(String catString) async{
+  fetchMarkers(String catString) async{
     String query = "select distinct latitude, longitude from outschool where category='$catString'";
     List<Map> queryResult = await _database.rawQuery(query);
     List<Marker> _markers = [];
@@ -61,8 +63,8 @@ class DataBaseController{
     }
     OverlayImage image = await OverlayImage.fromAssetImage(ImageConfiguration(), "assets/images/$assetName.png");
     for(Map marker in queryResult){
-      String query = "select name from outschool where category='$catString' and latitude=${marker['latitude']} and longitude=${marker['longitude']}";
-      String storeResult = (await _database.rawQuery(query)).map((e) => e["name"]).toList().join(",");
+      String query = "select name, menu from outschool where category='$catString' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
+      String storeResult = (await _database.rawQuery(query)).map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
       _markers.add(Marker(
           markerId: '$index',
           position: LatLng(double.parse(marker['latitude'].toString()), double.parse(marker['longitude'].toString())),
@@ -76,9 +78,12 @@ class DataBaseController{
       );
       index++;
     }
-    return _markers;
+    _markerMapResult.add(_markers);
   }
 
+  addMarker(List<Marker> markers){
+    _markerMapResult.add(markers);
+  }
 
   Future<List<StoreInfo>> fetchStore(String catString, double latitude, double longitude) async{
     String query = "select name, phone, menu from outschool where latitude=$latitude and longitude=${double.parse(longitude.toStringAsFixed(12))} and category='$catString'";
@@ -86,6 +91,15 @@ class DataBaseController{
     return queryResult.map((e) => StoreInfo.fromJson(e)).toList();
   }
 
+  searchStore(String searchKeyword) async{
+    if(searchKeyword.isNotEmpty){
+      String query = "select name, menu, latitude, longitude from outschool where name like '%$searchKeyword%' or menu like '%$searchKeyword%'";
+      List<Map> queryResult = await _database.rawQuery(query);
+      _storeSearchResult.add(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
+    } else{
+      _storeSearchResult.add([]);
+    }
+  }
 
   _onMarkerTap(Marker marker, Map<String, int> iconSize){
     mapController.moveCamera(CameraUpdate.scrollTo(LatLng(marker.position.latitude, marker.position.longitude)));
@@ -94,12 +108,15 @@ class DataBaseController{
   dispose(){
     _phoneSearchResultInSchool.close();
     _phoneSearchResultOutSchool.close();
+    _storeSearchResult.close();
+    _markerMapResult.close();
     _database.close();
   }
 
   Stream<List<PhoneNum>> get searchPhoneResultInSchool => _phoneSearchResultInSchool.stream;
   Stream<List<PhoneNum>> get searchPhoneResultOutSchool => _phoneSearchResultOutSchool.stream;
-
+  Stream<List<StoreSearchInfo>> get searchStoreStream => _storeSearchResult.stream;
+  Stream<List<Marker>> get mapMarkers => _markerMapResult.stream;
 }
 
 class PhoneNum{
@@ -121,5 +138,18 @@ class StoreInfo{
 
   factory StoreInfo.fromJson(Map<String, dynamic> json){
     return StoreInfo(json["name"], json['phone'], json['menu']);
+  }
+}
+
+class StoreSearchInfo{
+  final String name;
+  final String menu;
+  final double latitude;
+  final double longitude;
+
+  StoreSearchInfo(this.name, this.menu, this.latitude, this.longitude);
+
+  factory StoreSearchInfo.fromJson(Map<String, dynamic> json){
+    return StoreSearchInfo(json["name"], json['menu'], double.parse(json["latitude"].toString()), double.parse(json["longitude"].toString()));
   }
 }

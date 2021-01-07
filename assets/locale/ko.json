@@ -96,7 +96,7 @@
   "seat_remained_error": "자리가 없을 때만 설정이 가능하다냥!",
   "fail_to_load_library": "열람실 정보를 불러오는데 실패했습니다.",
   "how_use_library_page": "열람실 좌석이 없을 때 좌석 알람을 설정하고,\n자리가 생길 때 알람을 받을 수 있어요!\n(앱을 완전히 종료하면 알람이 안올 수 있어요)",
-  "phone_hint_text": "검색할 전화번호를 입력해주세요.",
+  "phone_hint_text": "검색어를 입력해주세요.",
   "phone_label_text": "검색어",
   "phone_helper_text": "검색할 상호명/기관명",
   "phone_not_found": "결과가 없습니다.",
