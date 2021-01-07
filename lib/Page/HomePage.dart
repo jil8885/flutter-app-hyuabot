@@ -9,6 +9,7 @@ import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 import 'package:flutter_app_hyuabot_v2/Page/BusPage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/CalendarPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/MapPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/MetroPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/PhoneSearchPage.dart';
@@ -189,6 +190,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("reading_room_btn"), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                   _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", TranslationManager.of(context).trans("contact_btn"), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                   _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", TranslationManager.of(context).trans("map_btn"), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("calendar_btn"), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 ],
               ),
               secondChild: GridView.count(
