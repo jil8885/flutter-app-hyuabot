@@ -15,6 +15,7 @@ class MapPage extends StatefulWidget {
   State<StatefulWidget> createState() => _MapPageState();
 }
 class _MapPageState extends State<MapPage> {
+
   final _menus = [
     'korean',
     'japanese',
@@ -79,17 +80,6 @@ class _MapPageState extends State<MapPage> {
               _getMarkers(_menus[value.elementAt(0)]);
             }
           ).showDialog(context);
-          // showPicker(
-          //     context: context,
-          //     title: "Category",
-          //     items: _translatedMenus,
-          //     selectedItem: _selectedValue,
-          //     onChanged: (value) {
-          //       _selectedValue = _menus[_translatedMenus.indexOf(value)];
-          //       _markers.clear();
-          //       _getMarkers(_selectedValue);
-          //     }
-          // );
         },),
       body: Stack(
         children: [
@@ -207,10 +197,12 @@ class _MapPageState extends State<MapPage> {
                     child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: snapshot.data.map((e) => InkWell(
-                    onTap: (){
+                    onTap: () async {
+                      String assetName = "restaurant";
+                      OverlayImage image = await OverlayImage.fromAssetImage(ImageConfiguration(), "assets/images/$assetName.png");
                       mapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
                       _floatingSearchBar.controller.close();
-                      _dataBaseController.addMarker([Marker(markerId: e.name, position: LatLng(e.latitude, e.longitude), infoWindow: e.name)]);
+                      _dataBaseController.addMarker([Marker(markerId: e.name, position: LatLng(e.latitude, e.longitude), infoWindow: e.name, icon: image, width: 20, height: 20,)]);
                     },
                       child: Container(
                         height: 75,
