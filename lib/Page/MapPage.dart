@@ -64,22 +64,26 @@ class _MapPageState extends State<MapPage> {
     _map = _naverMap(context);
     _floatingSearchBar = buildFloatingSearchBar();
 
+    Picker _picker = Picker(
+        itemExtent: 40,
+        adapter: PickerDataAdapter<String>(pickerdata: _translatedMenus),
+        textAlign: TextAlign.center,
+        hideHeader: true,
+        backgroundColor: null,
+        magnification: 1.1,
+        textStyle: Theme.of(context).textTheme.bodyText1,
+        onConfirm: (picker, value){
+          _markers.clear();
+          _getMarkers(_menus[value.elementAt(0)]);
+        }
+    );
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.category, color: Colors.white,),
         backgroundColor: Color(0xff2db400),
         onPressed: (){
-          Picker(
-            itemExtent: 40,
-            adapter: PickerDataAdapter<String>(pickerdata: _translatedMenus),
-            textAlign: TextAlign.center,
-            hideHeader: true,
-            onConfirm: (picker, value){
-              _markers.clear();
-              _getMarkers(_menus[value.elementAt(0)]);
-            }
-          ).showDialog(context);
+          _picker.showDialog(context);
         },),
       body: Stack(
         children: [
@@ -135,14 +139,15 @@ class _MapPageState extends State<MapPage> {
 
     return FloatingSearchBar(
       hint: TranslationManager.of(context).trans("phone_hint_text"),
+      backgroundColor: Theme.of(context).backgroundColor,
       scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-      transitionDuration: const Duration(milliseconds: 800),
+      transitionDuration: const Duration(milliseconds: 200),
       transitionCurve: Curves.easeInOut,
       physics: const BouncingScrollPhysics(),
       axisAlignment: isPortrait ? 0.0 : -1.0,
       openAxisAlignment: 0.0,
       maxWidth: isPortrait ? 600 : 500,
-      debounceDelay: const Duration(milliseconds: 500),
+      debounceDelay: const Duration(milliseconds: 100),
       controller: _floatingSearchBarController,
       onQueryChanged: (query) {
         _dataBaseController.searchStore(query);
