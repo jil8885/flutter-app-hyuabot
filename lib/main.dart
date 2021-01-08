@@ -101,6 +101,12 @@ class MyApp extends StatelessWidget {
           theme: theme,
           darkTheme: darkTheme,
           home: HomePage(notificationAppLaunchDetails),
+          builder: (context, child) {
+            return MediaQuery(
+              child: child,
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            );
+          },
           navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
           supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
