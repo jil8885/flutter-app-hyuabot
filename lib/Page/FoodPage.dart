@@ -47,6 +47,7 @@ class FoodPageState extends State<FoodPage>{
   Widget _cafeteriaCard(Map<String, List<FoodMenu>> data, String name){
     String kind = TranslationManager.of(context).trans("lunch");
     List<FoodMenu> currentFood = [];
+    bool hasManyMenu = false;
     if(_now.hour < 11 && data['breakfast'].isNotEmpty){
       currentFood = data['breakfast'];
       kind = TranslationManager.of(context).trans("breakfast");
@@ -71,9 +72,10 @@ class FoodPageState extends State<FoodPage>{
 
     List<Widget> allFoodWidget = [];
     if(data['breakfast'].isNotEmpty){
+      hasManyMenu = true;
       allFoodWidget.addAll([
         Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +92,7 @@ class FoodPageState extends State<FoodPage>{
     if(data['lunch'].isNotEmpty){
       allFoodWidget.addAll([
         Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -105,9 +107,10 @@ class FoodPageState extends State<FoodPage>{
     }
 
     if(data['dinner'].isNotEmpty){
+      hasManyMenu = true;
       allFoodWidget.addAll([
         Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10),
+          padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -139,53 +142,88 @@ class FoodPageState extends State<FoodPage>{
         SizedBox(height: 10,),
         Container(child: Center(child: Text(TranslationManager.of(context).trans("menu_not_uploaded"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
       ];
-    }
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Card(
-        elevation: 3,
-        color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AnimatedCrossFade(
-              crossFadeState: !_isExpanded[name] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-              duration: kThemeAnimationDuration,
-              firstChild: Column(
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Card(
+            elevation: 3,
+            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: allFoodWidget,
+              ),
+            )
+        ),
+      );
+    } else if(!hasManyMenu){
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Card(
+            elevation: 3,
+            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: allFoodWidget
+              ),
+            )
+        ),
+      );
+    } else {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Card(
+            elevation: 3,
+            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, top: 10),
+                  AnimatedCrossFade(
+                      crossFadeState: !_isExpanded[name] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                      duration: kThemeAnimationDuration,
+                      firstChild: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(kind, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: currentFoodWidget,
+                          ),
+                        ],
+                      ),
+                      secondChild: Column(children: allFoodWidget,)
+                  ),
+                  InkWell(
+                    onTap: (){setState(() {_isExpanded[name] = !_isExpanded[name];});},
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(kind, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                        IconButton(icon: _isExpanded[name] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){setState(() {_isExpanded[name] = !_isExpanded[name];});}),
                       ],
                     ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: currentFoodWidget,
-                  ),
-                ],
-              ),
-              secondChild: Column(children: allFoodWidget,)
-            ),
-            InkWell(
-              onTap: (){setState(() {_isExpanded[name] = !_isExpanded[name];});},
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(icon: _isExpanded[name] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){setState(() {_isExpanded[name] = !_isExpanded[name];});}),
+                  )
                 ],
               ),
             )
-          ],
-        )
-      ),
-    );
+        ),
+      );
+    }
   }
 
 
