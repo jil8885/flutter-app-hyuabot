@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     final Widget _shuttleCardList = Container(
       height: _height / 4,
       width: _width,
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      padding: EdgeInsets.symmetric(horizontal: 30),
       child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
         stream: _shuttleController.allShuttleInfo,
         builder: (context, snapshot) {
@@ -276,7 +276,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
               snapshot.data["Shuttlecock_I"]
             ];
             return ListView.builder(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
               shrinkWrap: true,
               itemCount: 7,
               scrollDirection: Axis.horizontal,
@@ -306,9 +306,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
           return Container(
             height: _height / 3.5,
             width: _width,
-            padding: EdgeInsets.symmetric(horizontal: 15),
+            padding: EdgeInsets.symmetric(horizontal: 30),
             child: ListView.builder(
-              padding: EdgeInsets.all(5),
+              padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
               shrinkWrap: true,
               itemCount: 5,
               scrollDirection: Axis.horizontal,
@@ -401,8 +401,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   ),
                 ),
                 Container(
-                  margin:
-                  EdgeInsets.only(left: 30, right: 30, top: 30, bottom: 20),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: GestureDetector(
                     onTap: _expand,
                     child: Row(
@@ -469,7 +468,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 _shuttleCardList,
                 Divider(),
                 Container(
-                  margin: EdgeInsets.only(left: 30, right: 30, top: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
