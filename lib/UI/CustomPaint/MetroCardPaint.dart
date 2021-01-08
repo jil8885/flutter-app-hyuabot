@@ -104,7 +104,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
       drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status), context);
       drawRemainedTime(canvas, Offset(25, 35), '정보 없음', context);
     } else {
-      drawRemainedTime(canvas, Offset(25, 10), '운행 종료', context);
+      drawRemainedTime(canvas, Offset(25, 10), '운행 종료 또는 API 운영사의 오류입니다.', context);
     }
   }
 

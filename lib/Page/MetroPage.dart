@@ -20,10 +20,15 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
 
   Widget _metroCard(double width, double height, Color lineColor, String currentStop, String terminalStop, dynamic data){
     CustomPainter content;
-    if((data as List).elementAt(0).runtimeType.toString() == 'MetroRealtimeInfo'){
-      content = MetroRealtimeCardPaint(data, lineColor, context);
-    } else {
-      content = MetroTimeTableCardPaint(data, lineColor, context);
+    var _data = data as List;
+    if(_data.isNotEmpty){
+      if(_data.elementAt(0).runtimeType.toString() == 'MetroRealtimeInfo'){
+        content = MetroRealtimeCardPaint(data, lineColor, context);
+      } else {
+        content = MetroTimeTableCardPaint(data, lineColor, context);
+      }
+    } else{
+      content = MetroRealtimeCardPaint([], lineColor, context);
     }
 
     String _boundString;
