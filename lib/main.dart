@@ -46,15 +46,19 @@ void main() async {
 }
 
 void copyDatabase() async {
-  final String path = join(await getDatabasesPath(), "information.db");
-  await deleteDatabase(path);
+  final String srcPath = join("assets/databases", "information.db");
+  final String destPath = join(await getDatabasesPath(), "information.db");
 
+  ByteData srcData = await rootBundle.load(srcPath);
   try {
-    await Directory(dirname(path)).create(recursive: true);
+    await Directory(dirname(destPath)).create(recursive: true);
+    ByteData destData = await rootBundle.load(destPath);
+    if(srcData.lengthInBytes != destData.lengthInBytes){
+      await deleteDatabase(destPath);
+      List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
+      await new File(destPath).writeAsBytes(bytes, flush: true);
+    }
   } catch (_) {}
-  ByteData data = await rootBundle.load(join("assets/databases", "information.db"));
-  List<int> bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-  await new File(path).writeAsBytes(bytes, flush: true);
 }
 
 Future whenSelectNotification(String payload) async{
