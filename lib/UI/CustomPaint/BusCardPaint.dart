@@ -93,18 +93,6 @@ class BusCardPaint extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2.0;
 
-    final _inBoxColor = Paint()
-      ..color = Theme.of(context).backgroundColor == Colors.white
-          ? Colors.grey
-          : Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 2.0;
-
-    final _boxColor = Paint()
-      ..color = Colors.grey.withOpacity(0.6)
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = 2.0;
-
     // Paint for line Circle
     final _colorPaint = Paint()
       ..color = lineColor

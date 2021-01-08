@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
 class BusTimeTablePage extends StatefulWidget {
   final String lineName;

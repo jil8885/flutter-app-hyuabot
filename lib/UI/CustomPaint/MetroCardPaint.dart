@@ -188,7 +188,6 @@ class MetroTimeTableCardPaint extends CustomPainter{
     canvas.drawCircle(Offset(10, 35), 5.0, _line);
     canvas.drawCircle(Offset(10, 35), 3.0, _white);
 
-    DateTime now = DateTime.now();
     if(data.length >= 2){
       drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)), context);
       drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1)), context);

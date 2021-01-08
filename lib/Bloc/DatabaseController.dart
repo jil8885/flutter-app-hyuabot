@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'package:path/path.dart';
 import 'package:rxdart/rxdart.dart';

@@ -4,7 +4,6 @@ import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-import 'package:get/get.dart';
 
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -20,10 +19,8 @@ class CustomShuttleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double _width;
-    double _height;
 
     _width= MediaQuery.of(context).size.width;
-    _height = MediaQuery.of(context).size.height;
 
     String remainedTimeString = "";
     String thisBusString = "";
@@ -172,10 +169,7 @@ class CustomStoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double _width;
     double _height;
-
-    _width= MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
 
     Widget _callButton;
