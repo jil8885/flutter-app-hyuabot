@@ -58,6 +58,12 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
         } else {
           _dataBaseController.fetchOutSchoolList(_textEditingController.value.text);
         }
+      } else {
+        if(_controller.index == 0){
+          _dataBaseController.fetchInSchoolList();
+        } else {
+          _dataBaseController.fetchOutSchoolList();
+        }
       }
     });
 
