@@ -21,7 +21,7 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
 
   String _busStop;
 
-  Map<String, List<dynamic>> _getTimetable(Map<String, ShuttleStopDepartureInfo> data){
+  Map<String, List<dynamic>> _getTimetable(Map<String, dynamic> data){
     Map<String, List<dynamic>> _resultData = {};
 
     switch(destination){
@@ -52,9 +52,39 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
     return "${arrivalTime.hour.toString().padLeft(2, "0")}:${arrivalTime.minute.toString().padLeft(2, "0")}";
   }
 
-  Widget _timeTableView(List timeTable, ShuttleStopDepartureInfo data){
+  Widget _timeTableView(List timeTable, ShuttleStopDepartureInfo data, bool isWeekend){
+    DateTime now = DateTime.now();
+    bool passed;
     return ListView.separated(
         itemBuilder: (context, index){
+          passed=true;
+          var time = timeTable[index].toString().split(":");
+          int hour = int.parse(time[0]);
+          int minute = int.parse(time[1]);
+          if(hour > now.hour || (hour == now.hour && minute > now.minute)){
+            passed = false;
+          }
+
+          if(index > 0){
+            time = timeTable[index - 1].toString().split(":");
+            hour = int.parse(time[0]);
+            minute = int.parse(time[1]);
+            if(hour > now.hour || (hour == now.hour && minute > now.minute)){
+              passed = true;
+            }
+          }
+
+          Color _rowColor;
+          TextStyle _headingColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _time2Color = TextStyle(color: Colors.grey, fontSize: 20);
+          if(!passed && isWeekend){
+            _rowColor = Color.fromARGB(255, 20, 75, 170);
+            _headingColor = TextStyle(color: Colors.white, fontSize: 24);
+            _timeColor = TextStyle(color: Colors.white, fontSize: 24);
+            _time2Color = TextStyle(color: Colors.white, fontSize: 20);
+          }
+
           String _label;
           int _minutes = 10;
           if(data.shuttleListCycle.contains(timeTable[index])){
@@ -72,21 +102,23 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
             }
             else if(currentStop == "bus_stop_school_opposite"){_minutes = 5;}
           }
+
           return Container(
             padding: EdgeInsets.symmetric(vertical: 15),
+            color: _rowColor,
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(TranslationManager.of(context).trans(_label), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
+                Text(TranslationManager.of(context).trans(_label), style: _headingColor),
                 Container(
                   width: MediaQuery.of(context).size.width*.5,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("${timeTable[index]} → ", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
-                      Text(_getTimeString(timeTable[index], _minutes), style: TextStyle(color: Colors.grey, fontSize: 20)),
+                      Text("${timeTable[index]} → ", style: _timeColor),
+                      Text(_getTimeString(timeTable[index], _minutes), style: _time2Color),
                     ],
                   ),
                 )
@@ -131,30 +163,32 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
        title: Text("${_manager.trans(currentStop)} → ${_manager.trans(destination).replaceAll("Bound for", "")}"), centerTitle: true,
        backgroundColor: Color.fromARGB(255, 20, 75, 170),
      ),
-     body: Container(
-       child: DefaultTabController(
-         length: 2,
-         child: Column(
-           children: [
-             TabBar(tabs: [Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text(_manager.trans("weekends"), style: Theme.of(context).textTheme.bodyText1,),)],),
-             StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
-               stream: _shuttleController.allTimeTableInfo,
-               builder: (context, snapshot) {
-                 if(snapshot.hasError || !snapshot.hasData){
-                   return Expanded(child: Center(child: CircularProgressIndicator(),));
-                 }
-                 Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
-                 return Expanded(child: TabBarView(
+     body: StreamBuilder<Map<String, dynamic>>(
+       stream: _shuttleController.allTimeTableInfo,
+       builder: (context, snapshot) {
+         if(snapshot.hasError || !snapshot.hasData){
+           return Center(child: CircularProgressIndicator(),);
+         }
+         Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
+         int initialIndex = snapshot.data["day"] == "weekdays"? 0:1;
+         return Container(
+           child: DefaultTabController(
+             length: 2,
+             initialIndex: initialIndex,
+             child: Column(
+               children: [
+                 TabBar(tabs: [Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text(_manager.trans("weekends"), style: Theme.of(context).textTheme.bodyText1,),)],),
+                 Expanded(child: TabBarView(
                    children: [
-                     Container(child: _timeTableView(_data["weekdays"], snapshot.data["weekdays"]),),
-                     Container(child: _timeTableView(_data["weekends"], snapshot.data["weekends"]),),
+                     Container(child: _timeTableView(_data["weekdays"], snapshot.data["weekdays"], snapshot.data["day"] == "weekdays"),),
+                     Container(child: _timeTableView(_data["weekends"], snapshot.data["weekends"], snapshot.data["day"] != "weekdays"),),
                    ],
-                 ));
-               }
-             )
-           ],
-         ),
-       ),
+                 ))
+               ],
+             ),
+           ),
+         );
+       }
      ),
    );
   }
