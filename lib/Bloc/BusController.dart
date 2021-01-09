@@ -8,7 +8,7 @@ import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
 class FetchBusInfoController{
   final _allBusInfoSubject = BehaviorSubject<Map<String, dynamic>>();
-  final _busTimeTableSubject = BehaviorSubject<Map<String, List<dynamic>>>();
+  final _busTimeTableSubject = BehaviorSubject<Map<String, dynamic>>();
 
   FetchBusInfoController(){
     fetch();
@@ -47,7 +47,7 @@ class FetchBusInfoController{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus/timetable");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "route": route}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-    Map<String, List<dynamic>> data = {"weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};
+    Map<String, dynamic> data = {"day": responseJson["day"], "weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};
     _busTimeTableSubject.add(data);
   }
 
@@ -56,5 +56,5 @@ class FetchBusInfoController{
   }
 
   Stream<Map<String, dynamic>> get allBusInfo => _allBusInfoSubject.stream;
-  Stream<Map<String, List<dynamic>>> get timetableInfo => _busTimeTableSubject.stream;
+  Stream<Map<String, dynamic>> get timetableInfo => _busTimeTableSubject.stream;
 }

@@ -24,10 +24,39 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
 
   BusTimeTablePageState(this.lineName, this.lineColor);
 
-  Widget _timeTableView(List timeTable){
+  Widget _timeTableView(List timeTable, int order, int initialIndex){
+    DateTime now = DateTime.now();
+    bool passed;
     return ListView.separated(
         itemBuilder: (context, index){
+          passed=true;
+          var time = timeTable[index]["time"].toString().split(":");
+          int hour = int.parse(time[0]);
+          int minute = int.parse(time[1]);
+          if(hour > now.hour || (hour == now.hour && minute > now.minute)){
+            passed = false;
+          }
+
+          if(index > 0){
+            time = timeTable[index - 1]["time"].toString().split(":");
+            hour = int.parse(time[0]);
+            minute = int.parse(time[1]);
+            if(hour > now.hour || (hour == now.hour && minute > now.minute)){
+              passed = true;
+            }
+          }
+
+          Color _rowColor;
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          if(!passed && (initialIndex == order)){
+            _rowColor = Color.fromARGB(255, 20, 75, 170);
+            _timeColor = TextStyle(color: Colors.white, fontSize: 24);
+          } else if(passed  && (initialIndex == order) && (hour < now.hour || (hour == now.hour && minute <= now.minute))){
+            _timeColor = TextStyle(color: Colors.grey, fontSize: 24);
+          }
+
           return Container(
+            color: _rowColor,
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
             child: Container(
               width: MediaQuery.of(context).size.width*.5,
@@ -35,7 +64,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("${timeTable[index]["time"]}", style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24)),
+                  Text("${timeTable[index]["time"]}", style: _timeColor),
                 ],
               ),
             ),
@@ -86,34 +115,47 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
             ),
             color: lineColor,
           ),
-          Expanded(
-            child: DefaultTabController(
-              length: 3,
-              child: Column(
-                children: [
-                  TabBar(tabs: [
-                    Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),),
-                    Tab(child: Text(_manager.trans("saturday"), style: Theme.of(context).textTheme.bodyText1,),),
-                    Tab(child: Text(_manager.trans("sunday"), style: Theme.of(context).textTheme.bodyText1,),),
-                  ],),
-                  StreamBuilder<Map<String, List<dynamic>>>(
-                      stream: _busController.timetableInfo,
-                      builder: (context, snapshot) {
-                        if(snapshot.hasError || !snapshot.hasData){
-                          return Expanded(child: Center(child: CircularProgressIndicator(),));
-                        }
-                        return Expanded(child: TabBarView(
-                          children: [
-                            Container(child: _timeTableView(snapshot.data["weekdays"]),),
-                            Container(child: _timeTableView(snapshot.data["saturday"]),),
-                            Container(child: _timeTableView(snapshot.data["sunday"]),),
-                          ],
-                        ));
-                      }
-                  )
-                ],
-              ),
-            ),
+          StreamBuilder<Map<String, dynamic>>(
+            stream: _busController.timetableInfo,
+            builder: (context, snapshot) {
+              if(snapshot.hasError || !snapshot.hasData){
+                return Expanded(child: Center(child: CircularProgressIndicator(),));
+              }
+              int initialIndex = 0;
+              switch(snapshot.data["day"]){
+                case "weekdays":
+                  initialIndex = 0;
+                  break;
+                case "sat":
+                  initialIndex = 1;
+                  break;
+                case "sun":
+                  initialIndex = 2;
+                  break;
+              }
+              return Expanded(
+                child: DefaultTabController(
+                  length: 3,
+                  initialIndex: initialIndex,
+                  child: Column(
+                    children: [
+                      TabBar(tabs: [
+                        Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text(_manager.trans("saturday"), style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text(_manager.trans("sunday"), style: Theme.of(context).textTheme.bodyText1,),),
+                      ],),
+                      Expanded(child: TabBarView(
+                        children: [
+                          Container(child: _timeTableView(snapshot.data["weekdays"], 0, initialIndex)),
+                          Container(child: _timeTableView(snapshot.data["saturday"], 1, initialIndex)),
+                          Container(child: _timeTableView(snapshot.data["sunday"], 2, initialIndex)),
+                        ],
+                      ))
+                    ],
+                  ),
+                ),
+              );
+            }
           ),
         ],
       ),
