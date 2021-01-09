@@ -144,8 +144,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     final Color _primaryColor = Theme.of(context).accentColor;
 
     // 메뉴 아이콘 너비, 높이
-    final double _itemWidth = _width / 10;
-    final double _itemHeight = _width / 10;
+    final double _itemWidth = _width / 5.5;
+    final double _itemHeight = _width / 5.5;
 
     // 식당 이름들
     final _cafeteriaNames = [
@@ -178,20 +178,22 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
               crossFadeState:
               _isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
               duration: kThemeAnimationDuration,
-              firstChild: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                children: [
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", TranslationManager.of(context).trans("shuttle_btn"), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", TranslationManager.of(context).trans("bus_btn"), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", TranslationManager.of(context).trans("metro_btn"), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", TranslationManager.of(context).trans("food_btn"), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("reading_room_btn"), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", TranslationManager.of(context).trans("contact_btn"), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", TranslationManager.of(context).trans("map_btn"), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("calendar_btn"), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                ],
+              firstChild: Container(
+                child: GridView.count(
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 4,
+                  shrinkWrap: true,
+                  children: [
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", TranslationManager.of(context).trans("shuttle_btn"), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", TranslationManager.of(context).trans("bus_btn"), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", TranslationManager.of(context).trans("metro_btn"), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", TranslationManager.of(context).trans("food_btn"), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("reading_room_btn"), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", TranslationManager.of(context).trans("contact_btn"), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", TranslationManager.of(context).trans("map_btn"), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                    _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("calendar_btn"), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  ],
+                ),
               ),
               secondChild: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
@@ -521,31 +523,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
         GestureDetector(
           onTap: () {Get.to(newPage, duration: kThemeAnimationDuration);},
           child: Container(
+            width: width,
+            height: height,
             child: Image.asset(
               assetName,
-              width: width,
-              height: height,
             ),
             decoration: BoxDecoration(
                 color: color, borderRadius: BorderRadius.circular(10)),
             padding: EdgeInsets.all(10),
           ),
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 30,
-              child: Center(
-                child: Text(
-                  menuName,
-                  style: TextStyle(
-                  color: Theme.of(context).textTheme.bodyText1.color, fontSize: 13),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          ],
+        Container(
+          child: Text(
+            menuName,
+            style: TextStyle(
+            color: Theme.of(context).textTheme.bodyText1.color, fontSize: 15),
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
