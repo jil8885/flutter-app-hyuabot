@@ -540,7 +540,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
             child: Text(
               menuName,
               style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color, fontSize: 15),
+              color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ),
