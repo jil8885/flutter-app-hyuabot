@@ -54,21 +54,21 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp" />
     </RadioGroup>
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_above="@+id/shuttleWidgetConfirm">
-        <TextView
-            android:text="투명도"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-        <SeekBar
-            android:id="@+id/shuttleWidgetTransparent"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_above="@+id/shuttleWidgetConfirm">-->
+<!--        <TextView-->
+<!--            android:text="투명도"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent" />-->
+<!--        <SeekBar-->
+<!--            android:id="@+id/shuttleWidgetTransparent"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content" />-->
+<!--    </LinearLayout>-->
 
     <Button
         android:id="@+id/shuttleWidgetConfirm"
