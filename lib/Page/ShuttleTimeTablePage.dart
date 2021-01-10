@@ -83,6 +83,8 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
             _headingColor = TextStyle(color: Colors.white, fontSize: 24);
             _timeColor = TextStyle(color: Colors.white, fontSize: 24);
             _time2Color = TextStyle(color: Colors.white, fontSize: 20);
+          }else if(passed  && isWeekend && (hour < now.hour || (hour == now.hour && minute <= now.minute))){
+            _timeColor = TextStyle(color: Colors.grey, fontSize: 24);
           }
 
           String _label;
