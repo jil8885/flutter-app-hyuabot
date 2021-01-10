@@ -25,6 +25,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
 final BehaviorSubject<String> selectNotificationSubject = BehaviorSubject<String>();
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // FCM
@@ -54,7 +55,6 @@ void copyDatabase() async {
   ByteData destData;
   try{
     destData = await rootBundle.load(destPath);
-    debugPrint("${srcData.lengthInBytes}-${destData.lengthInBytes}");
     if(srcData.lengthInBytes != destData.lengthInBytes){
       await deleteDatabase(destPath);
       List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
@@ -98,10 +98,10 @@ class MyApp extends StatelessWidget {
       }) : super(key: key);
 
   final NotificationAppLaunchDetails notificationAppLaunchDetails;
-  final FirebaseAnalytics analytics = FirebaseAnalytics();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    analytics = FirebaseAnalytics();
     return AdaptiveTheme(
         light: lightTheme,
         dark: darkTheme,

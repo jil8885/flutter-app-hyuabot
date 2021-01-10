@@ -164,6 +164,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/bus/timetable");
     _busController.fetchTimeTable(lineName);
     super.initState();
   }

@@ -230,6 +230,7 @@ class FoodPageState extends State<FoodPage>{
   @override
   void initState() {
     _foodInfoController = FetchFoodInfoController();
+    analytics.setCurrentScreen(screenName: "/food");
     super.initState();
   }
 

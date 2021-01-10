@@ -93,6 +93,7 @@ class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserve
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/library");
     _timer = Timer.periodic(Duration(minutes: 1), (timer) {
       readingRoomController.fetch();
     });

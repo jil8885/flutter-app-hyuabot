@@ -70,6 +70,7 @@ class _MetroPageState extends State<MetroPage> with SingleTickerProviderStateMix
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/metro");
     _metroInfoController = FetchMetroInfoController();
     _metroTimer = Timer.periodic(Duration(minutes: 1), (timer) {
       _metroInfoController.fetch();

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -51,6 +52,7 @@ class _ShuttlePageState extends State<ShuttlePage>{
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/shuttle");
     _shuttleController = FetchAllShuttleController();
     _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
     _context = context;

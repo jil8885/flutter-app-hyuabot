@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_point_tab_bar/pointTabBar.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -23,6 +24,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/contacts");
     _controller = TabController(length: 2, vsync: this);
     _textEditingController = TextEditingController();
     _dataBaseController = DataBaseController();

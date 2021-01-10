@@ -91,6 +91,7 @@ class _BusPageState extends State<BusPage> with SingleTickerProviderStateMixin{
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/bus");
     _context = context;
     _busInfoController = FetchBusInfoController();
     _busTimer = Timer.periodic(Duration(minutes: 1), (timer) {

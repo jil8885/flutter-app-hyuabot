@@ -10,6 +10,7 @@ import 'package:settings_ui/settings_ui.dart';
 class SettingPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: "/setting");
     return Scaffold(
       body: Container(
         color: Theme.of(context).backgroundColor,

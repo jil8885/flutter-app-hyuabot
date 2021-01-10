@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DateController.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarPage extends StatefulWidget{
@@ -13,6 +14,7 @@ class CalendarPageState extends State<CalendarPage>{
   @override
   void initState() {
     super.initState();
+    analytics.setCurrentScreen(screenName: "/calendar");
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
@@ -136,6 +137,7 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
 
   @override
   void initState() {
+    analytics.setCurrentScreen(screenName: "/shuttle/timetable");
     switch(currentStop){
       case "bus_stop_dorm":
         _busStop = "Residence";

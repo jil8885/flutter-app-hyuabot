@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
@@ -18,3 +19,6 @@ SharedPreferences prefManager;
 
 // Map
 NaverMapController mapController;
+
+// Firebase FirebaseAnalytics
+FirebaseAnalytics analytics;

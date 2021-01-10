@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
+    analytics.setCurrentScreen(screenName: "/home");
     fcmManager.configure(
       onMessage: foregroundMessageHandler,
       onBackgroundMessage: backgroundMessageHandler,
