@@ -73,7 +73,7 @@ class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserve
                   readingRoomController.fetchAlarm();
                   Fluttertoast.showToast(msg: _alarmOffString);
                 } else {
-                  if(available < 100){
+                  if(available < 0){
                     fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
                     prefManager.setBool(name, true);
                     readingRoomController.fetchAlarm();
