@@ -8,4 +8,5 @@
     <string name="bound_for_terminal">For terminal</string>
     <string name="bound_for_all">For station/terminal</string>
     <string name="bound_for_school">For school</string>
+    <string name="required_location_permission">It needs location permissions to update widget.</string>
 </resources>
