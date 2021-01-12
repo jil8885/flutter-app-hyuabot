@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    tools:context="app.kobuggi.hyuabot.home_widgets.ShuttleHomeWidgetConfig"
+    >
+    <RadioGroup
+        android:id="@+id/shuttleRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_margin="10dp"
+        >
+        <RadioButton
+            android:id="@+id/shuttleStopAuto"
+            android:layout_weight="1"
+            android:text="자동(위치 기반)"
+            android:layout_width="wrap_content"
+            android:checked="true"
+            android:layout_height="0dp" />
+        <RadioButton
+            android:id="@+id/shuttleStopDormitory"
+            android:layout_weight="1"
+            android:text="기숙사"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+        <RadioButton
+            android:id="@+id/shuttleStopOutSchool"
+            android:layout_weight="1"
+            android:text="셔틀콕"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+        <RadioButton
+            android:id="@+id/shuttleStopStation"
+            android:layout_weight="1"
+            android:text="한대앞"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+        <RadioButton
+            android:id="@+id/shuttleStopTerminal"
+            android:layout_weight="1"
+            android:text="예술인"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+        <RadioButton
+            android:id="@+id/shuttleStopInSchool"
+            android:layout_weight="1"
+            android:text="셔틀콕 건너편"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+    </RadioGroup>
+<!--    <LinearLayout-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_above="@+id/shuttleWidgetConfirm">-->
+<!--        <TextView-->
+<!--            android:text="투명도"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent" />-->
+<!--        <SeekBar-->
+<!--            android:id="@+id/shuttleWidgetTransparent"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="wrap_content" />-->
+<!--    </LinearLayout>-->
+
+    <Button
+        android:id="@+id/shuttleWidgetConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:text="완료"
+        android:layout_alignParentBottom="true"
+        android:onClick="confirmConfiguration"/>
+</RelativeLayout>
