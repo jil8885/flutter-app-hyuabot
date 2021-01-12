@@ -2,7 +2,7 @@ name: flutter_app_hyuabot_v2
 description: flutter-app-hyuabot
 
 publish_to: 'none'
-version: 0.1.4+15
+version: 0.2.2+20
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
