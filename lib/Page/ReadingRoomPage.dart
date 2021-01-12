@@ -134,32 +134,40 @@ class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserve
                       IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
                     ],
                   ),
-                  StreamBuilder<Map<String, bool>>(
-                    stream: readingRoomController.allReadingRoomAlarm,
-                    builder: (context, snapshot) {
-                      if(snapshot.hasError || !snapshot.hasData){
-                        return Container(height: 400, child: Center(child: CircularProgressIndicator(),),);
-                      }
-                      return Container(
-                        height: 400,
-                        child: ListView(
-                          physics: BouncingScrollPhysics(),
-                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          children: [
-                            _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, snapshot.data["reading_room_1"]),
-                            _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, snapshot.data["reading_room_2"]),
-                            _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, snapshot.data["reading_room_3"]),
-                            _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, snapshot.data["reading_room_4"]),
-                          ],
-                        ),
-                      );
-                    }
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          StreamBuilder<Map<String, bool>>(
+                              stream: readingRoomController.allReadingRoomAlarm,
+                              builder: (context, snapshot) {
+                                if(snapshot.hasError || !snapshot.hasData){
+                                  return Container(height: 400, child: Center(child: CircularProgressIndicator(),),);
+                                }
+                                return Container(
+                                  height: 400,
+                                  child: ListView(
+                                    physics: BouncingScrollPhysics(),
+                                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    children: [
+                                      _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, snapshot.data["reading_room_1"]),
+                                      _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, snapshot.data["reading_room_2"]),
+                                      _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, snapshot.data["reading_room_3"]),
+                                      _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, snapshot.data["reading_room_4"]),
+                                    ],
+                                  ),
+                                );
+                              }
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Center(child: Text(TranslationManager.of(context).trans("how_use_library_page"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  Expanded(child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [Center(child: Text(TranslationManager.of(context).trans("how_use_library_page"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
-                  ),),
                   Container(
                     height: 90,
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
