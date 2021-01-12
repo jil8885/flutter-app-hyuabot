@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Config/LocalizationDelegate.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Theme.dart';
 import 'package:flutter_app_hyuabot_v2/Page/HomePage.dart';
+import 'package:flutter_app_hyuabot_v2/Page/SplashScreen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -42,29 +43,7 @@ void main() async {
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   prefManager = await SharedPreferences.getInstance();
   Firebase.initializeApp();
-  copyDatabase();
   runApp(Phoenix(child: MyApp(notificationAppLaunchDetails)));
-}
-
-void copyDatabase() async {
-  final String srcPath = join("assets/databases", "information.db");
-  final String destPath = join(await getDatabasesPath(), "information.db");
-
-  ByteData srcData = await rootBundle.load(srcPath);
-  await Directory(dirname(destPath)).create(recursive: true);
-  ByteData destData;
-  try{
-    destData = await rootBundle.load(destPath);
-    if(srcData.lengthInBytes != destData.lengthInBytes){
-      await deleteDatabase(destPath);
-      List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
-      await new File(destPath).writeAsBytes(bytes, flush: true);
-    }
-  } catch(_){
-    await deleteDatabase(destPath);
-    List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
-    await new File(destPath).writeAsBytes(bytes, flush: true);
-  }
 }
 
 Future whenSelectNotification(String payload) async{
@@ -110,7 +89,10 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: theme,
           darkTheme: darkTheme,
-          home: HomePage(notificationAppLaunchDetails),
+          home: SplashScreen(),
+          routes: <String, WidgetBuilder>{
+            '/HomeScreen': (BuildContext context) => HomePage(notificationAppLaunchDetails)
+          },
           builder: (context, child) {
             return MediaQuery(
               child: child,
