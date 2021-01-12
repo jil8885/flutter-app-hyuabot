@@ -27,6 +27,7 @@ void copyDatabase() async {
     List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
     await new File(destPath).writeAsBytes(bytes, flush: true);
   }
+  Get.offAllNamed('/HomeScreen');
 }
 
 
@@ -38,20 +39,10 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   Widget _logoImage = Image.asset('assets/images/hanyang-phone.png');
 
-  startTime() async {
-    copyDatabase();
-    var _duration = new Duration(milliseconds: 500);
-    return new Timer(_duration, navigationPage);
-  }
-
-  void navigationPage() {
-    Get.offAllNamed('/HomeScreen');
-  }
-
   @override
   void initState() {
     super.initState();
-    startTime();
+    copyDatabase();
   }
 
   @override
