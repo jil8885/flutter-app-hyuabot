@@ -183,7 +183,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 4,
                 shrinkWrap: true,
-                childAspectRatio: 0.8,
+                childAspectRatio: 0.7,
                 children: [
                   _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", TranslationManager.of(context).trans("shuttle_btn"), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                   _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", TranslationManager.of(context).trans("bus_btn"), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
