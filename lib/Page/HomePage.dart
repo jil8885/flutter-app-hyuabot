@@ -20,12 +20,13 @@ import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
-import 'package:flutter_app_hyuabot_v2/main.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'SplashScreen.dart';
 
 Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   final dynamic data = msg['data'];
@@ -77,12 +78,6 @@ Future<void> _showNotificationWithNoTitle(String msg, String language) async {
 }
 
 class HomePage extends StatefulWidget{
-  const HomePage(
-      this.notificationAppLaunchDetails, {
-        Key key,
-      }) : super(key: key);
-
-  final NotificationAppLaunchDetails notificationAppLaunchDetails;
   bool get didNotificationLaunchApp =>
       notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
 
