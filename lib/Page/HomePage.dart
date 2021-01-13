@@ -362,7 +362,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: MainAppBar(),
       body: DoubleBackToCloseApp(
-        snackBar: SnackBar(content: Text(TranslationManager.of(context).trans("back_snack_msg"))),
+        snackBar: SnackBar(content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(TranslationManager.of(context).trans("back_snack_msg")),
+          ],
+        )),
         child: ScrollConfiguration(
           behavior: CustomScrollPhysics(),
           child: SingleChildScrollView(
