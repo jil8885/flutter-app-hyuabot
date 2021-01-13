@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -37,6 +38,10 @@ void initApp() async {
     List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
     await new File(destPath).writeAsBytes(bytes, flush: true);
   }
+  // Ad
+  adController.setTestDeviceIds(["F99695B64D31FD9A46D8AB9319E12EA6"]);
+  adController.reloadAd(forceRefresh: true, numberAds: 5);
+  adController.setAdUnitID(AdManager.bannerAdUnitId);
 
   // FCM
   fcmManager = FirebaseMessaging();
