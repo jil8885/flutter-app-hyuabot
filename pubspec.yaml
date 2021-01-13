@@ -2,7 +2,7 @@ name: flutter_app_hyuabot_v2
 description: flutter-app-hyuabot
 
 publish_to: 'none'
-version: 0.1.4+15
+version: 0.2.2+20
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -37,7 +37,7 @@ dependencies:
   flutter_picker: ^1.1.5
   material_floating_search_bar: ^0.2.6
   syncfusion_flutter_calendar: ^18.4.33
-
+  double_back_to_close_app: ^1.2.0
 
 dev_dependencies:
   flutter_test:

@@ -99,7 +99,7 @@ class CustomShuttleCard extends StatelessWidget {
                   height: 10,
                 ),
                 _remainedText,
-                SizedBox(height: 20,),
+                Expanded(child: Container(),),
                 Container(child: Text(thisBusString, style: TextStyle(fontSize: 15, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),
                 SizedBox(height: 5),
                 Container(child: Text(nextBusString, style: TextStyle(fontSize: 15, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white), maxLines: 1, overflow: TextOverflow.ellipsis, softWrap: true,)),

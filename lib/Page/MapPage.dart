@@ -92,8 +92,8 @@ class _MapPageState extends State<MapPage> {
     return Scaffold(
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.category, color: Colors.white,),
-        backgroundColor: Color(0xff2db400),
+        child: Icon(Icons.menu, color: Theme.of(context).textTheme.bodyText1.color,),
+        backgroundColor: Theme.of(context).backgroundColor,
         onPressed: (){
           _picker.showDialog(context);
         },),
@@ -129,7 +129,7 @@ class _MapPageState extends State<MapPage> {
         return NaverMap(
           markers: _markers,
           initialCameraPosition: CameraPosition(
-              target: LatLng(37.300153, 126.837759), zoom: 17.5),
+              target: LatLng(37.300153, 126.837759), zoom: 16),
           mapType: MapType.Basic,
           symbolScale: 0,
           nightModeEnable: Theme
