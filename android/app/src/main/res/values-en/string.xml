@@ -1,0 +1,12 @@
+<resources>
+    <string name="dorm">Dormitory</string>
+    <string name="outSchool">Shuttlecock</string>
+    <string name="station">Subway Station</string>
+    <string name="terminal">Bus Terminal</string>
+    <string name="inSchool">Shuttlecock(Oppo)</string>
+    <string name="bound_for_station">For station</string>
+    <string name="bound_for_terminal">For terminal</string>
+    <string name="bound_for_all">For station/terminal</string>
+    <string name="bound_for_school">For school</string>
+    <string name="required_location_permission">It needs location permissions to update widget.</string>
+</resources>
