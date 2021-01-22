@@ -97,7 +97,7 @@ class ReadingRoomState extends State<ReadingRoomPage> with WidgetsBindingObserve
     _timer = Timer.periodic(Duration(minutes: 1), (timer) {
       readingRoomController.fetch();
     });
-    if(prefManager.getBool("reading_room_1").isNull || prefManager.getBool("reading_room_2").isNull || prefManager.getBool("reading_room_3").isNull || prefManager.getBool("reading_room_4").isNull){
+    if(prefManager.getBool("reading_room_1") == null || prefManager.getBool("reading_room_2") == null || prefManager.getBool("reading_room_3") == null || prefManager.getBool("reading_room_4") == null){
       prefManager.setBool("reading_room_1", false);
       prefManager.setBool("reading_room_2", false);
       prefManager.setBool("reading_room_3", false);

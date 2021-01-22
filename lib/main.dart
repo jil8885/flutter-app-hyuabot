@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_app_hyuabot_v2/Config/LocalizationDelegate.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Theme.dart';
 import 'package:flutter_app_hyuabot_v2/Page/HomePage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/SplashScreen.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
@@ -56,7 +54,7 @@ class MyApp extends StatelessWidget {
           localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
           localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
             final String _localeCode = prefManager.getString("localeCode");
-            if(_localeCode.isNull){
+            if(_localeCode == null){
               prefManager.setString("localeCode", "ko_KR");
             }
             switch(_localeCode){
