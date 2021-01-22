@@ -216,7 +216,7 @@ class _MapPageState extends State<MapPage> {
                     children: snapshot.data.map((e) => InkWell(
                     onTap: () async {
                       String assetName = "restaurant";
-                      OverlayImage image = await OverlayImage.fromAssetImage(ImageConfiguration(), "assets/images/$assetName.png");
+                      OverlayImage image = await OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: context);
                       mapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
                       _floatingSearchBar.controller.close();
                       _dataBaseController.addMarker([Marker(markerId: e.name, position: LatLng(e.latitude, e.longitude), infoWindow: e.name, icon: image, width: 20, height: 20,)]);

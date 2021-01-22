@@ -59,7 +59,7 @@ class DataBaseController{
     } else if(catString == "cafe"){
       assetName = "cafe";
     }
-    OverlayImage image = await OverlayImage.fromAssetImage(ImageConfiguration(), "assets/images/$assetName.png");
+    OverlayImage image = await OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: context);
     for(Map marker in queryResult){
       String query = "select name, menu from outschool where category='$catString' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
       String storeResult = (await _database.rawQuery(query)).map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
