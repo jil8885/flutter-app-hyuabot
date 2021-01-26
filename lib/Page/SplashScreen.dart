@@ -1,36 +1,31 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_app_hyuabot_v2/Page/HomePage.dart';
 import 'package:get/get.dart';
 import 'package:path/path.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-const MethodChannel readingRoomChannel = MethodChannel('kobuggi.app/reading_room_notification');
-final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
-final BehaviorSubject<String> selectNotificationSubject = BehaviorSubject<String>();
-NotificationAppLaunchDetails notificationAppLaunchDetails;
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 void initApp() async {
   final String srcPath = join("assets/databases", "information.db");
   final String destPath = join(await getDatabasesPath(), "information.db");
+  final int srcSize = prefManager.get("databaseSize") ?? 0;
 
   ByteData srcData = await rootBundle.load(srcPath);
   await Directory(dirname(destPath)).create(recursive: true);
-  ByteData destData;
   try{
-    destData = await rootBundle.load(destPath);
-    if(srcData.lengthInBytes != destData.lengthInBytes){
+    if(srcData.lengthInBytes != srcSize){
       await deleteDatabase(destPath);
       List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
       await new File(destPath).writeAsBytes(bytes, flush: true);
+      prefManager.setInt("databaseSize", srcData.lengthInBytes);
     }
   } catch(_){
     await deleteDatabase(destPath);
@@ -39,11 +34,8 @@ void initApp() async {
   }
   // Ad
   adController.setTestDeviceIds(["F99695B64D31FD9A46D8AB9319E12EA6"]);
-  adController.reloadAd(forceRefresh: true, numberAds: 5);
+  adController.reloadAd(forceRefresh: true, numberAds: 3);
   adController.setAdUnitID(AdManager.bannerAdUnitId);
-
-  // FCM
-  fcmManager = FirebaseMessaging();
 
   // Alarm
   notificationAppLaunchDetails = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
@@ -54,29 +46,16 @@ void initApp() async {
 }
 
 Future whenSelectNotification(String payload) async{
-  debugPrint(payload);
   prefManager.setBool(payload, false);
   fcmManager.unsubscribeFromTopic("$payload.ko_KR");
   fcmManager.unsubscribeFromTopic("$payload.en_US");
   fcmManager.unsubscribeFromTopic("$payload.zh");
   readingRoomController.fetchAlarm();
-  selectNotificationSubject.add(payload);
+  selectNotificationSubject.addNotification(payload);
 }
 
-class SplashScreen extends StatefulWidget {
-  @override
-  _SplashScreenState createState() => new _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  Widget _logoImage = Image.asset('assets/images/hanyang-phone.png');
-
-  @override
-  void initState() {
-    initApp();
-    super.initState();
-    startTime();
-  }
+class SplashScreen extends StatelessWidget {
+  final Widget _logoImage = Image.asset('assets/images/hanyang-phone.png');
 
   startTime() async {
     var _duration = new Duration(seconds: 1);
@@ -84,11 +63,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() {
-    Get.offAllNamed('/HomeScreen');
+    Get.offAll(HomePage());
   }
 
   @override
   Widget build(BuildContext context) {
+    startTime();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body:  Column(
@@ -102,16 +82,4 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-class ReceivedNotification {
-  ReceivedNotification({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.payload,
-  });
 
-  final int id;
-  final String title;
-  final String body;
-  final String payload;
-}

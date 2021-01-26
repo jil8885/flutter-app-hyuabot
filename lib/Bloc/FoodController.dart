@@ -1,19 +1,24 @@
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
-import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+class FoodInfoController extends GetxController{
+  Map<String, Map<String, List<FoodMenu>>> menuList = {};
 
-class FetchFoodInfoController{
-  final _allFoodInfoSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
-  FetchFoodInfoController(){
-    fetchFood();
+  @override
+  onInit(){
+    fetchFood().then((value){
+      menuList = value;
+      update();
+    });
+    super.onInit();
   }
 
-  fetchFood() async {
+  Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
@@ -39,11 +44,6 @@ class FetchFoodInfoController{
         }
       }
     }
-    _allFoodInfoSubject.add(allMenus);
+    return allMenus;
   }
-
-  void dispose(){
-    _allFoodInfoSubject.close();
-  }
-  Stream<Map<String, Map<String, List<FoodMenu>>>> get allFoodInfo => _allFoodInfoSubject.stream;
 }

@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
+import 'package:get/get.dart';
 
-class BusTimeTablePage extends StatefulWidget {
+class BusTimeTablePage extends StatelessWidget {
   final String lineName;
   final Color lineColor;
 
   BusTimeTablePage(this.lineName, this.lineColor);
-  @override
-  State<StatefulWidget> createState() => BusTimeTablePageState(lineName, lineColor);
-}
 
-class BusTimeTablePageState extends State<BusTimeTablePage>{
-  final String lineName;
-  final Color lineColor;
-
-  final FetchBusInfoController _busController = FetchBusInfoController();
   final Map<String, Map<String, dynamic>> lineInfo = {
     "10-1":{"estimated": 10, "from": "purgio_apt", "to": "sangnoksu_stn", "weekdays":"15~30", "weekends":"25~50"},
     "3102":{"estimated": 30, "from": "songsan", "to": "gangnam_stn", "weekdays":"10~30", "weekends":"20~40"},
   };
-
-  BusTimeTablePageState(this.lineName, this.lineColor);
 
   Widget _timeTableView(List timeTable, int order, int initialIndex){
     DateTime now = DateTime.now();
@@ -77,7 +67,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
 
   @override
   Widget build(BuildContext context) {
-    TranslationManager _manager = TranslationManager.of(context);
+    analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
     switch (prefManager.getString("localeCode")){
       case "ko_KR":
@@ -106,7 +96,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
                   children: [
                     Text(lineName, style: TextStyle(color: Colors.white, fontSize: 28)),
                     SizedBox(height: 30,),
-                    Text("${TranslationManager.of(context).trans(lineInfo[lineName]["from"])} → ${TranslationManager.of(context).trans(lineInfo[lineName]["to"])}", style: TextStyle(color: Colors.white, fontSize: 18)),
+                    Text("${lineInfo[lineName]["from"].tr} → ${lineInfo[lineName]["to"].tr}", style: TextStyle(color: Colors.white, fontSize: 18)),
                     SizedBox(height: 10,),
                     Text(_minuteInfo, style: TextStyle(color: Colors.white, fontSize: 18)),
                   ],
@@ -115,14 +105,13 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
             ),
             color: lineColor,
           ),
-          StreamBuilder<Map<String, dynamic>>(
-            stream: _busController.timetableInfo,
-            builder: (context, snapshot) {
-              if(snapshot.hasError || !snapshot.hasData){
+          GetBuilder<BusTimetableController>(
+            builder: (controller) {
+              if(controller.timetableInfo.keys.isEmpty){
                 return Expanded(child: Center(child: CircularProgressIndicator(),));
               }
               int initialIndex = 0;
-              switch(snapshot.data["day"]){
+              switch(controller.timetableInfo["day"]){
                 case "weekdays":
                   initialIndex = 0;
                   break;
@@ -140,15 +129,15 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
                   child: Column(
                     children: [
                       TabBar(tabs: [
-                        Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text(_manager.trans("saturday"), style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text(_manager.trans("sunday"), style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text("saturday".tr, style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text("sunday".tr, style: Theme.of(context).textTheme.bodyText1,),),
                       ],),
                       Expanded(child: TabBarView(
                         children: [
-                          Container(child: _timeTableView(snapshot.data["weekdays"], 0, initialIndex)),
-                          Container(child: _timeTableView(snapshot.data["saturday"], 1, initialIndex)),
-                          Container(child: _timeTableView(snapshot.data["sunday"], 2, initialIndex)),
+                          Container(child: _timeTableView(controller.timetableInfo["weekdays"], 0, initialIndex)),
+                          Container(child: _timeTableView(controller.timetableInfo["saturday"], 1, initialIndex)),
+                          Container(child: _timeTableView(controller.timetableInfo["sunday"], 2, initialIndex)),
                         ],
                       ))
                     ],
@@ -160,17 +149,5 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    analytics.setCurrentScreen(screenName: "/bus/timetable");
-    _busController.fetchTimeTable(lineName);
-    super.initState();
-  }
-  @override
-  void dispose() {
-    _busController.dispose();
-    super.dispose();
   }
 }

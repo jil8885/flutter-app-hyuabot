@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
 import 'package:get/get.dart';
 
-class FoodPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => FoodPageState();
-}
-
-class FoodPageState extends State<FoodPage>{
-  FetchFoodInfoController _foodInfoController;
+class FoodPage extends StatelessWidget {
   final  DateTime _now = DateTime.now();
   final Map<String, String> _cafeteriaList = {"학생식당": "student_erica", "교직원식당": "teacher_erica", "푸드코트": "food_court_erica", "창업보육센터": "changbo_erica", "창의인재원식당": "dorm_erica"};
-  final Map<String, bool> _isExpanded = {"student_erica": false, "teacher_erica": false, "food_court_erica": false, "changbo_erica": false, "dorm_erica": false};
 
   Widget _foodItem(String menu, String price){
     String _priceString;
@@ -31,12 +23,12 @@ class FoodPageState extends State<FoodPage>{
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Text(menu, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white,), textAlign: TextAlign.left,),
+          Text(menu, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white,), textAlign: TextAlign.left,),
           SizedBox(height: 15,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(_priceString, style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
+              Text(_priceString, style: TextStyle(fontWeight: FontWeight.bold, color: !Get.isDarkMode ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),),
             ],
           )
         ],
@@ -45,15 +37,15 @@ class FoodPageState extends State<FoodPage>{
   }
 
   Widget _cafeteriaCard(Map<String, List<FoodMenu>> data, String name){
-    String kind = TranslationManager.of(context).trans("lunch");
+    String kind = "lunch".tr;
     List<FoodMenu> currentFood = [];
     bool hasManyMenu = false;
     if(_now.hour < 11 && data['breakfast'].isNotEmpty){
       currentFood = data['breakfast'];
-      kind = TranslationManager.of(context).trans("breakfast");
+      kind = "breakfast".tr;
     } else if (_now.hour > 15 && data['dinner'].isNotEmpty){
       currentFood = data['dinner'];
-      kind = TranslationManager.of(context).trans("dinner");
+      kind = "dinner".tr;;
     } else if (data['lunch'].isNotEmpty){
       currentFood = data['lunch'];
     } else {
@@ -66,7 +58,7 @@ class FoodPageState extends State<FoodPage>{
     } else {
       currentFoodWidget = [
         SizedBox(height: 10,),
-        Container(child: Center(child: Text(TranslationManager.of(context).trans("menu_not_uploaded"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
+        Container(child: Center(child: Text("menu_not_uploaded".tr, textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
       ];
     }
 
@@ -80,7 +72,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(TranslationManager.of(context).trans("breakfast"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text("breakfast".tr, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -97,7 +89,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(TranslationManager.of(context).trans("lunch"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text("lunch".tr, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -115,7 +107,7 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(TranslationManager.of(context).trans("dinner"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text("dinner".tr, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         )
@@ -135,18 +127,18 @@ class FoodPageState extends State<FoodPage>{
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(TranslationManager.of(context).trans("lunch"), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+              Text("lunch".tr, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
             ],
           ),
         ),
         SizedBox(height: 10,),
-        Container(child: Center(child: Text(TranslationManager.of(context).trans("menu_not_uploaded"), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
+        Container(child: Center(child: Text("menu_not_uploaded".tr, textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),),)
       ];
       return Padding(
         padding: const EdgeInsets.only(top: 10),
         child: Card(
             elevation: 3,
-            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+            color: Get.isDarkMode ? Colors.black : Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -162,7 +154,7 @@ class FoodPageState extends State<FoodPage>{
         padding: const EdgeInsets.only(top: 10),
         child: Card(
             elevation: 3,
-            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+            color: Get.isDarkMode ? Colors.black : Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
             child: Container(
               padding: const EdgeInsets.all(16),
@@ -174,82 +166,71 @@ class FoodPageState extends State<FoodPage>{
         ),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Card(
-            elevation: 3,
-            color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-            child: Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedCrossFade(
-                      crossFadeState: !_isExpanded[name] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                      duration: kThemeAnimationDuration,
-                      firstChild: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10, top: 10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(kind, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
-                              ],
-                            ),
+      return GetBuilder<FoodCardExpander>(
+        builder: (controller){
+          return Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Card(
+                elevation: 3,
+                color: Get.isDarkMode ? Colors.black : Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AnimatedCrossFade(
+                          crossFadeState: !controller.isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          duration: kThemeAnimationDuration,
+                          firstChild: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10, top: 10),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(kind, style: TextStyle(color: !Get.isDarkMode? Colors.black : Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: currentFoodWidget,
+                              ),
+                            ],
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: currentFoodWidget,
-                          ),
-                        ],
+                          secondChild: Column(children: allFoodWidget,)
                       ),
-                      secondChild: Column(children: allFoodWidget,)
+                      InkWell(
+                        onTap: (){controller.expandCard();},
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(icon: controller.isExpanded ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){controller.expandCard();}),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  InkWell(
-                    onTap: (){setState(() {_isExpanded[name] = !_isExpanded[name];});},
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(icon: _isExpanded[name] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){setState(() {_isExpanded[name] = !_isExpanded[name];});}),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-        ),
+                )
+            ),
+          );
+        }
       );
     }
   }
 
-
-  @override
-  void initState() {
-    _foodInfoController = FetchFoodInfoController();
-    analytics.setCurrentScreen(screenName: "/food");
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final TextStyle _theme1 = Theme.of(context).textTheme.bodyText1;
-
+    analytics.setCurrentScreen(screenName: "/food");
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: StreamBuilder<Map<String, Map<String, List<FoodMenu>>>>(
-            stream: _foodInfoController.allFoodInfo,
-            builder: (context, snapshot) {
-              if(snapshot.hasError){
-                return Center(child: Text(TranslationManager.of(context).trans("fail_to_load_food"), style: Theme.of(context).textTheme.bodyText1,),);
-              } else if(!snapshot.hasData){
-                return Center(child: CircularProgressIndicator(),);
-              }
+        child: GetBuilder<FoodInfoController>(
+            builder: (controller) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
@@ -278,42 +259,42 @@ class FoodPageState extends State<FoodPage>{
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text(TranslationManager.of(context).trans("student_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                  Text("student_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
+                              _cafeteriaCard(controller.menuList[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(TranslationManager.of(context).trans("teacher_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                  Text("teacher_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
+                              _cafeteriaCard(controller.menuList[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(TranslationManager.of(context).trans("food_court"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                  Text("food_court".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
+                              _cafeteriaCard(controller.menuList[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(TranslationManager.of(context).trans("changbo_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                  Text("changbo_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
+                              _cafeteriaCard(controller.menuList[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(TranslationManager.of(context).trans("dorm_cafeteria"), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
+                                  Text("dorm_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),
+                              _cafeteriaCard(controller.menuList[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),
                             ],
                           ),
                         ),
@@ -327,10 +308,13 @@ class FoodPageState extends State<FoodPage>{
       ),
     );
   }
+}
 
-  @override
-  void dispose() {
-    _foodInfoController.dispose();
-    super.dispose();
+class FoodCardExpander extends GetxController{
+  bool isExpanded = false;
+
+  expandCard() {
+    isExpanded = !isExpanded;
+    update();
   }
 }

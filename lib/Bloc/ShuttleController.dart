@@ -1,20 +1,23 @@
+import 'dart:async';
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart' as rxdart;
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 
-class FetchAllShuttleController{
-  rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>> _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
-  rxdart.BehaviorSubject<Map<String, dynamic>> _allTimeTableSubject = rxdart.BehaviorSubject<Map<String, dynamic>>();
+class ShuttleDepartureController extends GetxController{
+  Map<String, ShuttleStopDepartureInfo> departureInfo = {};
 
-  FetchAllShuttleController(){
-    fetch();
+  queryDepartureInfo() {
+    Timer.periodic(Duration(minutes: 1), (timer) async {
+      departureInfo = await fetchDepartureInfo();
+      update();
+    });
   }
 
-  void fetch() async{
+  Future<Map<String, ShuttleStopDepartureInfo>> fetchDepartureInfo() async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle");
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -23,13 +26,19 @@ class FetchAllShuttleController{
     for(String key in responseJson.keys){
       data[key] = ShuttleStopDepartureInfo.fromJson(responseJson[key]);
     }
-    if(_allShuttleInfoSubject.isClosed){
-      _allShuttleInfoSubject = rxdart.BehaviorSubject<Map<String, ShuttleStopDepartureInfo>>();
-    }
-    _allShuttleInfoSubject.add(data);
+    return data;
+  }
+}
+
+class ShuttleTimeTableController extends GetxController{
+  Map<String, dynamic> timeTableInfo = {};
+
+  queryTimetableInfo(String busStop) async {
+    timeTableInfo = await fetchTimeTable(busStop);
+    update();
   }
 
-  void fetchTimeTable(String busStop) async{
+  Future<Map<String, dynamic>> fetchTimeTable(String busStop) async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle/by-stop");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"busStop": busStop}));
     Map<String, dynamic> responseJson = jsonDecode(response.body);
@@ -37,15 +46,6 @@ class FetchAllShuttleController{
     data["weekdays"] = ShuttleStopDepartureInfo.fromJson(responseJson["weekdays"]);
     data["weekends"] = ShuttleStopDepartureInfo.fromJson(responseJson["weekends"]);
     data["day"] = responseJson["day"];
-    _allTimeTableSubject.add(data);
+    return data;
   }
-
-  void dispose(){
-    _allShuttleInfoSubject.close();
-    _allTimeTableSubject.close();
-  }
-
-  Stream<Map<String, ShuttleStopDepartureInfo>> get allShuttleInfo => _allShuttleInfoSubject.stream;
-  Stream<Map<String, dynamic>> get allTimeTableInfo => _allTimeTableSubject.stream;
-
 }

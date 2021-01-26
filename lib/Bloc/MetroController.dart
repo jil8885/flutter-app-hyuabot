@@ -1,18 +1,23 @@
+import 'dart:async';
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 
 
-class FetchMetroInfoController{
-  final _allMetroInfoSubject = BehaviorSubject<Map<String, dynamic>>();
-  FetchMetroInfoController(){
-    fetch();
+class FetchMetroInfoController extends GetxController{
+  Map<String, dynamic> departureInfo = {};
+
+  queryDepartureInfo() {
+    Timer.periodic(Duration(minutes: 1), (timer) async {
+      departureInfo = await fetchDepartureInfo();
+      update();
+    });
   }
 
-  void fetch() async{
+  fetchDepartureInfo() async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/subway");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -34,12 +39,6 @@ class FetchMetroInfoController{
         }
       }
     }
-    _allMetroInfoSubject.add(data);
+    return data;
   }
-
-  void dispose(){
-    _allMetroInfoSubject.close();
-  }
-
-  Stream<Map<String, dynamic>> get allMetroInfo => _allMetroInfoSubject.stream;
 }
