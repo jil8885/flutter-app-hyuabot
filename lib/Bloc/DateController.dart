@@ -1,21 +1,23 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 
-class DateController{
-  final _scheduleSubject = BehaviorSubject<MeetingDataSource>();
+class DateController extends GetxController{
   final List<Color> _colors = [Colors.grey, Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
+  MeetingDataSource meetingDataSource = MeetingDataSource([]);
 
-  DateController(){
-    fetch();
+  queryData() async {
+    meetingDataSource = await fetchData();
+    update();
   }
 
-  void fetch() async{
+  fetchData() async{
     List<Schedule> data = [];
     final url = Uri.encodeFull("https://raw.githubusercontent.com/jil8885/API-for-ERICA/light/calendar/master.json");
     http.Response response = await http.get(url);
@@ -24,11 +26,7 @@ class DateController{
       var value = responseJson[key];
       data.add(getJson(key, value));
     }
-    _scheduleSubject.add(MeetingDataSource(data));
-  }
-
-  void dispose(){
-    _scheduleSubject.close();
+    return MeetingDataSource(data);
   }
 
   Schedule getJson(String key, dynamic value){
@@ -44,7 +42,6 @@ class DateController{
       endTimeZone: '',
     );
   }
-  Stream<MeetingDataSource> get allSchedule => _scheduleSubject.stream;
 }
 
 class Schedule {

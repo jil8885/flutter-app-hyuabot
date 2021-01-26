@@ -1,77 +1,58 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/material.dart';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Config/LocalizationDelegate.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Theme.dart';
-import 'package:flutter_app_hyuabot_v2/Page/HomePage.dart';
-import 'package:flutter_app_hyuabot_v2/Page/SplashScreen.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
-
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/TranslationManager.dart';
+import 'package:flutter_app_hyuabot_v2/Page/SplashScreen.dart';
 
-
-  // Pref
-  savedThemeMode = await AdaptiveTheme.getThemeMode();
-  prefManager = await SharedPreferences.getInstance();
-  Firebase.initializeApp();
-  runApp(Phoenix(child: MyApp()));
+void main() {
+  runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Firebase.initializeApp();
     analytics = FirebaseAnalytics();
-    return AdaptiveTheme(
-        light: lightTheme,
-        dark: darkTheme,
-        initial: savedThemeMode ?? AdaptiveThemeMode.system,
-        builder: (theme, darkTheme) => GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: theme,
-          darkTheme: darkTheme,
-          home: SplashScreen(),
-          routes: <String, WidgetBuilder>{
-            '/HomeScreen': (BuildContext context) => HomePage()
-          },
-          builder: (context, child) {
-            return MediaQuery(
-              child: child,
-              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-            );
-          },
-          navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
-          supportedLocales: [const Locale('ko', 'KR'), const Locale('en', 'US'), const Locale('zh')],
-          localizationsDelegates: [const TranslationsDelegate(), GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate],
-          localeResolutionCallback: (Locale locale, Iterable<Locale> supportedLocales){
-            final String _localeCode = prefManager.getString("localeCode");
-            if(_localeCode == null){
-              prefManager.setString("localeCode", "ko_KR");
-            }
-            switch(_localeCode){
-              case 'ko_KR':
-                return const Locale('ko', 'KR');
-                break;
-              case 'en_US':
-                return const Locale('en', 'US');
-                break;
-              case 'zh':
-                return const Locale('zh');
-                break;
-              default:
-                return supportedLocales.first;
-            }
-          },
-      )
+
+    Locale _locale;
+    SharedPreferences.getInstance().then((value){
+      prefManager = value;
+    }).whenComplete((){
+      switch(prefManager.getString("localeCode")){
+        case 'ko_KR':
+          _locale = Locale("ko", "KR");
+          break;
+        case 'en_US':
+          _locale = Locale("en", "US");
+          break;
+        case 'zh':
+          _locale = Locale('zh');
+          break;
+        default:
+          _locale = Get.deviceLocale;
+          prefManager.setString("localeCode", Get.deviceLocale.toLanguageTag());
+          break;
+      }
+    });
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      translations: TranslationManager(),
+      locale: _locale,
+      fallbackLocale: Locale('ko', 'KR'),
+      home: SplashScreen(),
+      builder: (context, child) {
+        return MediaQuery(
+          child: child,
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        );
+      },
+      navigatorObservers: [FirebaseAnalyticsObserver(analytics: analytics)],
     );
   }
 }

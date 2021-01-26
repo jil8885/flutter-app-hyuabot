@@ -1,0 +1,12 @@
+<resources>
+    <string name="dorm">기숙사</string>
+    <string name="outSchool">셔틀콕</string>
+    <string name="station">한대앞역</string>
+    <string name="terminal">예술인A</string>
+    <string name="inSchool">셔틀콕 건너편</string>
+    <string name="bound_for_station">한대앞 방면</string>
+    <string name="bound_for_terminal">예술인 방면</string>
+    <string name="bound_for_all">한대앞/예술인 방면</string>
+    <string name="bound_for_school">학교 방면</string>
+    <string name="required_location_permission">위젯 업데이트를 위해 위치 권한을 필요로 합니다.</string>
+</resources>

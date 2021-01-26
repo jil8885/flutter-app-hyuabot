@@ -1,11 +1,17 @@
 import 'dart:async';
-import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_admob/flutter_native_admob.dart';
+import 'package:flutter_native_admob/native_admob_options.dart';
+import 'package:get/get.dart';
+
 import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
@@ -20,13 +26,6 @@ import 'package:flutter_app_hyuabot_v2/Page/FoodPage.dart';
 import 'package:flutter_app_hyuabot_v2/Page/ShuttlePage.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomCard.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_admob/flutter_native_admob.dart';
-import 'package:flutter_native_admob/native_admob_options.dart';
-import 'package:get/get.dart';
-import 'package:rxdart/rxdart.dart';
-
-import 'SplashScreen.dart';
 
 Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   final dynamic data = msg['data'];
@@ -51,84 +50,38 @@ Future<dynamic> foregroundMessageHandler(Map<String, dynamic> msg) async{
 }
 
 Future<void> _showNotificationWithNoTitle(String msg, String language) async {
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
-  AndroidNotificationDetails(
-      'kobuggi.app/reading_room_notification', 'Reading Room Alarm', 'Alarm for reading room empty seats',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker');
-  const NotificationDetails platformChannelSpecifics = NotificationDetails(
-    android: androidPlatformChannelSpecifics,
-  );
+  const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails('kobuggi.app/reading_room_notification', 'Reading Room Alarm', 'Alarm for reading room empty seats', importance: Importance.max, priority: Priority.high, ticker: 'ticker');
+  const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics,);
   String _msg="Alarm";
-  TranslationManager _translator = TranslationManager(Locale(language));
-  _translator.load().whenComplete((){
-    switch(language){
-      case "ko":
-        _msg = "${_translator.trans(msg)}에서 자리가 발견되었다냥!";
-        break;
-      case "en":
-        _msg = "Empty seat found from ${_translator.trans(msg)}!";
-        break;
-      case "zh":
-        break;
-    }
-    flutterLocalNotificationsPlugin.show(0, null, _msg, platformChannelSpecifics, payload: msg);
-  });
+  switch(language){
+    case "ko":
+      _msg = "${msg.tr}에서 자리가 발견되었다냥!";
+      break;
+    case "en":
+      _msg = "Empty seat found from ${msg.tr}!";
+      break;
+    case "zh":
+      _msg = "${msg.tr}";
+      break;
+  }
+  flutterLocalNotificationsPlugin.show(0, null, _msg, platformChannelSpecifics, payload: msg);
 }
 
-class HomePage extends StatefulWidget{
-  bool get didNotificationLaunchApp =>
-      notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
-
-  @override
-  State<StatefulWidget> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
-  final FetchAllShuttleController _shuttleController = FetchAllShuttleController();
-  final FetchFoodInfoController _foodInfoController = FetchFoodInfoController();
-  final _ExpandMenuController _menuController = _ExpandMenuController();
-
-  Timer _foodTimer;
-  Timer _shuttleTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    analytics.setCurrentScreen(screenName: "/home");
-    fcmManager.configure(
-      onMessage: foregroundMessageHandler,
-      onBackgroundMessage: backgroundMessageHandler,
-      onLaunch: onLaunchMessageHandler
-    );
-    _foodTimer = Timer.periodic(Duration(seconds: 10), (timer) {_foodInfoController.fetchFood();});
-    _shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if(state == AppLifecycleState.resumed){
-      if(!_foodTimer.isActive){_foodTimer = Timer.periodic(Duration(seconds: 10), (timer) {_foodInfoController.fetchFood();});}
-      if(!_shuttleTimer.isActive){_shuttleTimer = Timer.periodic(Duration(minutes: 1), (timer) {_shuttleController.fetch();});}
-    }else if(state == AppLifecycleState.inactive){
-      if(_foodTimer.isActive){_foodTimer.cancel();}
-      if(_shuttleTimer.isActive){_shuttleTimer.cancel();}
-    }else if(state == AppLifecycleState.paused){
-      if(_foodTimer.isActive){_foodTimer.cancel();}
-      if(_shuttleTimer.isActive){_shuttleTimer.cancel();}
-    }
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
+class HomePage extends StatelessWidget{
+  bool get didNotificationLaunchApp => notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: "/home");
+    // FCM
+    fcmManager = FirebaseMessaging();
+    fcmManager.configure(
+        onMessage: foregroundMessageHandler,
+        onBackgroundMessage: backgroundMessageHandler,
+        onLaunch: onLaunchMessageHandler
+    );
+
+
     // 화면 너비, 크기 조정
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
@@ -139,134 +92,45 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
     final double _itemHeight = _width / 5.5;
 
     // 식당 이름들
-    final _cafeteriaNames = [
-      TranslationManager.of(context).trans("student_cafeteria"),
-      TranslationManager.of(context).trans("teacher_cafeteria"),
-      TranslationManager.of(context).trans("food_court"),
-      TranslationManager.of(context).trans("changbo_cafeteria"),
-      TranslationManager.of(context).trans("dorm_cafeteria"),
-    ];
-    final _cafeteriaKeys = [
-      "student_erica",
-      "teacher_erica",
-      "food_court_erica",
-      "changbo_erica",
-      "dorm_erica"
-    ];
+    final _cafeteriaNames = ["student_cafeteria".tr, "teacher_cafeteria".tr, "food_court".tr, "changbo_cafeteria".tr, "dorm_cafeteria".tr];
+    final _cafeteriaKeys = ["student_erica", "teacher_erica", "food_court_erica", "changbo_erica", "dorm_erica"];
 
-    final Widget _menuWidget = StreamBuilder<bool>(
-        stream: _menuController.isExpanded,
-        builder: (context, snapshot) {
-          bool _isExpanded;
-          if(!snapshot.hasData || snapshot.hasError){
-            _isExpanded=false;
-          }else{
-            _isExpanded = snapshot.data;
-          }
-          return Container(
-            margin: EdgeInsets.symmetric(horizontal: 15),
-            child: AnimatedCrossFade(
-              crossFadeState:
-              _isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-              duration: kThemeAnimationDuration,
-              firstChild: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                childAspectRatio: 0.7,
-                children: [
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", TranslationManager.of(context).trans("shuttle_btn"), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", TranslationManager.of(context).trans("bus_btn"), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", TranslationManager.of(context).trans("metro_btn"), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", TranslationManager.of(context).trans("food_btn"), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("reading_room_btn"), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", TranslationManager.of(context).trans("contact_btn"), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", TranslationManager.of(context).trans("map_btn"), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", TranslationManager.of(context).trans("calendar_btn"), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                ],
-              ),
-              secondChild: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 4,
-                shrinkWrap: true,
-                childAspectRatio: 0.8,
-                children: [
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", TranslationManager.of(context).trans("shuttle_btn"), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", TranslationManager.of(context).trans("bus_btn"), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", TranslationManager.of(context).trans("metro_btn"), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", TranslationManager.of(context).trans("food_btn"), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30)
-                ],
-              ),
-            ),
-          );
-        }
-    );
 
     final Widget _shuttleCardList = Container(
       height: _height / 4,
       width: _width,
       padding: EdgeInsets.symmetric(horizontal: 30),
-      child: StreamBuilder<Map<String, ShuttleStopDepartureInfo>>(
-        stream: _shuttleController.allShuttleInfo,
-        builder: (context, snapshot) {
-          if (snapshot.hasError || !snapshot.hasData) {
+      child: GetBuilder<ShuttleDepartureController>(
+        init: ShuttleDepartureController(),
+        builder: (controller) {
+          if (controller.departureInfo.keys.isEmpty) {
             return Center(child: CircularProgressIndicator());
           } else {
-            List<dynamic> residenceStn =
-            List.from(snapshot.data["Residence"].shuttleListStation)
-              ..addAll(snapshot.data["Residence"].shuttleListCycle)
-              ..sort();
-            List<dynamic> residenceTerminal =
-            List.from(snapshot.data["Residence"].shuttleListTerminal)
-              ..addAll(snapshot.data["Residence"].shuttleListCycle)
-              ..sort();
-            List<dynamic> schoolStn =
-            List.from(snapshot.data["Shuttlecock_O"].shuttleListStation)
-              ..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)
-              ..sort();
-            List<dynamic> schoolTerminal =
-            List.from(snapshot.data["Shuttlecock_O"].shuttleListTerminal)
-              ..addAll(snapshot.data["Shuttlecock_O"].shuttleListCycle)
-              ..sort();
-            List<dynamic> station =
-            List.from(snapshot.data["Subway"].shuttleListStation)
-              ..addAll(snapshot.data["Subway"].shuttleListCycle)
-              ..sort();
-            List<dynamic> terminal =
-            List.from(snapshot.data["YesulIn"].shuttleListTerminal)
-              ..addAll(snapshot.data["YesulIn"].shuttleListCycle)
-              ..sort();
-            List<dynamic> schoolResidence =
-            List.from(snapshot.data["Shuttlecock_I"].shuttleListStation)
-              ..addAll(snapshot.data["Shuttlecock_I"].shuttleListTerminal)
-              ..addAll(snapshot.data["Shuttlecock_I"].shuttleListCycle)
-              ..sort();
-            List<Set<dynamic>> allShuttleList = [
-              residenceStn.toSet(),
-              residenceTerminal.toSet(),
-              schoolStn.toSet(),
-              schoolTerminal.toSet(),
-              station.toSet(),
-              terminal.toSet(),
-              schoolResidence.toSet()
-            ];
+            List<dynamic> residenceStn = List.from(controller.departureInfo["Residence"].shuttleListStation)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
+            List<dynamic> residenceTerminal = List.from(controller.departureInfo["Residence"].shuttleListTerminal)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
+            List<dynamic> schoolStn = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> schoolTerminal = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+            List<dynamic> station = List.from(controller.departureInfo["Subway"].shuttleListStation)..addAll(controller.departureInfo["Subway"].shuttleListCycle)..sort();
+            List<dynamic> terminal = List.from(controller.departureInfo["YesulIn"].shuttleListTerminal)..addAll(controller.departureInfo["YesulIn"].shuttleListCycle)..sort();
+            List<dynamic> schoolResidence = List.from(controller.departureInfo["Shuttlecock_I"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListCycle)..sort();
+            List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
             List<String> stopList = [
-              "${TranslationManager.of(context).trans("bus_stop_dorm")} → ${TranslationManager.of(context).trans("bus_stop_station")}",
-              "${TranslationManager.of(context).trans("bus_stop_dorm")} → ${TranslationManager.of(context).trans("bus_stop_terminal")}",
-              "${TranslationManager.of(context).trans("bus_stop_school")} → ${TranslationManager.of(context).trans("bus_stop_station")}",
-              "${TranslationManager.of(context).trans("bus_stop_school")} → ${TranslationManager.of(context).trans("bus_stop_terminal")}",
-              TranslationManager.of(context).trans("bus_stop_station"),
-              TranslationManager.of(context).trans("bus_stop_terminal"),
-              TranslationManager.of(context).trans("bus_stop_school_opposite")
+              "${"bus_stop_dorm".tr} → ${"bus_stop_station".tr}",
+              "${"bus_stop_dorm".tr} → ${"bus_stop_terminal".tr}",
+              "${"bus_stop_school".tr} → ${"bus_stop_station".tr}",
+              "${"bus_stop_school".tr} → ${"bus_stop_terminal".tr}",
+              "bus_stop_station".tr,
+              "bus_stop_terminal".tr,
+              "bus_stop_school_opposite".tr
             ];
             List<ShuttleStopDepartureInfo> data = [
-              snapshot.data["Residence"],
-              snapshot.data["Residence"],
-              snapshot.data["Shuttlecock_O"],
-              snapshot.data["Shuttlecock_O"],
-              snapshot.data["Subway"],
-              snapshot.data["YesulIn"],
-              snapshot.data["Shuttlecock_I"]
+              controller.departureInfo["Residence"],
+              controller.departureInfo["Residence"],
+              controller.departureInfo["Shuttlecock_O"],
+              controller.departureInfo["Shuttlecock_O"],
+              controller.departureInfo["Subway"],
+              controller.departureInfo["YesulIn"],
+              controller.departureInfo["Shuttlecock_I"]
             ];
             return ListView.builder(
               padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
@@ -275,11 +139,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, index) {
-                return _homeShuttleItems(
-                    context,
-                    stopList[index],
-                    allShuttleList[index].map((e) => e.toString()).toList(),
-                    data[index]);
+                return _homeShuttleItems(context, stopList[index], allShuttleList[index].map((e) => e.toString()).toList(), data[index]);
               },
             );
           }
@@ -287,15 +147,15 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
       ),
     );
 
-    final Widget _homeFoodMenu = StreamBuilder<Object>(
-        stream: _foodInfoController.allFoodInfo,
-        builder: (context, snapshot) {
-          if (snapshot.hasError || !snapshot.hasData) {
+    final Widget _homeFoodMenu = GetBuilder<FoodInfoController>(
+        init: FoodInfoController(),
+        builder: (controller) {
+          if (controller.menuList.keys.isEmpty) {
+            controller.onInit();
             return Center(child: CircularProgressIndicator());
           }
           // food info
-          Map<String, Map<String, List<FoodMenu>>> allMenus = snapshot.data;
-          _foodTimer.cancel();
+          Map<String, Map<String, List<FoodMenu>>> allMenus = controller.menuList;
           return Container(
             height: _height / 3.5,
             width: _width,
@@ -313,7 +173,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   return _foodItems(
                       context,
                       _cafeteriaNames[index],
-                      TranslationManager.of(context).trans("breakfast"),
+                      "breakfast".tr,
                       index,
                       allMenus[_cafeteriaKeys[index]]['breakfast']
                           .elementAt(0));
@@ -322,7 +182,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   return _foodItems(
                       context,
                       _cafeteriaNames[index],
-                      TranslationManager.of(context).trans("dinner"),
+                      "dinner".tr,
                       index,
                       allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
                 } else if (allMenus[_cafeteriaKeys[index]]['lunch']
@@ -330,12 +190,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
                   return _foodItems(
                       context,
                       _cafeteriaNames[index],
-                      TranslationManager.of(context).trans("lunch"),
+                      "lunch".tr,
                       index,
                       allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
                 }
                 return _foodItems(context, _cafeteriaNames[index],
-                    TranslationManager.of(context).trans("lunch"), index, null);
+                    "lunch".tr, index, null);
               },
             ),
           );
@@ -346,7 +206,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
         elevation: 3,
         onPressed: () => Get.to(SettingPage()),
         label: Text(
-          TranslationManager.of(context).trans("setting_title"),
+          "setting_title".tr,
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white),
         ),
@@ -359,7 +219,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
         snackBar: SnackBar(content: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(TranslationManager.of(context).trans("back_snack_msg"), textAlign: TextAlign.center,),
+            Text("back_snack_msg".tr, textAlign: TextAlign.center,),
           ],
         )),
         child: ScrollConfiguration(
@@ -369,140 +229,212 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
             child: Container(
               width: _width,
               color: Theme.of(context).backgroundColor,
-              child: Column(
-                children: [
-                  Container(
-                    height: 90,
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    child: NativeAdmob(
-                      adUnitID: AdManager.bannerAdUnitId,
-                      numberAds: 1,
-                      controller: adController,
-                      type: NativeAdmobType.banner,
-                      error: Center(
-                          child: Text(
-                            TranslationManager.of(context).trans("plz_enable_ad"),
-                            style: TextStyle(
-                                color: Theme.of(context).textTheme.bodyText1.color,
-                                fontSize: 14),
-                            textAlign: TextAlign.center,
-                          )),
-                      options: NativeAdmobOptions(
-                        adLabelTextStyle: NativeTextStyle(
-                          color: Theme.of(context).textTheme.bodyText1.color,
-                        ),
-                        bodyTextStyle: NativeTextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                        headlineTextStyle: NativeTextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                        advertiserTextStyle: NativeTextStyle(
-                            color: Theme.of(context).textTheme.bodyText1.color),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    child: GestureDetector(
-                      onTap: _expand,
-                      child: Row(
-                        children: <Widget>[
-                          Text(TranslationManager.of(context).trans("menu_list"),
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                  Theme.of(context).textTheme.bodyText1.color)),
-                          Expanded(child: Container()),
-                          StreamBuilder<bool>(
-                              stream: _menuController.isExpanded,
-                              builder: (context, snapshot) {
-                                bool _isExpanded;
-                                if(!snapshot.hasData || snapshot.hasError){
-                                  _isExpanded=false;
-                                }else{
-                                  _isExpanded = snapshot.data;
-                                }
-                                return Text(
-                                  _isExpanded ? TranslationManager.of(context).trans("shrink_menu") : TranslationManager.of(context).trans("expand_menu"),
-                                  style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
-                                );
-                              }
+              child: GetBuilder<ExpandMenuController>(
+                init: ExpandMenuController(),
+                builder: (controller) {
+                  return Column(
+                    children: [
+                      Container(
+                        height: 90,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: NativeAdmob(
+                          adUnitID: AdManager.bannerAdUnitId,
+                          numberAds: 1,
+                          controller: adController,
+                          type: NativeAdmobType.banner,
+                          error: Center(
+                              child: Text(
+                                "plz_enable_ad".tr,
+                                style: TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color,
+                                    fontSize: 14),
+                                textAlign: TextAlign.center,
+                              )),
+                          options: NativeAdmobOptions(
+                            adLabelTextStyle: NativeTextStyle(
+                              color: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .color,
+                            ),
+                            bodyTextStyle: NativeTextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .color),
+                            headlineTextStyle: NativeTextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .color),
+                            advertiserTextStyle: NativeTextStyle(
+                                color: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    .color),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  _menuWidget,
-                  Divider(),
-                  Container(
-                    margin: EdgeInsets.only(left: 30, right: 30, top: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(TranslationManager.of(context).trans("shuttle_list"),
-                            style: TextStyle(
-                                fontSize: 18,
-                                color:
-                                Theme.of(context).textTheme.bodyText1.color)),
-                        GestureDetector(
-                            onTap: () {
-                              Get.to(ShuttlePage());
-                            },
-                            child: Text(
-                              TranslationManager.of(context)
-                                  .trans("show_all_shuttle"),
-                              style: TextStyle(
-                                  color: Theme.of(context).backgroundColor ==
-                                      Colors.white
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: GestureDetector(
+                          onTap: _expand,
+                          child: Row(
+                            children: <Widget>[
+                              Text("menu_list".tr,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color:
+                                      Theme
+                                          .of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          .color)),
+                              Expanded(child: Container()),
+                              GetBuilder<ExpandMenuController>(
+                                  builder: (controller) {
+                                    return Text(
+                                      controller.isExpanded
+                                          ? "shrink_menu".tr
+                                          : "expand_menu".tr,
+                                      style: TextStyle(color: Theme
+                                          .of(context)
+                                          .backgroundColor == Colors.white
+                                          ? _primaryColor
+                                          : Colors.white,
+                                          fontFamily: 'Godo',
+                                          fontSize: 18),
+                                    );
+                                  }
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        child: AnimatedCrossFade(
+                        crossFadeState: controller.isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                        duration: kThemeAnimationDuration,
+                        firstChild: GridView.count(
+                        physics: NeverScrollableScrollPhysics(),
+                        crossAxisCount: 4,
+                        shrinkWrap: true,
+                        childAspectRatio: 0.7,
+                        children: [
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "reading_room_btn".tr, ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr, Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", "map_btn".tr, MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "calendar_btn".tr, CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                        ]),
+                        secondChild: GridView.count(
+                          physics: NeverScrollableScrollPhysics(),
+                          crossAxisCount: 4,
+                          shrinkWrap: true,
+                          childAspectRatio: 0.8,
+                          children: [
+                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30)
+                          ]),
+                        ),
+                      ),
+                      Divider(),
+                      Container(
+                        margin: EdgeInsets.only(left: 30, right: 30, top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("shuttle_list".tr,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color:
+                                    Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color)),
+                            GestureDetector(
+                                onTap: () {
+                                  Get.to(ShuttlePage());
+                                },
+                                child: Text("show_all_shuttle".tr,
+                                  style: TextStyle(color: Theme
+                                      .of(context)
+                                      .backgroundColor == Colors.white
                                       ? _primaryColor
                                       : Colors.white,
-                                  fontFamily: 'Godo',
-                                  fontSize: 18,
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _shuttleCardList,
-                  Divider(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(TranslationManager.of(context).trans("food_now"),
-                            style: TextStyle(
-                                fontSize: 18,
-                                color:
-                                Theme.of(context).textTheme.bodyText1.color)),
-                        GestureDetector(
-                            onTap: () {
-                              Get.to(FoodPage());
-                            },
-                            child: Text(
-                              TranslationManager.of(context).trans("show_all_food"),
-                              style: TextStyle(
-                                  color: Theme.of(context).backgroundColor ==
-                                      Colors.white
-                                      ? _primaryColor
-                                      : Colors.white,
-                                  fontFamily: 'Godo',
-                                  fontSize: 18,
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _homeFoodMenu,
-                  SizedBox(
-                    height: 60,
-                  )
-                ],
+                                    fontFamily: 'Godo',
+                                    fontSize: 18,),)
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _shuttleCardList,
+                      Divider(),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text("food_now".tr,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color:
+                                    Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1
+                                        .color)),
+                            GestureDetector(
+                                onTap: () {
+                                  Get.to(FoodPage());
+                                },
+                                child: Text(
+                                  "show_all_food".tr,
+                                  style: TextStyle(
+                                    color: Theme
+                                        .of(context)
+                                        .backgroundColor ==
+                                        Colors.white
+                                        ? _primaryColor
+                                        : Colors.white,
+                                    fontFamily: 'Godo',
+                                    fontSize: 18,
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      _homeFoodMenu,
+                      SizedBox(
+                        height: 60,
+                      )
+                    ],
+                  );
+                }
               ),
             ),
           ),
@@ -512,7 +444,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
   }
 
   void _expand() {
-    _menuController.change();
+    Get.find<ExpandMenuController>().expand();
   }
 
   Widget _menuButton(BuildContext context, double width, double height, String assetName, String menuName, Widget newPage, Color color) {
@@ -570,13 +502,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
 
 }
 
-class _ExpandMenuController {
-  final _expandableSubject = BehaviorSubject<bool>();
+class ExpandMenuController extends GetxController{
+  bool isExpanded = true;
 
-  _ExpandMenuController(){_expandableSubject.add(true);}
-  void change(){
-    _expandableSubject.add(!_expandableSubject.value);
+  expand(){
+    isExpanded = !isExpanded;
+    update();
   }
-
-  Stream<bool> get isExpanded => _expandableSubject.stream;
 }
