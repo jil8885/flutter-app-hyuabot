@@ -44,6 +44,7 @@ class ShuttlePage extends StatelessWidget {
     analytics.setCurrentScreen(screenName: "/shuttle");
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
+    final _shuttleController = Get.find<ShuttleDepartureController>();
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -59,42 +60,42 @@ class ShuttlePage extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Container(
-                  child: GetBuilder<ShuttleDepartureController>(
-                      builder: (controller) {
-                        List<dynamic> residenceStn = List.from(controller.departureInfo["Residence"].shuttleListStation)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
-                        List<dynamic> residenceTerminal = List.from(controller.departureInfo["Residence"].shuttleListTerminal)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
-                        List<dynamic> schoolStn = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
-                        List<dynamic> schoolTerminal = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
-                        List<dynamic> station = List.from(controller.departureInfo["Subway"].shuttleListStation)..addAll(controller.departureInfo["Subway"].shuttleListCycle)..sort();
-                        List<dynamic> terminal = List.from(controller.departureInfo["YesulIn"].shuttleListTerminal)..addAll(controller.departureInfo["YesulIn"].shuttleListCycle)..sort();
-                        List<dynamic> schoolResidence = List.from(controller.departureInfo["Shuttlecock_I"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListCycle)..sort();
+                  child: Obx(
+                      (){
+                        List<dynamic> residenceStn = List.from(_shuttleController.departureInfo["Residence"].shuttleListStation)..addAll(_shuttleController.departureInfo["Residence"].shuttleListCycle)..sort();
+                        List<dynamic> residenceTerminal = List.from(_shuttleController.departureInfo["Residence"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Residence"].shuttleListCycle)..sort();
+                        List<dynamic> schoolStn = List.from(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListStation)..addAll(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+                        List<dynamic> schoolTerminal = List.from(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+                        List<dynamic> station = List.from(_shuttleController.departureInfo["Subway"].shuttleListStation)..addAll(_shuttleController.departureInfo["Subway"].shuttleListCycle)..sort();
+                        List<dynamic> terminal = List.from(_shuttleController.departureInfo["YesulIn"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["YesulIn"].shuttleListCycle)..sort();
+                        List<dynamic> schoolResidence = List.from(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListStation)..addAll(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListCycle)..sort();
                         return Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_station", residenceStn, controller.departureInfo["Residence"]),
-                                _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_terminal", residenceTerminal, controller.departureInfo["Residence"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_station", residenceStn, _shuttleController.departureInfo["Residence"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_dorm", "bound_bus_terminal", residenceTerminal, _shuttleController.departureInfo["Residence"]),
                               ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_station", schoolStn, controller.departureInfo["Shuttlecock_O"]),
-                                _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_terminal", schoolTerminal, controller.departureInfo["Shuttlecock_O"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_station", schoolStn, _shuttleController.departureInfo["Shuttlecock_O"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_school", "bound_bus_terminal", schoolTerminal, _shuttleController.departureInfo["Shuttlecock_O"]),
                               ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _shuttleCard(_width / 2, _height, "bus_stop_station", "bound_bus_school", station, controller.departureInfo["Subway"]),
-                                _shuttleCard(_width / 2, _height, "bus_stop_terminal", "bound_bus_school", terminal, controller.departureInfo["YesulIn"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_station", "bound_bus_school", station, _shuttleController.departureInfo["Subway"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_terminal", "bound_bus_school", terminal, _shuttleController.departureInfo["YesulIn"]),
                               ],
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                _shuttleCard(_width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, controller.departureInfo["Shuttlecock_I"]),
+                                _shuttleCard(_width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, _shuttleController.departureInfo["Shuttlecock_I"]),
                               ],
                             ),
                             Container(
