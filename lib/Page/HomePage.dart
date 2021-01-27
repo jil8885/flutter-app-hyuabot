@@ -201,6 +201,42 @@ class HomePage extends StatelessWidget{
           );
         });
 
+    final menuButton =  Container(
+      margin: EdgeInsets.symmetric(horizontal: 15),
+      child: Obx(
+        () => AnimatedCrossFade(
+          crossFadeState: _menuController.isExpanded.value ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          duration: kThemeAnimationDuration,
+          firstChild: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 4,
+              shrinkWrap: true,
+              childAspectRatio: 0.7,
+              children: [
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "reading_room_btn".tr, ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr, Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", "map_btn".tr, MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "calendar_btn".tr, CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+              ]),
+          secondChild: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 4,
+              shrinkWrap: true,
+              childAspectRatio: 0.8,
+              children: [
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30)
+              ]),
+        ),
+      ),
+    );
+
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         elevation: 3,
@@ -301,59 +337,15 @@ class HomePage extends StatelessWidget{
                                           .bodyText1
                                           .color)),
                               Expanded(child: Container()),
-                              GetBuilder<ExpandMenuController>(
-                                  builder: (controller) {
-                                    return Text(
-                                      controller.isExpanded
-                                          ? "shrink_menu".tr
-                                          : "expand_menu".tr,
-                                      style: TextStyle(color: Theme
-                                          .of(context)
-                                          .backgroundColor == Colors.white
-                                          ? _primaryColor
-                                          : Colors.white,
-                                          fontFamily: 'Godo',
-                                          fontSize: 18),
-                                    );
-                                  }
-                              ),
+                              Obx(() => Text(
+                                _menuController.isExpanded.value ? "shrink_menu".tr : "expand_menu".tr,
+                                style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
+                              ))
                             ],
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        child: AnimatedCrossFade(
-                        crossFadeState: controller.isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                        duration: kThemeAnimationDuration,
-                        firstChild: GridView.count(
-                        physics: NeverScrollableScrollPhysics(),
-                        crossAxisCount: 4,
-                        shrinkWrap: true,
-                        childAspectRatio: 0.7,
-                        children: [
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "reading_room_btn".tr, ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr, Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", "map_btn".tr, MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                          _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "calendar_btn".tr, CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                        ]),
-                        secondChild: GridView.count(
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 4,
-                          shrinkWrap: true,
-                          childAspectRatio: 0.8,
-                          children: [
-                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr, ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr, BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                            _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30)
-                          ]),
-                        ),
-                      ),
+                      menuButton,
                       Divider(),
                       Container(
                         margin: EdgeInsets.only(left: 30, right: 30, top: 10),
@@ -444,7 +436,7 @@ class HomePage extends StatelessWidget{
   }
 
   void _expand() {
-    Get.find<ExpandMenuController>().expand();
+    _menuController.expand();
   }
 
   Widget _menuButton(BuildContext context, double width, double height, String assetName, String menuName, Widget newPage, Color color) {
@@ -503,10 +495,10 @@ class HomePage extends StatelessWidget{
 }
 
 class ExpandMenuController extends GetxController{
-  bool isExpanded = true;
+  RxBool isExpanded = true.obs;
 
   expand(){
-    isExpanded = !isExpanded;
+    isExpanded.toggle();
     update();
   }
 }
