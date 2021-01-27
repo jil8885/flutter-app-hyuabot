@@ -499,6 +499,6 @@ class ExpandMenuController extends GetxController{
 
   expand(){
     isExpanded.toggle();
-    update();
+    refresh();
   }
 }
