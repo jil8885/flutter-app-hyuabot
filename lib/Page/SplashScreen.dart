@@ -16,7 +16,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 void initApp() async {
   final String srcPath = join("assets/databases", "information.db");
   final String destPath = join(await getDatabasesPath(), "information.db");
-  final int srcSize = prefManager.get("databaseSize") ?? 0;
+  final int srcSize = prefManager.read("databaseSize") ?? 0;
 
   ByteData srcData = await rootBundle.load(srcPath);
   await Directory(dirname(destPath)).create(recursive: true);
@@ -25,7 +25,7 @@ void initApp() async {
       await deleteDatabase(destPath);
       List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
       await new File(destPath).writeAsBytes(bytes, flush: true);
-      prefManager.setInt("databaseSize", srcData.lengthInBytes);
+      prefManager.write("databaseSize", srcData.lengthInBytes);
     }
   } catch(_){
     await deleteDatabase(destPath);
@@ -46,7 +46,7 @@ void initApp() async {
 }
 
 Future whenSelectNotification(String payload) async{
-  prefManager.setBool(payload, false);
+  prefManager.write(payload, false);
   fcmManager.unsubscribeFromTopic("$payload.ko_KR");
   fcmManager.unsubscribeFromTopic("$payload.en_US");
   fcmManager.unsubscribeFromTopic("$payload.zh");

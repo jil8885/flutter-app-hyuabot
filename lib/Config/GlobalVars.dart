@@ -6,9 +6,8 @@ import 'package:flutter_app_hyuabot_v2/Bloc/NotificationController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
-import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Ad manager
 final adController = NativeAdmobController();
@@ -16,7 +15,6 @@ final ReadingRoomController readingRoomController = ReadingRoomController();
 
 // FCM Manager
 FirebaseMessaging fcmManager;
-SharedPreferences prefManager;
 
 // Map
 NaverMapController mapController;
@@ -44,3 +42,7 @@ const MethodChannel readingRoomChannel = MethodChannel('kobuggi.app/reading_room
 NotificationAppLaunchDetails notificationAppLaunchDetails;
 // final BehaviorSubject<ReceivedNotification> didReceiveLocalNotificationSubject = BehaviorSubject<ReceivedNotification>();
 final selectNotificationSubject = NotificationController();
+
+
+// PrefManager
+final prefManager = GetStorage();

@@ -11,7 +11,7 @@ class FoodPage extends StatelessWidget {
 
   Widget _foodItem(String menu, String price){
     String _priceString;
-    if(prefManager.getString("localeCode") == "ko_KR"){
+    if(prefManager.read("localeCode") == "ko_KR"){
       _priceString = '$price 원';
     } else {
       _priceString = '₩ $price';

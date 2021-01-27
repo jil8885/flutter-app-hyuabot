@@ -8,12 +8,14 @@ import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 
 
 class ShuttleDepartureController extends GetxController{
-  Map<String, ShuttleStopDepartureInfo> departureInfo = {};
+  RxMap<String, ShuttleStopDepartureInfo> departureInfo = Map<String, ShuttleStopDepartureInfo>().obs;
 
-  queryDepartureInfo() {
+  queryDepartureInfo() async {
+    departureInfo.assignAll(await fetchDepartureInfo());
+    refresh();
     Timer.periodic(Duration(minutes: 1), (timer) async {
-      departureInfo = await fetchDepartureInfo();
-      update();
+      departureInfo.assignAll(await fetchDepartureInfo());
+      refresh();
     });
   }
 
@@ -31,11 +33,11 @@ class ShuttleDepartureController extends GetxController{
 }
 
 class ShuttleTimeTableController extends GetxController{
-  Map<String, dynamic> timeTableInfo = {};
+  RxMap<String, dynamic> timeTableInfo = Map<String, dynamic>().obs;
 
   queryTimetableInfo(String busStop) async {
-    timeTableInfo = await fetchTimeTable(busStop);
-    update();
+    timeTableInfo.assignAll(await fetchTimeTable(busStop));
+    refresh();
   }
 
   Future<Map<String, dynamic>> fetchTimeTable(String busStop) async{

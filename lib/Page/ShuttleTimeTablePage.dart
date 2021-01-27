@@ -127,6 +127,8 @@ class ShuttleTimeTablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/shuttle/timetable");
+    final _shuttleController = Get.put(ShuttleTimeTableController());
+
     switch(currentStop){
       case "bus_stop_dorm":
         _busStop = "Residence";
@@ -144,32 +146,35 @@ class ShuttleTimeTablePage extends StatelessWidget {
         _busStop = "Shuttlecock_I";
         break;
     }
+    _shuttleController.queryTimetableInfo(_busStop);
     return Scaffold(
      appBar: AppBar(
        title: Text("${currentStop.tr} → ${(destination.tr).replaceAll("Bound for", "")}"), centerTitle: true,
        backgroundColor: Color.fromARGB(255, 20, 75, 170),
      ),
-     body: GetBuilder<ShuttleTimeTableController>(
-       builder: (controller) {
-         Map<String, List<dynamic>> _data = controller.timeTableInfo;
-         int initialIndex = controller.timeTableInfo["day"] == "weekdays"? 0:1;
-         return Container(
-           child: DefaultTabController(
-             length: 2,
-             initialIndex: initialIndex,
-             child: Column(
-               children: [
-                 TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText1,),)],),
-                 Expanded(child: TabBarView(
-                   children: [
-                     Container(child: _timeTableView(_data["weekdays"], controller.timeTableInfo["weekdays"], controller.timeTableInfo["day"] == "weekdays"),),
-                     Container(child: _timeTableView(_data["weekends"], controller.timeTableInfo["weekends"], controller.timeTableInfo["day"] != "weekdays"),),
-                   ],
-                 ))
-               ],
-             ),
+     body: Obx(() {
+       if(_shuttleController.timeTableInfo["weekdays"] == null || _shuttleController.timeTableInfo["weekdays"] == null){
+         return Center(child: CircularProgressIndicator(),);
+       }
+       Map<String, List<dynamic>> _data = _getTimetable(_shuttleController.timeTableInfo);
+       int initialIndex = _shuttleController.timeTableInfo["day"] == "weekdays"? 0:1;
+       return Container(
+         child: DefaultTabController(
+           length: 2,
+           initialIndex: initialIndex,
+           child: Column(
+             children: [
+               TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText1,),)],),
+               Expanded(child: TabBarView(
+                 children: [
+                   Container(child: _timeTableView(_data["weekdays"], _shuttleController.timeTableInfo["weekdays"], _shuttleController.timeTableInfo["day"] == "weekdays"),),
+                   Container(child: _timeTableView(_data["weekends"], _shuttleController.timeTableInfo["weekends"], _shuttleController.timeTableInfo["day"] != "weekdays"),),
+                 ],
+               ))
+             ],
            ),
-         );
+         ),
+       );
        }
      ),
    );

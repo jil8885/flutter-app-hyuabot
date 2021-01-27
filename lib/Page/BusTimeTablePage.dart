@@ -69,7 +69,7 @@ class BusTimeTablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
-    switch (prefManager.getString("localeCode")){
+    switch (prefManager.read("localeCode")){
       case "ko_KR":
         _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
         break;

@@ -7,22 +7,20 @@ import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
 class FoodInfoController extends GetxController{
-  Map<String, Map<String, List<FoodMenu>>> menuList = {};
+  RxMap<String, Map<String, List<FoodMenu>>> menuList = Map<String, Map<String, List<FoodMenu>>>().obs;
 
-  @override
-  onInit(){
+  queryFood(){
     fetchFood().then((value){
-      menuList = value;
+      menuList.assignAll(value);
       update();
     });
-    super.onInit();
   }
 
   Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    final String _localeCode = prefManager.getString("localeCode");
+    final String _localeCode = prefManager.read("localeCode");
     http.Response response;
     response = await http.post(url, body: jsonEncode({'language': _localeCode.split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
