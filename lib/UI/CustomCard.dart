@@ -60,9 +60,9 @@ class CustomShuttleCard extends StatelessWidget {
     }
 
     if(timetable.isNotEmpty){
-      String minString = 'min_after';
+      String minString = 'min_after'.tr;
       if(minString.contains('min') && remainedTimeString == '1'){
-        minString = 'min left';
+        minString = 'min left'.tr;
       }
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,

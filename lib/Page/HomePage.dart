@@ -30,7 +30,7 @@ import 'package:flutter_app_hyuabot_v2/UI/CustomScrollPhysics.dart';
 Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   final dynamic data = msg['data'];
   fcmManager.unsubscribeFromTopic(data['name']);
-  prefManager.setBool(data['name'], false);
+  prefManager.write(data['name'], false);
   readingRoomController.fetchAlarm();
 }
 
@@ -44,7 +44,7 @@ Future<dynamic> foregroundMessageHandler(Map<String, dynamic> msg) async{
   final dynamic data = msg['data'];
   print("foreground:$data");
   fcmManager.unsubscribeFromTopic(data['name']);
-  prefManager.setBool(data['name'], false);
+  prefManager.write(data['name'], false);
   _showNotificationWithNoTitle(data['name'], data['language']);
   readingRoomController.fetchAlarm();
 }
@@ -69,6 +69,10 @@ Future<void> _showNotificationWithNoTitle(String msg, String language) async {
 
 class HomePage extends StatelessWidget{
   bool get didNotificationLaunchApp => notificationAppLaunchDetails?.didNotificationLaunchApp ?? false;
+  // 컨트롤러
+  final ExpandMenuController _menuController = Get.put(ExpandMenuController());
+  final ShuttleDepartureController _shuttleController = Get.put(ShuttleDepartureController());
+  final FoodInfoController _foodController = Get.put(FoodInfoController());
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +85,9 @@ class HomePage extends StatelessWidget{
         onLaunch: onLaunchMessageHandler
     );
 
+    // 업데이트
+    _foodController.queryFood();
+    _shuttleController.queryDepartureInfo();
 
     // 화면 너비, 크기 조정
     final double _width = MediaQuery.of(context).size.width;
@@ -100,62 +107,59 @@ class HomePage extends StatelessWidget{
       height: _height / 4,
       width: _width,
       padding: EdgeInsets.symmetric(horizontal: 30),
-      child: GetBuilder<ShuttleDepartureController>(
-        init: ShuttleDepartureController(),
-        builder: (controller) {
-          if (controller.departureInfo.keys.isEmpty) {
-            return Center(child: CircularProgressIndicator());
-          } else {
-            List<dynamic> residenceStn = List.from(controller.departureInfo["Residence"].shuttleListStation)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
-            List<dynamic> residenceTerminal = List.from(controller.departureInfo["Residence"].shuttleListTerminal)..addAll(controller.departureInfo["Residence"].shuttleListCycle)..sort();
-            List<dynamic> schoolStn = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
-            List<dynamic> schoolTerminal = List.from(controller.departureInfo["Shuttlecock_O"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
-            List<dynamic> station = List.from(controller.departureInfo["Subway"].shuttleListStation)..addAll(controller.departureInfo["Subway"].shuttleListCycle)..sort();
-            List<dynamic> terminal = List.from(controller.departureInfo["YesulIn"].shuttleListTerminal)..addAll(controller.departureInfo["YesulIn"].shuttleListCycle)..sort();
-            List<dynamic> schoolResidence = List.from(controller.departureInfo["Shuttlecock_I"].shuttleListStation)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListTerminal)..addAll(controller.departureInfo["Shuttlecock_I"].shuttleListCycle)..sort();
-            List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
-            List<String> stopList = [
-              "${"bus_stop_dorm".tr} → ${"bus_stop_station".tr}",
-              "${"bus_stop_dorm".tr} → ${"bus_stop_terminal".tr}",
-              "${"bus_stop_school".tr} → ${"bus_stop_station".tr}",
-              "${"bus_stop_school".tr} → ${"bus_stop_terminal".tr}",
-              "bus_stop_station".tr,
-              "bus_stop_terminal".tr,
-              "bus_stop_school_opposite".tr
-            ];
-            List<ShuttleStopDepartureInfo> data = [
-              controller.departureInfo["Residence"],
-              controller.departureInfo["Residence"],
-              controller.departureInfo["Shuttlecock_O"],
-              controller.departureInfo["Shuttlecock_O"],
-              controller.departureInfo["Subway"],
-              controller.departureInfo["YesulIn"],
-              controller.departureInfo["Shuttlecock_I"]
-            ];
-            return ListView.builder(
-              padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
-              shrinkWrap: true,
-              itemCount: 7,
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return _homeShuttleItems(context, stopList[index], allShuttleList[index].map((e) => e.toString()).toList(), data[index]);
-              },
-            );
-          }
-        },
-      ),
-    );
+      child: Obx(
+          () {
+            if (_shuttleController.departureInfo.keys.isEmpty) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              List<dynamic> residenceStn = List.from(_shuttleController.departureInfo["Residence"].shuttleListStation)..addAll(_shuttleController.departureInfo["Residence"].shuttleListCycle)..sort();
+              List<dynamic> residenceTerminal = List.from(_shuttleController.departureInfo["Residence"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Residence"].shuttleListCycle)..sort();
+              List<dynamic> schoolStn = List.from(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListStation)..addAll(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+              List<dynamic> schoolTerminal = List.from(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Shuttlecock_O"].shuttleListCycle)..sort();
+              List<dynamic> station = List.from(_shuttleController.departureInfo["Subway"].shuttleListStation)..addAll(_shuttleController.departureInfo["Subway"].shuttleListCycle)..sort();
+              List<dynamic> terminal = List.from(_shuttleController.departureInfo["YesulIn"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["YesulIn"].shuttleListCycle)..sort();
+              List<dynamic> schoolResidence = List.from(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListStation)..addAll(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListTerminal)..addAll(_shuttleController.departureInfo["Shuttlecock_I"].shuttleListCycle)..sort();
+              List<Set<dynamic>> allShuttleList = [residenceStn.toSet(), residenceTerminal.toSet(), schoolStn.toSet(), schoolTerminal.toSet(), station.toSet(), terminal.toSet(), schoolResidence.toSet()];
+              List<String> stopList = [
+                "${"bus_stop_dorm".tr} → ${"bus_stop_station".tr}",
+                "${"bus_stop_dorm".tr} → ${"bus_stop_terminal".tr}",
+                "${"bus_stop_school".tr} → ${"bus_stop_station".tr}",
+                "${"bus_stop_school".tr} → ${"bus_stop_terminal".tr}",
+                "bus_stop_station".tr,
+                "bus_stop_terminal".tr,
+                "bus_stop_school_opposite".tr
+              ];
+              List<ShuttleStopDepartureInfo> data = [
+                _shuttleController.departureInfo["Residence"],
+                _shuttleController.departureInfo["Residence"],
+                _shuttleController.departureInfo["Shuttlecock_O"],
+                _shuttleController.departureInfo["Shuttlecock_O"],
+                _shuttleController.departureInfo["Subway"],
+                _shuttleController.departureInfo["YesulIn"],
+                _shuttleController.departureInfo["Shuttlecock_I"]
+              ];
+              return ListView.builder(
+                padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
+                shrinkWrap: true,
+                itemCount: 7,
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return _homeShuttleItems(context, stopList[index], allShuttleList[index].map((e) => e.toString()).toList(), data[index]);
+                },
+              );
+            }
+          },
+        ),
+      );
 
-    final Widget _homeFoodMenu = GetBuilder<FoodInfoController>(
-        init: FoodInfoController(),
-        builder: (controller) {
-          if (controller.menuList.keys.isEmpty) {
-            controller.onInit();
+    final Widget _homeFoodMenu = Obx(
+        (){
+          Map<String, Map<String, List<FoodMenu>>> allMenus = _foodController.menuList;
+          if (_foodController.menuList.keys.isEmpty) {
             return Center(child: CircularProgressIndicator());
           }
           // food info
-          Map<String, Map<String, List<FoodMenu>>> allMenus = controller.menuList;
           return Container(
             height: _height / 3.5,
             width: _width,
@@ -265,10 +269,7 @@ class HomePage extends StatelessWidget{
             child: Container(
               width: _width,
               color: Theme.of(context).backgroundColor,
-              child: GetBuilder<ExpandMenuController>(
-                init: ExpandMenuController(),
-                builder: (controller) {
-                  return Column(
+              child: Column(
                     children: [
                       Container(
                         height: 90,
@@ -425,9 +426,7 @@ class HomePage extends StatelessWidget{
                         height: 60,
                       )
                     ],
-                  );
-                }
-              ),
+                )
             ),
           ),
         ),

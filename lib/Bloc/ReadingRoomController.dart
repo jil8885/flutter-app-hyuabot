@@ -33,10 +33,10 @@ class ReadingRoomController extends GetxController{
 
   fetchAlarm() async{
     Map<String, bool> data = {
-      "reading_room_1": prefManager.getBool("reading_room_1"),
-      "reading_room_2": prefManager.getBool("reading_room_2"),
-      "reading_room_3": prefManager.getBool("reading_room_3"),
-      "reading_room_4": prefManager.getBool("reading_room_4"),
+      "reading_room_1": prefManager.read("reading_room_1"),
+      "reading_room_2": prefManager.read("reading_room_2"),
+      "reading_room_3": prefManager.read("reading_room_3"),
+      "reading_room_4": prefManager.read("reading_room_4"),
     };
     return data;
   }

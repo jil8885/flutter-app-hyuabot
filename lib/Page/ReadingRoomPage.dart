@@ -14,7 +14,7 @@ class ReadingRoomPage extends StatelessWidget {
     String _alarmOnString;
     String _alarmOffString;
 
-    switch(prefManager.getString("localeCode")){
+    switch(prefManager.read("localeCode")){
       case "ko_KR":
         _alarmOnString = "${name.tr}의 좌석 알림이 설정되었다냥!";
         _alarmOffString = "${name.tr}의 좌석 알림이 해제되었다냥!";
@@ -51,13 +51,13 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.ko_KR");
                   fcmManager.unsubscribeFromTopic("$name.en_US");
                   fcmManager.unsubscribeFromTopic("$name.zh");
-                  prefManager.setBool(name, false);
+                  prefManager.write(name, false);
                   readingRoomController.fetchAlarm();
                   Get.showSnackbar(GetBar(messageText: Text(_alarmOffString),));
                 } else {
                   if(available < 0){
-                    fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
-                    prefManager.setBool(name, true);
+                    fcmManager.subscribeToTopic("$name.${prefManager.read("localeCode")}");
+                    prefManager.write(name, true);
                     readingRoomController.fetchAlarm();
                     Get.showSnackbar(GetBar(messageText: Text(_alarmOnString),));
                   } else{
@@ -78,11 +78,11 @@ class ReadingRoomPage extends StatelessWidget {
     final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
 
     analytics.setCurrentScreen(screenName: "/library");
-    if(prefManager.getBool("reading_room_1") == null || prefManager.getBool("reading_room_2") == null || prefManager.getBool("reading_room_3") == null || prefManager.getBool("reading_room_4") == null){
-      prefManager.setBool("reading_room_1", false);
-      prefManager.setBool("reading_room_2", false);
-      prefManager.setBool("reading_room_3", false);
-      prefManager.setBool("reading_room_4", false);
+    if(prefManager.read("reading_room_1") == null || prefManager.read("reading_room_2") == null || prefManager.read("reading_room_3") == null || prefManager.read("reading_room_4") == null){
+      prefManager.write("reading_room_1", false);
+      prefManager.write("reading_room_2", false);
+      prefManager.write("reading_room_3", false);
+      prefManager.write("reading_room_4", false);
     }
 
     return Scaffold(

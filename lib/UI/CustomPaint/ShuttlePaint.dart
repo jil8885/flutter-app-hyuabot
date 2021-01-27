@@ -21,11 +21,11 @@ class ShuttleCardPaint extends CustomPainter{
   String _getDirection(String time, ShuttleStopDepartureInfo data){
     var type;
     if(data.shuttleListTerminal.contains(time) || data.shuttleListStation.contains(time)){
-      type = "is_direct";
+      type = "is_direct".tr;
     } else {
-      type = "is_cycle";
+      type = "is_cycle".tr;
     }
-    return type.tr;
+    return type;
   }
   
   @override

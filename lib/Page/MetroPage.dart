@@ -19,7 +19,7 @@ class MetroPage extends StatelessWidget {
     }
 
     String _boundString;
-    switch(prefManager.getString("localeCode")){
+    switch(prefManager.read("localeCode")){
       case "ko_KR":
         _boundString = "$terminalStop 방면";
         break;

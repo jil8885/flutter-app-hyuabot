@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 class BusPage extends StatelessWidget {
   Widget _busCard(BuildContext context, double width, String busStop, String terminalStop, String lineName, Color lineColor, Map<String, dynamic> data, bool timeTableOffered){
     String _boundString;
-    switch(prefManager.getString("localeCode")){
+    switch(prefManager.read("localeCode")){
       case "ko_KR":
         _boundString = "$terminalStop 방면";
         break;
@@ -78,14 +78,16 @@ class BusPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
-
+    final _busController = Get.put(BusDepartureController());
+    _busController.queryDepartureInfo();
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: GetBuilder<BusDepartureController>(
-          builder: (controller) {
-            if(controller.departureInfo.keys.isEmpty) {
-              return Center(child: Text("failed_to_load_bus".tr, style: Theme.of(context).textTheme.bodyText1,),);
+        child: Obx(
+          () {
+            print(_busController.departureInfo);
+            if(_busController.departureInfo == null){
+              return Center(child: CircularProgressIndicator(),);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -95,9 +97,9 @@ class BusPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 30),)],
                   ),
-                  _busCard(context, _width, "guest_house".tr, "sangnoksu_stn".tr, "10-1", Color(0xff009e96), controller.departureInfo['10-1'], true),
-                  _busCard(context, _width, "guest_house".tr, "gangnam_stn".tr, "3102", Color(0xffe60012), controller.departureInfo['3102'], true),
-                  _busCard(context, _width, "main_gate".tr, "suwon_stn".tr, "707-1", Color(0xff0068b7), controller.departureInfo['707-1'], false),
+                  _busCard(context, _width, "guest_house".tr, "sangnoksu_stn".tr, "10-1", Color(0xff009e96), _busController.departureInfo['10-1'], true),
+                  _busCard(context, _width, "guest_house".tr, "gangnam_stn".tr, "3102", Color(0xffe60012), _busController.departureInfo['3102'], true),
+                  _busCard(context, _width, "main_gate".tr, "suwon_stn".tr, "707-1", Color(0xff0068b7), _busController.departureInfo['707-1'], false),
                   Expanded(
                     // child: Container(),
                     child: Center(child: Text("how_use_bus_page".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color), textAlign: TextAlign.center,)),

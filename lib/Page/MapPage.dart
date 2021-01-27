@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:get/get.dart';
@@ -38,7 +37,7 @@ class MapPage extends StatelessWidget {
           _markers.clear();
           _getMarkers(_menus[value.elementAt(0)]);
           String _toastString;
-          switch(prefManager.getString("localeCode")){
+          switch(prefManager.read("localeCode")){
             case "ko_KR":
               _toastString = '${picker.getSelectedValues()[0]}(으)로 전환되었습니다.';
               break;
