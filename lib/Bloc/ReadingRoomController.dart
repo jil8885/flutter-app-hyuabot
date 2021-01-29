@@ -10,7 +10,12 @@ import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
 
 class ReadingRoomController extends GetxController{
   RxMap<String, ReadingRoomInfo> readingRoomData = Map<String, ReadingRoomInfo>().obs;
-  RxMap<String, bool> readingRoomAlarm = Map<String, bool>().obs;
+  RxMap<String, bool> readingRoomAlarm = {
+    "reading_room_1": false,
+    "reading_room_2": false,
+    "reading_room_3": false,
+    "reading_room_4": false,
+  }.obs;
   var isLoading = true.obs;
 
   @override
@@ -64,10 +69,10 @@ class ReadingRoomController extends GetxController{
 
   fetchAlarm() async{
     Map<String, bool> data = {
-      "reading_room_1": prefManager.read("reading_room_1"),
-      "reading_room_2": prefManager.read("reading_room_2"),
-      "reading_room_3": prefManager.read("reading_room_3"),
-      "reading_room_4": prefManager.read("reading_room_4"),
+      "reading_room_1": prefManager.read("reading_room_1") ?? false,
+      "reading_room_2": prefManager.read("reading_room_2") ?? false,
+      "reading_room_3": prefManager.read("reading_room_3") ?? false,
+      "reading_room_4": prefManager.read("reading_room_4") ?? false,
     };
     return data;
   }
