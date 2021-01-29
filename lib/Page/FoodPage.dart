@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 class FoodPage extends StatelessWidget {
   final  DateTime _now = DateTime.now();
   final Map<String, String> _cafeteriaList = {"학생식당": "student_erica", "교직원식당": "teacher_erica", "푸드코트": "food_court_erica", "창업보육센터": "changbo_erica", "창의인재원식당": "dorm_erica"};
+  final FoodInfoController _controller = Get.put(FoodInfoController());
 
   Widget _foodItem(String menu, String price){
     String _priceString;
@@ -36,7 +37,7 @@ class FoodPage extends StatelessWidget {
     );
   }
 
-  Widget _cafeteriaCard(Map<String, List<FoodMenu>> data, String name){
+  Widget _cafeteriaCard(Map<String, List<FoodMenu>> data, String name, int cardIndex){
     String kind = "lunch".tr;
     List<FoodMenu> currentFood = [];
     bool hasManyMenu = false;
@@ -45,7 +46,7 @@ class FoodPage extends StatelessWidget {
       kind = "breakfast".tr;
     } else if (_now.hour > 15 && data['dinner'].isNotEmpty){
       currentFood = data['dinner'];
-      kind = "dinner".tr;;
+      kind = "dinner".tr;
     } else if (data['lunch'].isNotEmpty){
       currentFood = data['lunch'];
     } else {
@@ -166,8 +167,8 @@ class FoodPage extends StatelessWidget {
         ),
       );
     } else {
-      return GetBuilder<FoodCardExpander>(
-        builder: (controller){
+      return Obx((){
+          print(_controller.isExpanded);
           return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Card(
@@ -180,7 +181,7 @@ class FoodPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AnimatedCrossFade(
-                          crossFadeState: !controller.isExpanded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: !_controller.isExpanded[cardIndex] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: kThemeAnimationDuration,
                           firstChild: Column(
                             children: [
@@ -203,12 +204,12 @@ class FoodPage extends StatelessWidget {
                           secondChild: Column(children: allFoodWidget,)
                       ),
                       InkWell(
-                        onTap: (){controller.expandCard();},
+                        onTap: (){_controller.expandCard(cardIndex);},
                         child: Row(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconButton(icon: controller.isExpanded ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){controller.expandCard();}),
+                            IconButton(icon: _controller.isExpanded[cardIndex] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){_controller.expandCard(cardIndex);}),
                           ],
                         ),
                       )
@@ -229,8 +230,7 @@ class FoodPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: GetBuilder<FoodInfoController>(
-            builder: (controller) {
+        child: Obx(() {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(
@@ -262,7 +262,7 @@ class FoodPage extends StatelessWidget {
                                   Text("student_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(controller.menuList[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']),
+                              _cafeteriaCard(_controller.menuList[_cafeteriaList['학생식당']], _cafeteriaList['학생식당'], 0),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -270,7 +270,7 @@ class FoodPage extends StatelessWidget {
                                   Text("teacher_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(controller.menuList[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']),
+                              _cafeteriaCard(_controller.menuList[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당'], 1),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -278,7 +278,7 @@ class FoodPage extends StatelessWidget {
                                   Text("food_court".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(controller.menuList[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']),
+                              _cafeteriaCard(_controller.menuList[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트'], 2),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -286,7 +286,7 @@ class FoodPage extends StatelessWidget {
                                   Text("changbo_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(controller.menuList[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']),
+                              _cafeteriaCard(_controller.menuList[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터'], 3),
                               SizedBox(height: 20,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -294,7 +294,7 @@ class FoodPage extends StatelessWidget {
                                   Text("dorm_cafeteria".tr, style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                                 ],
                               ),
-                              _cafeteriaCard(controller.menuList[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']),
+                              _cafeteriaCard(_controller.menuList[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당'], 4),
                             ],
                           ),
                         ),
@@ -307,14 +307,5 @@ class FoodPage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class FoodCardExpander extends GetxController{
-  bool isExpanded = false;
-
-  expandCard() {
-    isExpanded = !isExpanded;
-    update();
   }
 }
