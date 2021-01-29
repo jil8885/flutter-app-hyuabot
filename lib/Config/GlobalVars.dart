@@ -16,9 +16,6 @@ final ReadingRoomController readingRoomController = ReadingRoomController();
 // FCM Manager
 FirebaseMessaging fcmManager;
 
-// Map
-NaverMapController mapController;
-
 // Firebase FirebaseAnalytics
 FirebaseAnalytics analytics;
 

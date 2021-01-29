@@ -4,22 +4,34 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MapController extends GetxController{
-  String _path;
   Database _database;
-  List<Map> markers = [];
-  List<StoreSearchInfo> searchResult = [];
+  RxList<Map> markers = List<Map>().obs;
+  RxList<StoreSearchInfo> searchResult = List<StoreSearchInfo>().obs;
 
-  MapController() {
-    getDatabasesPath().then((value){_path = value;});
-    openDatabase(
-      join(_path, "information.db")
-    ).then((value){_database = value;});
+  @override
+  onInit(){
+    loadDatabase();
+    super.onInit();
+  }
+
+  loadDatabase() {
+    String _path;
+    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+      openDatabase(
+          join(_path, "information.db")
+      ).then((value){_database = value;});
+    });
   }
 
   getMarkers(String catString) async {
-    String query = "select distinct latitude, longitude from outschool where category='$catString'";
-    markers = await _database.rawQuery(query);
-    update();
+    String query;
+    if(catString.trim().isEmpty){
+      query = "select distinct latitude, longitude from outschool";
+    } else {
+      query = "select distinct latitude, longitude from outschool where category='$catString'";
+    }
+    markers.assignAll(await _database.rawQuery(query));
+    refresh();
   }
 
   getStoreList(String catString, Map marker){
@@ -34,10 +46,10 @@ class MapController extends GetxController{
     if(searchKeyword.isNotEmpty){
       String query = "select name, menu, latitude, longitude from outschool where name like '%$searchKeyword%' or menu like '%$searchKeyword%'";
       _database.rawQuery(query).then((value){
-        searchResult = value.map((e) => StoreSearchInfo.fromJson(e)).toList();
+        searchResult.assignAll(value.map((e) => StoreSearchInfo.fromJson(e)).toList());
       });
     } else{
-      searchResult = [];
+      searchResult.assignAll([]);
     }
-    update();
+    refresh();
   }}

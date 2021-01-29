@@ -32,6 +32,7 @@ dependencies:
   material_floating_search_bar: ^0.2.6
   syncfusion_flutter_calendar: ^18.4.33
   double_back_to_close_app: ^1.2.0
+  google_maps_flutter: ^1.1.1
 
 dev_dependencies:
   flutter_test:
