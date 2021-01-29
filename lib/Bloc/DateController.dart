@@ -9,7 +9,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 
 class DateController extends GetxController{
-  final List<Color> _colors = [Colors.grey, Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
+  final List<Color> _colors = [ Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
   var isLoading = true.obs;
   RxList<Schedule> meetingDataSource = List<Schedule>().obs;
 
