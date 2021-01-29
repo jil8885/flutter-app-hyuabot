@@ -31,7 +31,7 @@ class BusPage extends StatelessWidget {
         if(timeTableOffered){
           Get.to(BusTimeTablePage(lineName, lineColor));
         }else {
-          Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("timetable_not_offered_popup".tr, style: TextStyle(color: Get.textTheme.bodyText1.color), textAlign: TextAlign.center,)));
+          Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("timetable_not_offered_popup".tr, style: TextStyle(color: Get.isDarkMode?Colors.white:Colors.black), textAlign: TextAlign.center,)));
         }
       },
       child: Card(
