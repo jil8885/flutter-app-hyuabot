@@ -5,25 +5,21 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarPage extends StatelessWidget{
-
+  final _controller = Get.put(DateController());
   @override
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/calendar");
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: GetBuilder<DateController>(
-        builder: (controller) {
+      child: Obx((){
           CalendarDataSource _schedules;
-          _schedules = controller.meetingDataSource;
+          if(_controller.isLoading.value){
+            return Center(child: CircularProgressIndicator(),);
+          }
+          _schedules = MeetingDataSource(_controller.meetingDataSource);
           return SfCalendar(
             dataSource: _schedules,
             view: CalendarView.month,
-            onTap: (CalendarTapDetails details){
-              List _appointments = details.appointments;
-              for(var _data in _appointments){
-                print(_data);
-              }
-            },
             appointmentTextStyle: TextStyle(fontFamily: 'Godo', fontSize: 12, color: Colors.white),
             monthViewSettings: MonthViewSettings(
               numberOfWeeksInView: 6,
@@ -39,13 +35,15 @@ class CalendarPage extends StatelessWidget{
                 ),
               ),
               monthCellStyle: MonthCellStyle(
-                  backgroundColor: const Color.fromARGB(255, 20, 75, 170),
-                  trailingDatesBackgroundColor: Color(0xff216583),
-                  leadingDatesBackgroundColor: Color(0xff216583),
-                  todayBackgroundColor: const Color.fromARGB(255, 20, 75, 170),
+                  backgroundColor: Get.theme.backgroundColor,
+                  trailingDatesBackgroundColor: Colors.grey,
+                  leadingDatesBackgroundColor: Colors.grey,
+                  todayBackgroundColor: Get.theme.backgroundColor,
                   textStyle: TextStyle(
                       fontSize: 12,
-                      fontFamily: 'Godo'),
+                      fontFamily: 'Godo',
+                      color: Get.theme.textTheme.bodyText1.color
+                  ),
                   trailingDatesTextStyle: TextStyle(
                       fontStyle: FontStyle.italic,
                       fontSize: 12,
