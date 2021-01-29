@@ -8,16 +8,42 @@ import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
 
 class BusDepartureController extends GetxController{
-  Map<String, dynamic> departureInfo = {};
+  var departureInfo = Map<String, dynamic>().obs;
+  var isLoading = true.obs;
 
-  queryDepartureInfo() {
+  @override
+  void onInit(){
+    queryDepartureInfo();
+    super.onInit();
+  }
+
+  queryDepartureInfo() async {
+    try{
+      isLoading(true);
+      var data = await fetchDepartureInfo();
+      if(data != null){
+        departureInfo.assignAll(data);
+      }
+    } finally {
+      isLoading(false);
+      refresh();
+    }
     Timer.periodic(Duration(minutes: 1), (timer) async {
-      departureInfo = await fetchDepartureInfo();
-      update();
+      try{
+        isLoading(true);
+        var data = await fetchDepartureInfo();
+        if(data != null){
+          departureInfo.assignAll(data);
+        }
+      } finally {
+        isLoading(false);
+        refresh();
+      }
     });
   }
 
   Future<Map<String, dynamic>> fetchDepartureInfo() async{
+
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -48,11 +74,30 @@ class BusDepartureController extends GetxController{
 }
 
 class BusTimetableController extends GetxController{
-  Map<String, dynamic> timetableInfo = {};
+  RxMap<String, dynamic> timetableInfo = Map<String, dynamic>().obs;
+  var isLoading = true.obs;
+
+  final String route;
+
+  BusTimetableController(this.route);
+
+  @override
+  void onInit(){
+    updateTimetable(route);
+    super.onInit();
+  }
 
   updateTimetable(String route) async {
-    timetableInfo = await fetchTimeTable(route);
-    update();
+    try{
+      isLoading(true);
+      var data = await fetchTimeTable(route);
+      if(data != null){
+        timetableInfo.assignAll(data);
+      }
+    } finally {
+      isLoading(false);
+      refresh();
+    }
   }
 
   fetchTimeTable(String route) async{
