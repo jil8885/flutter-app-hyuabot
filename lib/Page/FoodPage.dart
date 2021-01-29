@@ -168,7 +168,6 @@ class FoodPage extends StatelessWidget {
       );
     } else {
       return Obx((){
-          print(_controller.isExpanded);
           return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Card(
