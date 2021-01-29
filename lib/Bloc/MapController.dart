@@ -7,10 +7,13 @@ class MapController extends GetxController{
   Database _database;
   RxList<Map> markers = List<Map>().obs;
   RxList<StoreSearchInfo> searchResult = List<StoreSearchInfo>().obs;
+  var isLoading = true.obs;
 
   @override
   onInit(){
-    loadDatabase();
+    while(_database != null){
+      loadDatabase();
+    }
     super.onInit();
   }
 
@@ -19,7 +22,7 @@ class MapController extends GetxController{
     getDatabasesPath().then((value){_path = value;}).whenComplete((){
       openDatabase(
           join(_path, "information.db")
-      ).then((value){_database = value;});
+      ).then((value){_database = value;}).whenComplete((){searchStore('');});
     });
   }
 
@@ -42,14 +45,17 @@ class MapController extends GetxController{
     });
   }
 
-  searchStore(String searchKeyword) {
+  searchStore(String searchKeyword) async {
+    isLoading(true);
+    refresh();
+    String _query;
+    List<Map> queryResult = List<Map>();
     if(searchKeyword.isNotEmpty){
-      String query = "select name, menu, latitude, longitude from outschool where name like '%$searchKeyword%' or menu like '%$searchKeyword%'";
-      _database.rawQuery(query).then((value){
-        searchResult.assignAll(value.map((e) => StoreSearchInfo.fromJson(e)).toList());
-      });
-    } else{
-      searchResult.assignAll([]);
+      _query = "select name, phone from outschool where phone is not null and name like '%$searchKeyword%'";
+      queryResult = await _database.rawQuery(_query);
     }
+
+    searchResult.assignAll(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
+    isLoading(false);
     refresh();
   }}
