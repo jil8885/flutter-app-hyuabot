@@ -30,18 +30,18 @@ class SettingPage extends StatelessWidget{
                           title: Text("theme_dialog_title".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),
                           children: [
                             SimpleDialogOption(child: Text("set_theme_system".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
-                              AdaptiveTheme.of(context).setSystem();
-                              Navigator.pop(context);
+                              Get.changeThemeMode(ThemeMode.system);
+                              Get.back();
                               adController.reloadAd(forceRefresh: true);
                             },),
                             SimpleDialogOption(child: Text("set_theme_light".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
-                              AdaptiveTheme.of(context).setLight();
-                              Navigator.pop(context);
+                              Get.changeThemeMode(ThemeMode.light);
+                              Get.back();
                               adController.reloadAd(forceRefresh: true);
                             },),
                             SimpleDialogOption(child: Text("set_theme_dark".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),), onPressed: (){
-                              AdaptiveTheme.of(context).setDark();
-                              Navigator.pop(context);
+                              Get.changeThemeMode(ThemeMode.dark);
+                              Get.back();
                               adController.reloadAd(forceRefresh: true);
                             },),
                           ],
@@ -60,10 +60,12 @@ class SettingPage extends StatelessWidget{
                             SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                               prefManager.write("localeCode", "ko_KR");
                               Get.updateLocale(Locale("ko_KR"));
+                              Get.back();
                             },),
                             SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText1,), onPressed: (){
                               prefManager.write("localeCode", "en_US").whenComplete((){
                                 Get.updateLocale(Locale("en_US"));
+                                Get.back();
                               });
                             },),
                             // 중국어 번역 이후 추가
