@@ -52,15 +52,15 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.write(name, false);
                   readingRoomController.fetchAlarm();
-                  Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOffString),));
+                  Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOffString, style: TextStyle(color: Get.textTheme.bodyText1.color), textAlign: TextAlign.center,),));
                 } else {
                   if(available < 0){
                     fcmManager.subscribeToTopic("$name.${prefManager.read("localeCode")}");
                     prefManager.write(name, true);
                     readingRoomController.fetchAlarm();
-                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOnString),));
+                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOnString, style: TextStyle(color: Get.textTheme.bodyText1.color), textAlign: TextAlign.center,),));
                   } else{
-                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text("seat_remained_error".tr, textAlign: TextAlign.center,),));
+                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text("seat_remained_error".tr, style: TextStyle(color: Get.textTheme.bodyText1.color), textAlign: TextAlign.center,),));
                   }
                 }
               }),
