@@ -69,6 +69,9 @@ class BusTimeTablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
+    final BusTimetableController _busController = Get.put(BusTimetableController(lineName));
+
+
     switch (prefManager.read("localeCode")){
       case "ko_KR":
         _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
@@ -80,6 +83,8 @@ class BusTimeTablePage extends StatelessWidget {
         break;
     }
 
+    String _startStop = lineInfo[lineName]["from"].toString().tr;
+    String _terminalStop = lineInfo[lineName]["to"].toString().tr;
     return Scaffold(
       body: Column(
         children: [
@@ -96,7 +101,7 @@ class BusTimeTablePage extends StatelessWidget {
                   children: [
                     Text(lineName, style: TextStyle(color: Colors.white, fontSize: 28)),
                     SizedBox(height: 30,),
-                    Text("${lineInfo[lineName]["from"].tr} → ${lineInfo[lineName]["to"].tr}", style: TextStyle(color: Colors.white, fontSize: 18)),
+                    Text("$_startStop → $_terminalStop", style: TextStyle(color: Colors.white, fontSize: 18)),
                     SizedBox(height: 10,),
                     Text(_minuteInfo, style: TextStyle(color: Colors.white, fontSize: 18)),
                   ],
@@ -105,13 +110,12 @@ class BusTimeTablePage extends StatelessWidget {
             ),
             color: lineColor,
           ),
-          GetBuilder<BusTimetableController>(
-            builder: (controller) {
-              if(controller.timetableInfo.keys.isEmpty){
+          Obx(() {
+              if(_busController.isLoading.value){
                 return Expanded(child: Center(child: CircularProgressIndicator(),));
               }
               int initialIndex = 0;
-              switch(controller.timetableInfo["day"]){
+              switch(_busController.timetableInfo["day"]){
                 case "weekdays":
                   initialIndex = 0;
                   break;
@@ -135,9 +139,9 @@ class BusTimeTablePage extends StatelessWidget {
                       ],),
                       Expanded(child: TabBarView(
                         children: [
-                          Container(child: _timeTableView(controller.timetableInfo["weekdays"], 0, initialIndex)),
-                          Container(child: _timeTableView(controller.timetableInfo["saturday"], 1, initialIndex)),
-                          Container(child: _timeTableView(controller.timetableInfo["sunday"], 2, initialIndex)),
+                          Container(child: _timeTableView(_busController.timetableInfo["weekdays"], 0, initialIndex)),
+                          Container(child: _timeTableView(_busController.timetableInfo["saturday"], 1, initialIndex)),
+                          Container(child: _timeTableView(_busController.timetableInfo["sunday"], 2, initialIndex)),
                         ],
                       ))
                     ],

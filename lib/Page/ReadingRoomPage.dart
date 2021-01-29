@@ -1,15 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
 
 class ReadingRoomPage extends StatelessWidget {
+  final ReadingRoomController _controller = Get.put(ReadingRoomController());
+
   Widget _readingRoomCard(String name, int active, int available, TextStyle theme, bool alarmActive) {
     String _alarmOnString;
     String _alarmOffString;
@@ -53,15 +52,15 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.write(name, false);
                   readingRoomController.fetchAlarm();
-                  Get.showSnackbar(GetBar(messageText: Text(_alarmOffString),));
+                  Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOffString),));
                 } else {
                   if(available < 0){
                     fcmManager.subscribeToTopic("$name.${prefManager.read("localeCode")}");
                     prefManager.write(name, true);
                     readingRoomController.fetchAlarm();
-                    Get.showSnackbar(GetBar(messageText: Text(_alarmOnString),));
+                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOnString),));
                   } else{
-                    Get.showSnackbar(GetBar(messageText: Text("seat_remained_error".tr),));
+                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text("seat_remained_error".tr, textAlign: TextAlign.center,),));
                   }
                 }
               }),
@@ -86,10 +85,7 @@ class ReadingRoomPage extends StatelessWidget {
     }
 
     return Scaffold(
-      body: GetBuilder<ReadingRoomController>(
-        builder: (controller) {
-          Map<String, ReadingRoomInfo> data = controller.readingRoomData;
-          return Container(
+      body: Container(
             padding: EdgeInsets.only(top: _statusBarHeight),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -107,16 +103,21 @@ class ReadingRoomPage extends StatelessWidget {
                         children: [
                           Container(
                             height: 400,
-                            child: ListView(
-                              physics: BouncingScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                              children: [
-                                _readingRoomCard("reading_room_1", data["제1열람실"].active, data["제1열람실"].available, _theme2, controller.readingRoomAlarm["reading_room_1"]),
-                                _readingRoomCard("reading_room_2", data["제2열람실"].active, data["제2열람실"].available, _theme2, controller.readingRoomAlarm["reading_room_2"]),
-                                _readingRoomCard("reading_room_3", data["제3열람실"].active, data["제3열람실"].available, _theme2, controller.readingRoomAlarm["reading_room_3"]),
-                                _readingRoomCard("reading_room_4", data["제4열람실"].active, data["제4열람실"].available, _theme2, controller.readingRoomAlarm["reading_room_4"]),
-                              ],
-                            ),
+                            child: Obx((){
+                              if(_controller.isLoading.value){
+                                return Center(child: CircularProgressIndicator());
+                              }
+                              return ListView(
+                                physics: BouncingScrollPhysics(),
+                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                children: [
+                                  _readingRoomCard("reading_room_1", _controller.readingRoomData["제1열람실"].active, _controller.readingRoomData["제1열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_1"]),
+                                  _readingRoomCard("reading_room_2", _controller.readingRoomData["제2열람실"].active, _controller.readingRoomData["제2열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_2"]),
+                                  _readingRoomCard("reading_room_3", _controller.readingRoomData["제3열람실"].active, _controller.readingRoomData["제3열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_3"]),
+                                  _readingRoomCard("reading_room_4", _controller.readingRoomData["제4열람실"].active, _controller.readingRoomData["제4열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_4"]),
+                                ],
+                              );
+                            }),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -147,9 +148,7 @@ class ReadingRoomPage extends StatelessWidget {
                 ],
               ),
             ),
-          );
-        }
-      ),
+          )
     );
   }
 }

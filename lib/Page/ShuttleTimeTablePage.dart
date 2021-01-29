@@ -127,7 +127,6 @@ class ShuttleTimeTablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/shuttle/timetable");
-    final _shuttleController = Get.put(ShuttleTimeTableController());
 
     switch(currentStop){
       case "bus_stop_dorm":
@@ -146,7 +145,8 @@ class ShuttleTimeTablePage extends StatelessWidget {
         _busStop = "Shuttlecock_I";
         break;
     }
-    _shuttleController.queryTimetableInfo(_busStop);
+    final _shuttleController = Get.put(ShuttleTimeTableController(_busStop));
+
     return Scaffold(
      appBar: AppBar(
        title: Text("${currentStop.tr} → ${(destination.tr).replaceAll("Bound for", "")}"), centerTitle: true,

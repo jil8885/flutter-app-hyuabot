@@ -10,7 +10,9 @@ import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:get/get.dart';
 
 class BusPage extends StatelessWidget {
-  Widget _busCard(BuildContext context, double width, String busStop, String terminalStop, String lineName, Color lineColor, Map<String, dynamic> data, bool timeTableOffered){
+  final BusDepartureController _busController = Get.put(BusDepartureController());
+
+  Widget _busCard(BuildContext context, double width, String busStop, String terminalStop, String lineName, Color lineColor, bool timeTableOffered){
     String _boundString;
     switch(prefManager.read("localeCode")){
       case "ko_KR":
@@ -23,12 +25,13 @@ class BusPage extends StatelessWidget {
         _boundString = "$terminalStop";
         break;
     }
+
     return GestureDetector(
       onTap: (){
         if(timeTableOffered){
           Get.to(BusTimeTablePage(lineName, lineColor));
         }else {
-          Get.showSnackbar(GetBar(messageText: Text("timetable_not_offered_popup".tr)));
+          Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("timetable_not_offered_popup".tr, textAlign: TextAlign.center,)));
         }
       },
       child: Card(
@@ -66,7 +69,13 @@ class BusPage extends StatelessWidget {
               Divider(color: Colors.grey),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: CustomPaint(painter: BusCardPaint(data, lineColor, context, timeTableOffered), size: Size(width - 50, 50), ),
+                child: Obx((){
+                  if(_busController.isLoading.value){
+                    return Container(child: Center(child: LinearProgressIndicator(),), height: 50,);
+                  } else{
+                    return CustomPaint(painter: BusCardPaint(_busController.departureInfo[lineName], lineColor, context, timeTableOffered), size: Size(width - 50, 50), );
+                  }
+                })
               )
             ],
           ),
@@ -78,18 +87,11 @@ class BusPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
-    final _busController = Get.put(BusDepartureController());
-    _busController.queryDepartureInfo();
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        child: Obx(
-          () {
-            print(_busController.departureInfo);
-            if(_busController.departureInfo == null){
-              return Center(child: CircularProgressIndicator(),);
-            }
-            return Padding(
+        child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Column(
                 children: [
@@ -97,9 +99,9 @@ class BusPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 30),)],
                   ),
-                  _busCard(context, _width, "guest_house".tr, "sangnoksu_stn".tr, "10-1", Color(0xff009e96), _busController.departureInfo['10-1'], true),
-                  _busCard(context, _width, "guest_house".tr, "gangnam_stn".tr, "3102", Color(0xffe60012), _busController.departureInfo['3102'], true),
-                  _busCard(context, _width, "main_gate".tr, "suwon_stn".tr, "707-1", Color(0xff0068b7), _busController.departureInfo['707-1'], false),
+                  _busCard(context, _width, "guest_house".tr, "sangnoksu_stn".tr, "10-1", Color(0xff009e96), true),
+                  _busCard(context, _width, "guest_house".tr, "gangnam_stn".tr, "3102", Color(0xffe60012), true),
+                  _busCard(context, _width, "main_gate".tr, "suwon_stn".tr, "707-1", Color(0xff0068b7), false),
                   Expanded(
                     // child: Container(),
                     child: Center(child: Text("how_use_bus_page".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color), textAlign: TextAlign.center,)),
@@ -123,9 +125,7 @@ class BusPage extends StatelessWidget {
                   ),
                 ],
               ),
-            );
-          }
-        ),
+            )
       ),
     );
   }

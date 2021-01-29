@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:get/get.dart';
@@ -8,13 +9,48 @@ import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
 
 
 class ReadingRoomController extends GetxController{
-  Map<String, ReadingRoomInfo> readingRoomData = {};
-  Map<String, bool> readingRoomAlarm = {};
+  RxMap<String, ReadingRoomInfo> readingRoomData = Map<String, ReadingRoomInfo>().obs;
+  RxMap<String, bool> readingRoomAlarm = {
+    "reading_room_1": false,
+    "reading_room_2": false,
+    "reading_room_3": false,
+    "reading_room_4": false,
+  }.obs;
+  var isLoading = true.obs;
+
+  @override
+  void onInit(){
+    queryData();
+    super.onInit();
+  }
 
   queryData() async {
-    readingRoomData = await fetchSeats();
-    readingRoomAlarm = await fetchAlarm();
-    update();
+    try{
+      isLoading(true);
+      var seatData = await fetchSeats();
+      var alarmData = await fetchAlarm();
+      if(seatData != null && alarmData != null){
+        readingRoomData.assignAll(seatData);
+        readingRoomAlarm.assignAll(alarmData);
+      }
+    } finally {
+      isLoading(false);
+      refresh();
+    }
+    Timer.periodic(Duration(minutes: 1), (timer) async {
+      try{
+        isLoading(true);
+        var seatData = await fetchSeats();
+        var alarmData = await fetchAlarm();
+        if(seatData != null && alarmData != null){
+          readingRoomData.assignAll(seatData);
+          readingRoomAlarm.assignAll(alarmData);
+        }
+      } finally {
+        isLoading(false);
+        refresh();
+      }
+    });
   }
 
   fetchSeats() async{
@@ -33,10 +69,10 @@ class ReadingRoomController extends GetxController{
 
   fetchAlarm() async{
     Map<String, bool> data = {
-      "reading_room_1": prefManager.read("reading_room_1"),
-      "reading_room_2": prefManager.read("reading_room_2"),
-      "reading_room_3": prefManager.read("reading_room_3"),
-      "reading_room_4": prefManager.read("reading_room_4"),
+      "reading_room_1": prefManager.read("reading_room_1") ?? false,
+      "reading_room_2": prefManager.read("reading_room_2") ?? false,
+      "reading_room_3": prefManager.read("reading_room_3") ?? false,
+      "reading_room_4": prefManager.read("reading_room_4") ?? false,
     };
     return data;
   }

@@ -5,17 +5,26 @@ import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/MetroCardPaint.dart';
 import 'package:get/get.dart';
 
 class MetroPage extends StatelessWidget {
-  Widget _metroCard(double width, double height, Color lineColor, String currentStop, String terminalStop, dynamic data){
+  final FetchMetroInfoController _metroController = Get.put(FetchMetroInfoController());
+  Widget _metroCard(double width, double height, Color lineColor, String currentStop, String terminalStop, String key, String subKey){
     CustomPainter content;
-    var _data = data as List;
-    if(_data.isNotEmpty){
-      if(_data.elementAt(0).runtimeType.toString() == 'MetroRealtimeInfo'){
-        content = MetroRealtimeCardPaint(data, lineColor);
+
+    try {
+      var data = _metroController.departureInfo[key][subKey] as List;
+      if (data.isNotEmpty) {
+        if (data
+            .elementAt(0)
+            .runtimeType
+            .toString() == 'MetroRealtimeInfo') {
+          content = MetroRealtimeCardPaint(data, lineColor);
+        } else {
+          content = MetroTimeTableCardPaint(data, lineColor);
+        }
       } else {
-        content = MetroTimeTableCardPaint(data, lineColor);
+        content = MetroRealtimeCardPaint([], lineColor);
       }
-    } else{
-      content = MetroRealtimeCardPaint([], lineColor);
+    } catch(e) {
+      content = null;
     }
 
     String _boundString;
@@ -48,7 +57,12 @@ class MetroPage extends StatelessWidget {
             ),
             Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
             Divider(color: Colors.grey),
-            Container(child: CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10), height: 50,)
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Container(child: _metroController.isLoading.value ? Center(child: CircularProgressIndicator()):CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10), height: 50,),
+              ],
+            )
           ],
         ),
       ),
@@ -79,10 +93,10 @@ class MetroPage extends StatelessWidget {
                       child: SingleChildScrollView(
                         child: Column(
                           children: [
-                            _metroCard(_width, _height, Color(0xff00a5de), "station_line_4".tr, "bound_seoul".tr, controller.departureInfo['main']['up']),
-                            _metroCard(_width, _height, Color(0xff00a5de), "station_line_4".tr, "bound_oido".tr, controller.departureInfo['main']['down']),
-                            _metroCard(_width, _height, Color(0xfff5a200), "station_line_suin".tr, "bound_suwon".tr, controller.departureInfo['sub']['up']),
-                            _metroCard(_width, _height, Color(0xfff5a200), "station_line_suin".tr, "bound_incheon".tr, controller.departureInfo['sub']['down']),
+                            _metroCard(_width, _height, Color(0xff00a5de), "station_line_4".tr, "bound_seoul".tr, 'main', 'up'),
+                            _metroCard(_width, _height, Color(0xff00a5de), "station_line_4".tr, "bound_oido".tr, 'main', 'down'),
+                            _metroCard(_width, _height, Color(0xfff5a200), "station_line_suin".tr, "bound_suwon".tr, 'sub', 'up'),
+                            _metroCard(_width, _height, Color(0xfff5a200), "station_line_suin".tr, "bound_incheon".tr, 'sub', 'down'),
                             Container(
                               padding: EdgeInsets.all(10),
                               height: 80,

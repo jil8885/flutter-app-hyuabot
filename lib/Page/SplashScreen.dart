@@ -59,6 +59,7 @@ class SplashScreen extends StatelessWidget {
 
   startTime() async {
     var _duration = new Duration(seconds: 1);
+    initApp();
     return new Timer(_duration, navigationPage);
   }
 

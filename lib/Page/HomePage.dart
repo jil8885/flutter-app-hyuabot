@@ -85,10 +85,6 @@ class HomePage extends StatelessWidget{
         onLaunch: onLaunchMessageHandler
     );
 
-    // 업데이트
-    _foodController.queryFood();
-    _shuttleController.queryDepartureInfo();
-
     // 화면 너비, 크기 조정
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
@@ -109,7 +105,7 @@ class HomePage extends StatelessWidget{
       padding: EdgeInsets.symmetric(horizontal: 30),
       child: Obx(
           () {
-            if (_shuttleController.departureInfo.keys.isEmpty) {
+            if (_shuttleController.isLoading.value) {
               return Center(child: CircularProgressIndicator());
             } else {
               List<dynamic> residenceStn = List.from(_shuttleController.departureInfo["Residence"].shuttleListStation)..addAll(_shuttleController.departureInfo["Residence"].shuttleListCycle)..sort();
@@ -156,7 +152,7 @@ class HomePage extends StatelessWidget{
     final Widget _homeFoodMenu = Obx(
         (){
           Map<String, Map<String, List<FoodMenu>>> allMenus = _foodController.menuList;
-          if (_foodController.menuList.keys.isEmpty) {
+          if (_foodController.isLoading.value) {
             return Center(child: CircularProgressIndicator());
           }
           // food info
@@ -222,7 +218,7 @@ class HomePage extends StatelessWidget{
                 _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr, MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr, FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "reading_room_btn".tr, ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr, Container(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr, PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", "map_btn".tr, MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "calendar_btn".tr, CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
               ]),
@@ -256,11 +252,13 @@ class HomePage extends StatelessWidget{
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       appBar: MainAppBar(),
       body: DoubleBackToCloseApp(
-        snackBar: SnackBar(content: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("back_snack_msg".tr, textAlign: TextAlign.center,),
-          ],
+        snackBar: SnackBar(
+            duration: Duration(seconds: 1),
+            content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("back_snack_msg".tr, textAlign: TextAlign.center,),
+              ],
         )),
         child: ScrollConfiguration(
           behavior: CustomScrollPhysics(),

@@ -8,12 +8,26 @@ import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
 class FoodInfoController extends GetxController{
   RxMap<String, Map<String, List<FoodMenu>>> menuList = Map<String, Map<String, List<FoodMenu>>>().obs;
+  RxList<bool> isExpanded = [false, false, false, false, false].obs;
+  var isLoading = true.obs;
 
-  queryFood(){
-    fetchFood().then((value){
-      menuList.assignAll(value);
-      update();
-    });
+  @override
+  void onInit(){
+    queryFood();
+    super.onInit();
+  }
+
+  queryFood() async {
+    try{
+      isLoading(true);
+      var data = await fetchFood();
+      if(data != null){
+        menuList.assignAll(data);
+      }
+    } finally {
+      isLoading(false);
+      refresh();
+    }
   }
 
   Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
@@ -43,5 +57,12 @@ class FoodInfoController extends GetxController{
       }
     }
     return allMenus;
+  }
+
+  expandCard(int cardIndex) {
+    var data = isExpanded.toList();
+    data[cardIndex] = !data[cardIndex];
+    isExpanded.assignAll(data);
+    refresh();
   }
 }
