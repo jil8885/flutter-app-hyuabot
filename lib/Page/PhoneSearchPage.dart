@@ -39,7 +39,6 @@ class PhoneSearchPage extends StatelessWidget {
           suffixIcon: Icon(Icons.search_rounded)
           )
         ),
-        SizedBox(height: 15,),
         Obx((){
             if(_inSchoolSearchController.isLoading.value){
               return CircularProgressIndicator();
@@ -105,7 +104,6 @@ class PhoneSearchPage extends StatelessWidget {
                 suffixIcon: Icon(Icons.search_rounded)
             )
         ),
-        SizedBox(height: 15,),
         Obx((){
               if(_outSchoolSearchController.isLoading.value){
                 return CircularProgressIndicator();
@@ -158,7 +156,7 @@ class PhoneSearchPage extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(height),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: height/2),
         child: DefaultTabController(
           length: 2,
             child: Column(
