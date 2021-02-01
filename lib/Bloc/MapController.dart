@@ -11,9 +11,7 @@ class MapController extends GetxController{
 
   @override
   onInit(){
-    while(_database != null){
-      loadDatabase();
-    }
+    loadDatabase();
     super.onInit();
   }
 
@@ -22,7 +20,7 @@ class MapController extends GetxController{
     getDatabasesPath().then((value){_path = value;}).whenComplete((){
       openDatabase(
           join(_path, "information.db")
-      ).then((value){_database = value;}).whenComplete((){searchStore('');});
+      ).then((value){_database = value;});
     });
   }
 
@@ -51,11 +49,20 @@ class MapController extends GetxController{
     String _query;
     List<Map> queryResult = List<Map>();
     if(searchKeyword.isNotEmpty){
-      _query = "select name, phone from outschool where phone is not null and name like '%$searchKeyword%'";
+      _query = "select name, menu, latitude, longitude from outschool where phone is not null and name like '%$searchKeyword%'";
       queryResult = await _database.rawQuery(_query);
+      searchResult.assignAll(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
     }
-
-    searchResult.assignAll(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
     isLoading(false);
     refresh();
-  }}
+  }
+
+  getInfoWindow(double latitude, double longitude) {
+    String query = "select name, menu from outschool where latitude=$latitude and longitude=$longitude";
+    String storeResult;
+    _database.rawQuery(query).then((value){
+      storeResult = value.map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
+      return storeResult;
+    });
+  }
+}
