@@ -10,6 +10,7 @@ class FoodInfoController extends GetxController{
   RxMap<String, Map<String, List<FoodMenu>>> menuList = Map<String, Map<String, List<FoodMenu>>>().obs;
   RxList<bool> isExpanded = [false, false, false, false, false].obs;
   var isLoading = true.obs;
+  var hasError = false.obs;
 
   @override
   void onInit(){
@@ -23,9 +24,11 @@ class FoodInfoController extends GetxController{
       var data = await fetchFood();
       if(data != null){
         menuList.assignAll(data);
+        isLoading(false);
       }
+    } catch(e){
+      hasError(false);
     } finally {
-      isLoading(false);
       refresh();
     }
   }

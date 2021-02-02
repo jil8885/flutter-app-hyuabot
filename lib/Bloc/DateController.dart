@@ -11,6 +11,7 @@ import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 class DateController extends GetxController{
   final List<Color> _colors = [ Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
   var isLoading = true.obs;
+  var hasError = false.obs;
   RxList<Schedule> meetingDataSource = List<Schedule>().obs;
 
   @override
@@ -25,9 +26,12 @@ class DateController extends GetxController{
       var data = await fetchData();
       if(data != null){
         meetingDataSource.assignAll(data);
+        isLoading(false);
       }
-    } finally {
-      isLoading(false);
+    } catch(e){
+      hasError(true);
+    }
+    finally {
       refresh();
     }
   }

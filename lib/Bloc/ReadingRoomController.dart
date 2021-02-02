@@ -17,7 +17,7 @@ class ReadingRoomController extends GetxController{
     "reading_room_4": false,
   }.obs;
   var isLoading = true.obs;
-
+  var hasError = false.obs;
   @override
   void onInit(){
     queryData();
@@ -32,9 +32,12 @@ class ReadingRoomController extends GetxController{
       if(seatData != null && alarmData != null){
         readingRoomData.assignAll(seatData);
         readingRoomAlarm.assignAll(alarmData);
+        isLoading(false);
       }
-    } finally {
-      isLoading(false);
+    } catch(e){
+      hasError(true);
+    }
+    finally {
       refresh();
     }
     Timer.periodic(Duration(minutes: 1), (timer) async {
@@ -45,9 +48,12 @@ class ReadingRoomController extends GetxController{
         if(seatData != null && alarmData != null){
           readingRoomData.assignAll(seatData);
           readingRoomAlarm.assignAll(alarmData);
+          isLoading(false);
         }
-      } finally {
-        isLoading(false);
+      } catch(e){
+        hasError(true);
+      }
+      finally {
         refresh();
       }
     });
