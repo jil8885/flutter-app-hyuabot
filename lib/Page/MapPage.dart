@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -15,19 +14,11 @@ class MapPage extends StatelessWidget {
   List<String> _translatedMenus;
 
   MapController _mapController = Get.put(MapController());
-  NaverMapController _naverMapController;
 
   List<Marker> _markers = [];
-  Widget _map;
   FloatingSearchBar _floatingSearchBar;
   FloatingSearchBarController _floatingSearchBarController = FloatingSearchBarController();
   OverlayImage image;
-
-
-  _getMarkers(String category) async {
-    _mapController.getMarkers(category);
-    image = await OverlayImage.fromAssetImage(assetName : "assets/images/restaurant.png", context: Get.context);
-  }
 
 
   @override
@@ -38,7 +29,6 @@ class MapPage extends StatelessWidget {
     }
     analytics.setCurrentScreen(screenName: "/map");
     _translatedMenus = _menus.map((e) => e.tr).toList();
-    _map = _naverMap(context);
     _floatingSearchBar = buildFloatingSearchBar();
 
     Picker _picker = Picker(
@@ -51,7 +41,7 @@ class MapPage extends StatelessWidget {
         textStyle: Theme.of(context).textTheme.bodyText1,
         onConfirm: (picker, value){
           _markers.clear();
-          _getMarkers(_menus[value.elementAt(0)]);
+          _mapController.getMarker(_menus[value.elementAt(0)]);
           String _toastString;
           switch(prefManager.read("localeCode")){
             case "ko_KR":
@@ -81,7 +71,19 @@ class MapPage extends StatelessWidget {
                   .of(context)
                   .padding
                   .top),
-              child: Container(child: _map)
+              child: Container(child:
+                  Obx(() {
+                      return NaverMap(
+                        markers: _mapController.selectedMarkers,
+                        initialCameraPosition: CameraPosition(
+                            target: LatLng(37.300153, 126.837759), zoom: 16),
+                        mapType: MapType.Basic,
+                        symbolScale: 0,
+                        nightModeEnable: Get.isDarkMode,
+                        onMapCreated: _onMapCreated,
+                      );
+                  }
+              ))
           ),
           _floatingSearchBar
         ],
@@ -89,43 +91,10 @@ class MapPage extends StatelessWidget {
     );
   }
 
-  _naverMap(BuildContext context) {
-    return Obx(() {
-          if(_mapController.markers.isEmpty){
-            _markers.clear();
-          } else {
-            _markers = _mapController.markers.asMap().entries.map((e) {
-              return Marker(
-                markerId: e.key.toString(),
-                position: LatLng(e.value["latitude"], e.value["longitude"]),
-                icon: image,
-                width: 20,
-                height: 20,
-                onMarkerTab: _onMarkerTap
-              );
-            }).toList();
-          }
-          return NaverMap(
-            markers: _markers,
-            initialCameraPosition: CameraPosition(
-                target: LatLng(37.300153, 126.837759), zoom: 16),
-            mapType: MapType.Basic,
-            symbolScale: 0,
-            nightModeEnable: Get.isDarkMode,
-            onMapCreated: _onMapCreated,
-          );
-        }
-    );
-  }
-
   void _onMapCreated(NaverMapController controller) {
-    _naverMapController = controller;
+    _mapController.naverMapController = controller;
   }
 
-  _onMarkerTap(Marker marker, Map<String, int> iconSize){
-    _naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(marker.position.latitude, marker.position.longitude)));
-    // Fluttertoast.showToast(msg: _mapController.getInfoWindow(marker.position.latitude, marker.position.longitude));
-  }
 
   Widget buildFloatingSearchBar() {
 
@@ -149,7 +118,7 @@ class MapPage extends StatelessWidget {
             child: CircularButton(
               icon: const Icon(Icons.place),
               onPressed: () {
-                _naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(37.300153, 126.837759)));
+                _mapController.naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(37.300153, 126.837759)));
               },
             ),
           ),
@@ -191,9 +160,9 @@ class MapPage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: _mapController.searchResult.map((e) => InkWell(
                           onTap: () async {
-                            _naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
+                            _mapController.naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
                             _floatingSearchBar.controller.close();
-                            _mapController.markers.assignAll([{"latitude": e.latitude, "longitude": e.longitude}]);
+                            _mapController.selectedMarkers.assignAll([Marker(markerId: "0", position: LatLng(e.latitude, e.longitude))]);
                           },
                           child: Container(
                             height: 75,
