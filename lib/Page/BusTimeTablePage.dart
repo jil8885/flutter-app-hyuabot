@@ -37,7 +37,7 @@ class BusTimeTablePage extends StatelessWidget {
           }
 
           Color _rowColor;
-          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
           if(!passed && (initialIndex == order)){
             _rowColor = Color.fromARGB(255, 20, 75, 170);
             _timeColor = TextStyle(color: Colors.white, fontSize: 24);
@@ -133,9 +133,9 @@ class BusTimeTablePage extends StatelessWidget {
                   child: Column(
                     children: [
                       TabBar(tabs: [
-                        Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text("saturday".tr, style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text("sunday".tr, style: Theme.of(context).textTheme.bodyText1,),),
+                        Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText2,),),
+                        Tab(child: Text("saturday".tr, style: Theme.of(context).textTheme.bodyText2,),),
+                        Tab(child: Text("sunday".tr, style: Theme.of(context).textTheme.bodyText2,),),
                       ],),
                       Expanded(child: TabBarView(
                         children: [
