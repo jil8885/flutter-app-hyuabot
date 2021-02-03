@@ -27,34 +27,24 @@ class ReadingRoomController extends GetxController{
   queryData() async {
     try{
       isLoading(true);
-      var seatData = await fetchSeats();
-      var alarmData = await fetchAlarm();
-      if(seatData != null && alarmData != null){
-        readingRoomData.assignAll(seatData);
-        readingRoomAlarm.assignAll(alarmData);
+      await fetchSeats();
+      await fetchAlarm();
+      if(readingRoomData != null && readingRoomAlarm != null){
         isLoading(false);
       }
     } catch(e){
       hasError(true);
     }
-    finally {
-      refresh();
-    }
     Timer.periodic(Duration(minutes: 1), (timer) async {
       try{
         isLoading(true);
-        var seatData = await fetchSeats();
-        var alarmData = await fetchAlarm();
-        if(seatData != null && alarmData != null){
-          readingRoomData.assignAll(seatData);
-          readingRoomAlarm.assignAll(alarmData);
+        await fetchSeats();
+        await fetchAlarm();
+        if(readingRoomData != null && readingRoomAlarm != null){
           isLoading(false);
         }
       } catch(e){
         hasError(true);
-      }
-      finally {
-        refresh();
       }
     });
   }
@@ -70,7 +60,8 @@ class ReadingRoomController extends GetxController{
     for (String key in responseJson.keys) {
       data[key] = ReadingRoomInfo.fromJson(responseJson[key]);
     }
-    return data;
+    readingRoomData.assignAll(data);
+    refresh();
   }
 
   fetchAlarm() async{
@@ -80,6 +71,7 @@ class ReadingRoomController extends GetxController{
       "reading_room_3": prefManager.read("reading_room_3") ?? false,
       "reading_room_4": prefManager.read("reading_room_4") ?? false,
     };
-    return data;
+    readingRoomAlarm.assignAll(data);
+    refresh();
   }
 }

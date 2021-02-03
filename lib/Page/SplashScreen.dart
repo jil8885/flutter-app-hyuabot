@@ -51,7 +51,7 @@ Future whenSelectNotification(String payload) async{
   fcmManager.unsubscribeFromTopic("$payload.en_US");
   fcmManager.unsubscribeFromTopic("$payload.zh");
   readingRoomController.fetchAlarm();
-  selectNotificationSubject.addNotification(payload);
+  selectNotificationSubject.addNotification(payload.tr);
 }
 
 class SplashScreen extends StatelessWidget {

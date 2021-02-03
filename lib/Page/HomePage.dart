@@ -285,7 +285,7 @@ class HomePage extends StatelessWidget{
                                     color: Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyText2
                                         .color,
                                     fontSize: 14),
                                 textAlign: TextAlign.center,
@@ -295,26 +295,26 @@ class HomePage extends StatelessWidget{
                               color: Theme
                                   .of(context)
                                   .textTheme
-                                  .bodyText1
+                                  .bodyText2
                                   .color,
                             ),
                             bodyTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyText2
                                     .color),
                             headlineTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyText2
                                     .color),
                             advertiserTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyText2
                                     .color),
                           ),
                         ),
@@ -459,7 +459,7 @@ class HomePage extends StatelessWidget{
             child: Text(
               menuName,
               style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText1.color, fontSize: 18),
+              color: Theme.of(context).textTheme.bodyText2.color, fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ),

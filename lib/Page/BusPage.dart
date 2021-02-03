@@ -31,7 +31,7 @@ class BusPage extends StatelessWidget {
         if(timeTableOffered){
           Get.to(BusTimeTablePage(lineName, lineColor));
         }else {
-          Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("timetable_not_offered_popup".tr, style: TextStyle(color: Get.isDarkMode?Colors.white:Colors.black), textAlign: TextAlign.center,)));
+          Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("timetable_not_offered_popup".tr, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
         }
       },
       child: Card(
@@ -97,14 +97,14 @@ class BusPage extends StatelessWidget {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 30),)],
+                    children: [IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 30),)],
                   ),
                   _busCard(context, _width, "guest_house".tr, "sangnoksu_stn".tr, "10-1", Color(0xff009e96), true),
                   _busCard(context, _width, "guest_house".tr, "gangnam_stn".tr, "3102", Color(0xffe60012), true),
                   _busCard(context, _width, "main_gate".tr, "suwon_stn".tr, "707-1", Color(0xff0068b7), false),
                   Expanded(
                     // child: Container(),
-                    child: Center(child: Text("how_use_bus_page".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color), textAlign: TextAlign.center,)),
+                    child: Center(child: Text("how_use_bus_page".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color), textAlign: TextAlign.center,)),
                   ),
                   Container(
                     height: 90,
@@ -114,12 +114,12 @@ class BusPage extends StatelessWidget {
                       numberAds: 1,
                       controller: adController,
                       type: NativeAdmobType.banner,
-                      error: Center(child: Text("plz_enable_ad".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
+                      error: Center(child: Text("plz_enable_ad".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 14), textAlign: TextAlign.center,)),
                       options: NativeAdmobOptions(
-                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
-                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color,),
+                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
                       ),
                     ),
                   ),

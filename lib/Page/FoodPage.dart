@@ -224,7 +224,7 @@ class FoodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle _theme1 = Theme.of(context).textTheme.bodyText1;
+    final TextStyle _theme1 = Theme.of(context).textTheme.bodyText2;
     analytics.setCurrentScreen(screenName: "/food");
     return Scaffold(
       body: Container(
@@ -241,7 +241,7 @@ class FoodPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, alignment: Alignment.centerLeft,),
+                            IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Get.back();}, alignment: Alignment.centerLeft,),
                           ],
                         ),
                       ],

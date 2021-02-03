@@ -42,7 +42,7 @@ class PhoneSearchPage extends StatelessWidget {
             if(_inSchoolSearchController.isLoading.value){
               return CircularProgressIndicator();
             } else if(_inSchoolSearchController.searchResult.isEmpty){
-              return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+              return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
                 child: ListView.builder(
@@ -107,7 +107,7 @@ class PhoneSearchPage extends StatelessWidget {
               if(_outSchoolSearchController.isLoading.value){
                 return CircularProgressIndicator();
               } else if(_outSchoolSearchController.searchResult.isEmpty){
-                return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+                return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
               } else {
                 return Expanded(
                   child: ListView.builder(
@@ -161,8 +161,8 @@ class PhoneSearchPage extends StatelessWidget {
             child: Column(
             children: [
               TabBar(tabs: [
-                Tab(child: Text("phone_tab_inschool".tr, style: Theme.of(context).textTheme.bodyText1,),),
-                Tab(child: Text("phone_tab_outschool".tr, style: Theme.of(context).textTheme.bodyText1,),),
+                Tab(child: Text("phone_tab_inschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
+                Tab(child: Text("phone_tab_outschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
               ],),
               Expanded(
                 child: TabBarView(

@@ -66,8 +66,8 @@ class ShuttleTimeTablePage extends StatelessWidget {
           }
 
           Color _rowColor;
-          TextStyle _headingColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
-          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _headingColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
           TextStyle _time2Color = TextStyle(color: Colors.grey, fontSize: 20);
           if(!passed && isWeekend){
             _rowColor = Color.fromARGB(255, 20, 75, 170);
@@ -164,7 +164,7 @@ class ShuttleTimeTablePage extends StatelessWidget {
            initialIndex: initialIndex,
            child: Column(
              children: [
-               TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText1,),)],),
+               TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText2,),)],),
                Expanded(child: TabBarView(
                  children: [
                    Container(child: _timeTableView(_data["weekdays"], _shuttleController.timeTableInfo["weekdays"], _shuttleController.timeTableInfo["day"] == "weekdays"),),

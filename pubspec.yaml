@@ -28,7 +28,7 @@ dependencies:
   firebase_analytics: ^6.3.0
   flutter_point_tab_bar: 0.1.0
   flutter_local_notifications: ^3.0.2
-  flutter_picker: ^1.1.5
+  flutter_material_pickers: ^1.9.1
   material_floating_search_bar: ^0.2.6
   syncfusion_flutter_calendar: ^18.4.33
   double_back_to_close_app: ^1.2.0
