@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Phone.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 

@@ -52,15 +52,36 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.write(name, false);
                   readingRoomController.fetchAlarm();
-                  Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOffString, style: TextStyle(color: Get.isDarkMode?Colors.white:Colors.black), textAlign: TextAlign.center,),));
+                  Scaffold.of(Get.context).showSnackBar(SnackBar(
+                      duration: Duration(seconds: 1),
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(_alarmOffString, textAlign: TextAlign.center,),
+                        ],
+                      )));
                 } else {
                   if(available < 0){
                     fcmManager.subscribeToTopic("$name.${prefManager.read("localeCode")}");
                     prefManager.write(name, true);
                     readingRoomController.fetchAlarm();
-                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text(_alarmOnString, style: TextStyle(color: Get.isDarkMode?Colors.white:Colors.black), textAlign: TextAlign.center,),));
+                    Scaffold.of(Get.context).showSnackBar(SnackBar(
+                        duration: Duration(seconds: 1),
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(_alarmOnString, textAlign: TextAlign.center,),
+                          ],
+                        )));
                   } else{
-                    Get.showSnackbar(GetBar(duration: Duration(milliseconds: 1500), messageText: Text("seat_remained_error".tr, style: TextStyle(color: Get.isDarkMode?Colors.white:Colors.black), textAlign: TextAlign.center,),));
+                    Scaffold.of(Get.context).showSnackBar(SnackBar(
+                        duration: Duration(seconds: 1),
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("seat_remained_error".tr, textAlign: TextAlign.center,),
+                          ],
+                        )));
                   }
                 }
               }),

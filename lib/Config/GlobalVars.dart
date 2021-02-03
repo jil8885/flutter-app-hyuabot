@@ -7,7 +7,6 @@ import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:naver_map_plugin/naver_map_plugin.dart';
 
 // Ad manager
 final adController = NativeAdmobController();

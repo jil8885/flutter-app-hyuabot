@@ -10,7 +10,7 @@ import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
 class ShuttleDepartureController extends GetxController{
   var departureInfo = Map<String, dynamic>().obs;
   var isLoading = true.obs;
-
+  var hasError = false.obs;
   @override
   void onInit(){
     queryDepartureInfo();
@@ -23,9 +23,12 @@ class ShuttleDepartureController extends GetxController{
       var data = await fetchDepartureInfo();
       if(data != null){
         departureInfo.assignAll(data);
+        isLoading(false);
       }
-    } finally {
-      isLoading(false);
+    } catch(e){
+      hasError(true);
+    }
+    finally {
       refresh();
     }
     Timer.periodic(Duration(minutes: 1), (timer) async {
@@ -34,9 +37,12 @@ class ShuttleDepartureController extends GetxController{
         var data = await fetchDepartureInfo();
         if(data != null){
           departureInfo.assignAll(data);
+          isLoading(false);
         }
-      } finally {
-        isLoading(false);
+      } catch(e){
+        hasError(true);
+      }
+      finally {
         refresh();
       }
     });
@@ -58,6 +64,7 @@ class ShuttleDepartureController extends GetxController{
 class ShuttleTimeTableController extends GetxController{
   RxMap<String, dynamic> timeTableInfo = Map<String, dynamic>().obs;
   var isLoading = true.obs;
+  var hasError = false.obs;
   final String busStop;
 
   ShuttleTimeTableController(this.busStop);
@@ -71,12 +78,15 @@ class ShuttleTimeTableController extends GetxController{
   queryTimetableInfo(String busStop) async {
     try{
       isLoading(true);
+      hasError(false);
       var data = await fetchTimeTable(busStop);
       if(data != null){
         timeTableInfo.assignAll(data);
+        isLoading(false);
       }
+    } catch(e){
+      hasError(true);
     } finally {
-      isLoading(false);
       refresh();
     }
   }

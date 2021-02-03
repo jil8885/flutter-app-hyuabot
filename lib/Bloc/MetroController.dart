@@ -10,6 +10,7 @@ import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 class FetchMetroInfoController extends GetxController{
   RxMap<String, dynamic> departureInfo = Map<String, dynamic>().obs;
   var isLoading = true.obs;
+  var hasError = false.obs;
 
   @override
   void onInit(){
@@ -23,9 +24,11 @@ class FetchMetroInfoController extends GetxController{
       var data = await fetchDepartureInfo();
       if(data != null){
         departureInfo.assignAll(data);
+        isLoading(false);
       }
+    } catch (e){
+      hasError(false);
     } finally {
-      isLoading(false);
       refresh();
     }
     Timer.periodic(Duration(minutes: 1), (timer) async {
@@ -34,9 +37,11 @@ class FetchMetroInfoController extends GetxController{
         var data = await fetchDepartureInfo();
         if(data != null){
           departureInfo.assignAll(data);
+          isLoading(false);
         }
+      } catch (e){
+        hasError(false);
       } finally {
-        isLoading(false);
         refresh();
       }
     });
