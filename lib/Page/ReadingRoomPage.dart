@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
@@ -51,37 +52,16 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.en_US");
                   fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.write(name, false);
-                  readingRoomController.fetchAlarm();
-                  Scaffold.of(Get.context).showSnackBar(SnackBar(
-                      duration: Duration(seconds: 1),
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(_alarmOffString, textAlign: TextAlign.center,),
-                        ],
-                      )));
+                  _controller.fetchAlarm();
+                  Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text(_alarmOffString, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
                 } else {
-                  if(available < 0){
+                  if(available < (kReleaseMode?0:100)){
                     fcmManager.subscribeToTopic("$name.${prefManager.read("localeCode")}");
                     prefManager.write(name, true);
-                    readingRoomController.fetchAlarm();
-                    Scaffold.of(Get.context).showSnackBar(SnackBar(
-                        duration: Duration(seconds: 1),
-                        content: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(_alarmOnString, textAlign: TextAlign.center,),
-                          ],
-                        )));
+                    _controller.fetchAlarm();
+                    Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text(_alarmOnString, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
                   } else{
-                    Scaffold.of(Get.context).showSnackBar(SnackBar(
-                        duration: Duration(seconds: 1),
-                        content: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("seat_remained_error".tr, textAlign: TextAlign.center,),
-                          ],
-                        )));
+                    Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text("seat_remained_error".tr, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
                   }
                 }
               }),
@@ -95,7 +75,7 @@ class ReadingRoomPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double _statusBarHeight = MediaQuery.of(context).padding.top;
-    final TextStyle _theme2 = Theme.of(context).textTheme.bodyText2;
+    final TextStyle _theme = Theme.of(context).textTheme.bodyText1;
 
     analytics.setCurrentScreen(screenName: "/library");
     if(prefManager.read("reading_room_1") == null || prefManager.read("reading_room_2") == null || prefManager.read("reading_room_3") == null || prefManager.read("reading_room_4") == null){
@@ -115,7 +95,7 @@ class ReadingRoomPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText1.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
+                      IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Get.back();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
                     ],
                   ),
                   Expanded(
@@ -132,10 +112,10 @@ class ReadingRoomPage extends StatelessWidget {
                                 physics: BouncingScrollPhysics(),
                                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                                 children: [
-                                  _readingRoomCard("reading_room_1", _controller.readingRoomData["제1열람실"].active, _controller.readingRoomData["제1열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_1"]),
-                                  _readingRoomCard("reading_room_2", _controller.readingRoomData["제2열람실"].active, _controller.readingRoomData["제2열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_2"]),
-                                  _readingRoomCard("reading_room_3", _controller.readingRoomData["제3열람실"].active, _controller.readingRoomData["제3열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_3"]),
-                                  _readingRoomCard("reading_room_4", _controller.readingRoomData["제4열람실"].active, _controller.readingRoomData["제4열람실"].available, _theme2, _controller.readingRoomAlarm["reading_room_4"]),
+                                  _readingRoomCard("reading_room_1", _controller.readingRoomData["제1열람실"].active, _controller.readingRoomData["제1열람실"].available, _theme, _controller.readingRoomAlarm["reading_room_1"]),
+                                  _readingRoomCard("reading_room_2", _controller.readingRoomData["제2열람실"].active, _controller.readingRoomData["제2열람실"].available, _theme, _controller.readingRoomAlarm["reading_room_2"]),
+                                  _readingRoomCard("reading_room_3", _controller.readingRoomData["제3열람실"].active, _controller.readingRoomData["제3열람실"].available, _theme, _controller.readingRoomAlarm["reading_room_3"]),
+                                  _readingRoomCard("reading_room_4", _controller.readingRoomData["제4열람실"].active, _controller.readingRoomData["제4열람실"].available, _theme, _controller.readingRoomAlarm["reading_room_4"]),
                                 ],
                               );
                             }),
@@ -157,12 +137,12 @@ class ReadingRoomPage extends StatelessWidget {
                       numberAds: 1,
                       controller: adController,
                       type: NativeAdmobType.banner,
-                      error: Center(child: Text('plz_enable_ad'.tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 14), textAlign: TextAlign.center,)),
+                      error: Center(child: Text('plz_enable_ad'.tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 14), textAlign: TextAlign.center,)),
                       options: NativeAdmobOptions(
-                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color,),
-                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
-                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText1.color),
+                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color,),
+                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
                       ),
                     ),
                   ),
