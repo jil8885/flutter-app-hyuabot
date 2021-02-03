@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
-import 'package:flutter_picker/flutter_picker.dart';
 
 class MapPage extends StatelessWidget {
   final _menus = ['korean', 'japanese', 'chinese', 'western', 'fast_food', 'chicken', 'pizza', 'meat', 'vietnamese', 'other_food', 'bakery', 'cafe', 'pub'];
@@ -30,39 +30,37 @@ class MapPage extends StatelessWidget {
     analytics.setCurrentScreen(screenName: "/map");
     _translatedMenus = _menus.map((e) => e.tr).toList();
     _floatingSearchBar = buildFloatingSearchBar();
+    String _selectedCat = _translatedMenus[0];
 
-    Picker _picker = Picker(
-        itemExtent: 40,
-        adapter: PickerDataAdapter<String>(pickerdata: _translatedMenus),
-        textAlign: TextAlign.center,
-        hideHeader: true,
-        backgroundColor: null,
-        magnification: 1.1,
-        textStyle: Theme.of(context).textTheme.bodyText1,
-        onConfirm: (picker, value){
-          _markers.clear();
-          _mapController.getMarker(_menus[value.elementAt(0)]);
-          String _toastString;
-          switch(prefManager.read("localeCode")){
-            case "ko_KR":
-              _toastString = '${picker.getSelectedValues()[0]}(으)로 전환되었습니다.';
-              break;
-            case "en_US":
-              _toastString = 'Changed to ${picker.getSelectedValues()[0]}.';
-              break;
-            case "zh":
-              _toastString = '${picker.getSelectedValues()[0]}(으)로 전환되었습니다.';
-              break;
-          }
-          Get.showSnackbar(GetBar(messageText: Text(_toastString), duration: Duration(seconds: 1),));
-        }
-    );
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.menu, color: Theme.of(context).textTheme.bodyText1.color,),
+        child: Icon(Icons.menu, color: Theme.of(context).textTheme.bodyText2.color,),
         backgroundColor: Theme.of(context).backgroundColor,
         onPressed: (){
-          _picker.showDialog(context);
+          showMaterialScrollPicker(
+            context: context,
+            title: "map_picker_title".tr,
+            items: _translatedMenus,
+            selectedItem: _translatedMenus[0],
+            onChanged: (value){_selectedCat = value;},
+            onConfirmed: (){
+              _markers.clear();
+              _mapController.getMarker(_menus[_translatedMenus.indexOf(_selectedCat)]);
+              String _toastString;
+              switch(prefManager.read("localeCode")){
+                case "ko_KR":
+                  _toastString = '$_selectedCat(으)로 전환되었습니다.';
+                  break;
+                case "en_US":
+                  _toastString = 'Changed to $_selectedCat.';
+                  break;
+                case "zh":
+                  _toastString = '$_selectedCat(으)로 전환되었습니다.';
+                  break;
+              }
+              Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text(_toastString, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
+            }
+          );
         },),
       body: Stack(
         children: [
@@ -72,9 +70,10 @@ class MapPage extends StatelessWidget {
                   .padding
                   .top),
               child: Container(child:
-                  Obx(() {
+                  GetBuilder<MapController>(
+                    builder: (controller){
                       return NaverMap(
-                        markers: _mapController.selectedMarkers,
+                        markers: controller.selectedMarkers,
                         initialCameraPosition: CameraPosition(
                             target: LatLng(37.300153, 126.837759), zoom: 16),
                         mapType: MapType.Basic,
@@ -82,7 +81,7 @@ class MapPage extends StatelessWidget {
                         nightModeEnable: Get.isDarkMode,
                         onMapCreated: _onMapCreated,
                       );
-                  }
+                    },
               ))
           ),
           _floatingSearchBar
@@ -143,7 +142,7 @@ class MapPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 20),),
+                                  Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 20),),
                                 ],
                               )
                           )],
@@ -170,7 +169,7 @@ class MapPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("${e.name}-${e.menu}", style: Theme.of(context).textTheme.bodyText1, overflow: TextOverflow.ellipsis,),
+                                Text("${e.name}-${e.menu}", style: Theme.of(context).textTheme.bodyText2, overflow: TextOverflow.ellipsis,),
                               ],
                             ),
                           ),
