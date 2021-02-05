@@ -1,23 +1,43 @@
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 
-import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+class FoodInfoController extends GetxController{
+  RxMap<String, Map<String, List<FoodMenu>>> menuList = Map<String, Map<String, List<FoodMenu>>>().obs;
+  RxList<bool> isExpanded = [false, false, false, false, false].obs;
+  var isLoading = true.obs;
+  var hasError = false.obs;
 
-class FetchFoodInfoController{
-  final _allFoodInfoSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
-  FetchFoodInfoController(){
-    fetchFood();
+  @override
+  void onInit(){
+    queryFood();
+    super.onInit();
   }
 
-  fetchFood() async {
+  queryFood() async {
+    try{
+      isLoading(true);
+      var data = await fetchFood();
+      if(data != null){
+        menuList.assignAll(data);
+        isLoading(false);
+      }
+    } catch(e){
+      hasError(false);
+    } finally {
+      refresh();
+    }
+  }
+
+  Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
-    final String _localeCode = prefManager.getString("localeCode");
+    final String _localeCode = prefManager.read("localeCode");
     http.Response response;
     response = await http.post(url, body: jsonEncode({'language': _localeCode.split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -39,11 +59,13 @@ class FetchFoodInfoController{
         }
       }
     }
-    _allFoodInfoSubject.add(allMenus);
+    return allMenus;
   }
 
-  void dispose(){
-    _allFoodInfoSubject.close();
+  expandCard(int cardIndex) {
+    var data = isExpanded.toList();
+    data[cardIndex] = !data[cardIndex];
+    isExpanded.assignAll(data);
+    refresh();
   }
-  Stream<Map<String, Map<String, List<FoodMenu>>>> get allFoodInfo => _allFoodInfoSubject.stream;
 }

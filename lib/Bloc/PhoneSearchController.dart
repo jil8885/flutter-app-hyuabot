@@ -1,31 +1,80 @@
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter_app_hyuabot_v2/Model/Phone.dart';
+import 'package:get/get.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
-class FetchPhoneController{
-  final _allPhoneInfoSubject = BehaviorSubject<List<PhoneNum>>();
-  FetchPhoneController(){
-    fetch();
+class InSchoolPhoneSearchController extends GetxController{
+  Database _database;
+  RxList<PhoneNum> searchResult = List<PhoneNum>().obs;
+  var isLoading = true.obs;
+
+  @override
+  onInit(){
+    loadDatabase();
+    super.onInit();
   }
 
-  void fetch([String query]) async{
-    // query ??= "select * from telephone";
-    // var path = await getDatabasesPath();
-    // database = await openDatabase(join(path, "telephone.db"));
-    // List<Map> queryResult = await database.rawQuery(query);
-    // await database.close();
-    // _allPhoneInfoSubject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
+  loadDatabase() {
+    String _path;
+    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+      openDatabase(
+          join(_path, "information.db")
+      ).then((value){_database = value;}).whenComplete((){
+        search('');
+      });
+    });
   }
-  Stream<List<PhoneNum>> get allPhoneInfo => _allPhoneInfoSubject.stream;
 
-  void dispose(){
-    _allPhoneInfoSubject.close();
+  search(String keyword) async {
+    isLoading(true);
+    refresh();
+    String _query;
+    if(keyword.isEmpty){
+      _query = "select name, phone from inschool where phone is not null";
+    } else {
+      _query = "select name, phone from inschool where phone is not null and name like '%$keyword%'";
+    }
+    List<Map> queryResult = await _database.rawQuery(_query);
+    searchResult.assignAll(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
+    isLoading(false);
+    refresh();
   }
 }
-class PhoneNum{
-  final String name;
-  final String number;
-  PhoneNum(this.name, this.number);
 
-  factory PhoneNum.fromJson(Map<String, dynamic> json){
-    return PhoneNum(json["name"], json['phone']);
+class OutSchoolPhoneSearchController extends GetxController{
+  Database _database;
+  RxList<PhoneNum> searchResult = List<PhoneNum>().obs;
+  var isLoading = true.obs;
+
+  @override
+  onInit(){
+    loadDatabase();
+    super.onInit();
+  }
+
+  loadDatabase() {
+    String _path;
+    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+      openDatabase(
+          join(_path, "information.db")
+      ).then((value){_database = value;}).whenComplete((){
+        search('');
+      });
+    });
+  }
+
+  search(String keyword) async {
+    isLoading(true);
+    refresh();
+    String _query;
+    if(keyword.isEmpty){
+      _query = "select name, phone from outschool where phone is not null";
+    } else {
+      _query = "select name, phone from outschool where phone is not null and name like '%$keyword%'";
+    }
+    List<Map> queryResult = await _database.rawQuery(_query);
+    searchResult.assignAll(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
+    isLoading(false);
+    refresh();
   }
 }

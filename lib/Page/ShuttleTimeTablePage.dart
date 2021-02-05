@@ -2,24 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:get/get.dart';
 
-class ShuttleTimeTablePage extends StatefulWidget {
+class ShuttleTimeTablePage extends StatelessWidget {
   final String currentStop;
   final String destination;
 
   ShuttleTimeTablePage(this.currentStop, this.destination);
-  @override
-  State<StatefulWidget> createState() => ShuttleTimeTablePageState(currentStop, destination);
-}
-
-class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
-  final String currentStop;
-  final String destination;
-  final FetchAllShuttleController _shuttleController = FetchAllShuttleController();
-  ShuttleTimeTablePageState(this.currentStop, this.destination);
-
   String _busStop;
 
   Map<String, List<dynamic>> _getTimetable(Map<String, dynamic> data){
@@ -76,8 +66,8 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
           }
 
           Color _rowColor;
-          TextStyle _headingColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
-          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _headingColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
           TextStyle _time2Color = TextStyle(color: Colors.grey, fontSize: 20);
           if(!passed && isWeekend){
             _rowColor = Color.fromARGB(255, 20, 75, 170);
@@ -113,7 +103,7 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(TranslationManager.of(context).trans(_label), style: _headingColor),
+                Text(_label.tr, style: _headingColor),
                 Container(
                   width: MediaQuery.of(context).size.width*.5,
                   child: Row(
@@ -134,10 +124,10 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
     );
   }
 
-
   @override
-  void initState() {
+  Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/shuttle/timetable");
+
     switch(currentStop){
       case "bus_stop_dorm":
         _busStop = "Residence";
@@ -155,51 +145,38 @@ class ShuttleTimeTablePageState extends State<ShuttleTimeTablePage>{
         _busStop = "Shuttlecock_I";
         break;
     }
-    _shuttleController.fetchTimeTable(_busStop);
-    super.initState();
-  }
+    final _shuttleController = Get.put(ShuttleTimeTableController(_busStop));
 
-  @override
-  Widget build(BuildContext context) {
-    TranslationManager _manager = TranslationManager.of(context);
     return Scaffold(
      appBar: AppBar(
-       title: Text("${_manager.trans(currentStop)} → ${_manager.trans(destination).replaceAll("Bound for", "")}"), centerTitle: true,
+       title: Text("${currentStop.tr} → ${(destination.tr).replaceAll("Bound for", "")}"), centerTitle: true,
        backgroundColor: Color.fromARGB(255, 20, 75, 170),
      ),
-     body: StreamBuilder<Map<String, dynamic>>(
-       stream: _shuttleController.allTimeTableInfo,
-       builder: (context, snapshot) {
-         if(snapshot.hasError || !snapshot.hasData){
-           return Center(child: CircularProgressIndicator(),);
-         }
-         Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
-         int initialIndex = snapshot.data["day"] == "weekdays"? 0:1;
-         return Container(
-           child: DefaultTabController(
-             length: 2,
-             initialIndex: initialIndex,
-             child: Column(
-               children: [
-                 TabBar(tabs: [Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),), Tab(child: Text(_manager.trans("weekends"), style: Theme.of(context).textTheme.bodyText1,),)],),
-                 Expanded(child: TabBarView(
-                   children: [
-                     Container(child: _timeTableView(_data["weekdays"], snapshot.data["weekdays"], snapshot.data["day"] == "weekdays"),),
-                     Container(child: _timeTableView(_data["weekends"], snapshot.data["weekends"], snapshot.data["day"] != "weekdays"),),
-                   ],
-                 ))
-               ],
-             ),
+     body: Obx(() {
+       if(_shuttleController.timeTableInfo["weekdays"] == null || _shuttleController.timeTableInfo["weekdays"] == null){
+         return Center(child: CircularProgressIndicator(),);
+       }
+       Map<String, List<dynamic>> _data = _getTimetable(_shuttleController.timeTableInfo);
+       int initialIndex = _shuttleController.timeTableInfo["day"] == "weekdays"? 0:1;
+       return Container(
+         child: DefaultTabController(
+           length: 2,
+           initialIndex: initialIndex,
+           child: Column(
+             children: [
+               TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText2,),)],),
+               Expanded(child: TabBarView(
+                 children: [
+                   Container(child: _timeTableView(_data["weekdays"], _shuttleController.timeTableInfo["weekdays"], _shuttleController.timeTableInfo["day"] == "weekdays"),),
+                   Container(child: _timeTableView(_data["weekends"], _shuttleController.timeTableInfo["weekends"], _shuttleController.timeTableInfo["day"] != "weekdays"),),
+                 ],
+               ))
+             ],
            ),
-         );
+         ),
+       );
        }
      ),
    );
-  }
-
-  @override
-  void dispose() {
-    _shuttleController.dispose();
-    super.dispose();
   }
 }

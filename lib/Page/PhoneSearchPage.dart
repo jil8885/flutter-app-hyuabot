@@ -1,105 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
+import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
-import 'package:flutter_point_tab_bar/pointTabBar.dart';
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 
-class PhoneSearchPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _PhoneSearchPageState();
-
-}
-class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProviderStateMixin{
-  TabController _controller;
-  DataBaseController _dataBaseController;
-  TextEditingController _textEditingController;
-
-  List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
-  databaseInit(){
-    _dataBaseController.init();
-  }
-
-  @override
-  void initState() {
-    analytics.setCurrentScreen(screenName: "/contacts");
-    _controller = TabController(length: 2, vsync: this);
-    _textEditingController = TextEditingController();
-    _dataBaseController = DataBaseController();
-    _dataBaseController.init().whenComplete(() {_dataBaseController.fetchInSchoolList();});
-    super.initState();
-  }
+class PhoneSearchPage extends StatelessWidget {
+  final List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
+  final _inSchoolTextEditor = TextEditingController();
+  final _outSchoolTextEditor = TextEditingController();
+  final _inSchoolSearchController = Get.put(InSchoolPhoneSearchController());
+  final _outSchoolSearchController = Get.put(OutSchoolPhoneSearchController());
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: "/contacts");
     final double height = MediaQuery.of(context).padding.top;
-    int lastPage = 0;
-    _controller.addListener(() {
-      print("$lastPage-${_controller.index}");
-      if(lastPage != _controller.index){
-        lastPage = _controller.index;
-        switch(_controller.index){
-          case 0:
-            _textEditingController.clear();
-            _dataBaseController.fetchInSchoolList();
-            break;
-          case 1:
-            _textEditingController.clear();
-            _dataBaseController.fetchOutSchoolList();
-            break;
-        }
-      }
+
+    _inSchoolTextEditor.addListener(() {
+      _inSchoolSearchController.search(_inSchoolTextEditor.value.text.trim());
     });
-
-    _textEditingController.addListener(() {
-      if(_textEditingController.value.text.isNotEmpty){
-        if(_controller.index == 0){
-          _dataBaseController.fetchInSchoolList(_textEditingController.value.text);
-        } else {
-          _dataBaseController.fetchOutSchoolList(_textEditingController.value.text);
-        }
-      } else {
-        if(_controller.index == 0){
-          _dataBaseController.fetchInSchoolList();
-        } else {
-          _dataBaseController.fetchOutSchoolList();
-        }
-      }
+    _outSchoolTextEditor.addListener(() {
+      _outSchoolSearchController.search(_outSchoolTextEditor.value.text.trim());
     });
-
-
-    final Widget _searchKeywordInput = TextField(
-      controller: _textEditingController,
-      keyboardType: TextInputType.text,
-
-      decoration: InputDecoration(
-        hintText: TranslationManager.of(context).trans("phone_hint_text"),
-        labelText: TranslationManager.of(context).trans("phone_label_text"),
-        helperText: TranslationManager.of(context).trans("phone_helper_text"),
-        suffixIcon: Icon(Icons.search_rounded)
-      ),
-    );
 
     final Widget _searchTabInSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 15,),
-        StreamBuilder<List<PhoneNum>>(
-          stream: _dataBaseController.searchPhoneResultInSchool,
-          builder: (context, snapshot){
-            if(snapshot.hasError || !snapshot.hasData){
+        TextField(
+          controller: _inSchoolTextEditor,
+          keyboardType: TextInputType.text,
+
+          decoration: InputDecoration(
+          hintText: "phone_hint_text".tr,
+          labelText: "phone_label_text".tr,
+          helperText: "phone_helper_text".tr,
+          suffixIcon: Icon(Icons.search_rounded)
+          )
+        ),
+        Obx((){
+            if(_inSchoolSearchController.isLoading.value){
               return CircularProgressIndicator();
-            } else if(snapshot.data.isEmpty){
-              return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+            } else if(_inSchoolSearchController.searchResult.isEmpty){
+              return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
                 child: ListView.builder(
-                    itemCount: snapshot.data.length,
+                    itemCount: _inSchoolSearchController.searchResult.length,
                     itemBuilder: (context, index){
                       return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
+                        onTap: (){UrlLauncher.launch("tel://${_inSchoolSearchController.searchResult[index].number}");},
                         child: Card(
                           color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                           child: Padding(
@@ -109,7 +59,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  snapshot.data[index].name,
+                                  _inSchoolSearchController.searchResult[index].name,
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: Colors.white,
@@ -118,7 +68,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                 ),
                                 SizedBox(height: 15,),
                                 Text(
-                                  snapshot.data[index].number,
+                                  _inSchoolSearchController.searchResult[index].number,
                                   style: TextStyle(
                                     fontSize: 14.0,
                                     color: Colors.white,
@@ -138,24 +88,33 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
       ],
     );
 
+
     final Widget _searchTabOutSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 15,),
-        StreamBuilder<List<PhoneNum>>(
-            stream: _dataBaseController.searchPhoneResultOutSchool,
-            builder: (context, snapshot){
-              if(snapshot.hasError || !snapshot.hasData){
+        TextField(
+            controller: _outSchoolTextEditor,
+            keyboardType: TextInputType.text,
+
+            decoration: InputDecoration(
+                hintText: "phone_hint_text".tr,
+                labelText: "phone_label_text".tr,
+                helperText: "phone_helper_text".tr,
+                suffixIcon: Icon(Icons.search_rounded)
+            )
+        ),
+        Obx((){
+              if(_outSchoolSearchController.isLoading.value){
                 return CircularProgressIndicator();
-              } else if(snapshot.data.isEmpty){
-                return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+              } else if(_outSchoolSearchController.searchResult.isEmpty){
+                return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
               } else {
                 return Expanded(
                   child: ListView.builder(
-                      itemCount: snapshot.data.length,
+                      itemCount: _outSchoolSearchController.searchResult.length,
                       itemBuilder: (context, index){
                         return GestureDetector(
-                          onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
+                          onTap: (){UrlLauncher.launch("tel://${_outSchoolSearchController.searchResult[index].number}");},
                           child: Card(
                             color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                             child: Padding(
@@ -165,7 +124,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    snapshot.data[index].name,
+                                    _outSchoolSearchController.searchResult[index].name,
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       color: Colors.white,
@@ -174,7 +133,7 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
                                   ),
                                   SizedBox(height: 15,),
                                   Text(
-                                    snapshot.data[index].number,
+                                    _outSchoolSearchController.searchResult[index].number,
                                     style: TextStyle(
                                       fontSize: 14.0,
                                       color: Colors.white,
@@ -196,27 +155,26 @@ class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProv
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(height),
-        child: Column(
-          children: [
-            TabBar(
-              tabs: tabList.map((e) => Tab(child: Text(TranslationManager.of(context).trans(e), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),)).toList(),
-              controller: _controller,
-              indicator: PointTabIndicator(position: PointTabIndicatorPosition.bottom, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, insets: EdgeInsets.only(bottom: 6)),
-            ),
-            _searchKeywordInput,
-            Expanded(child: TabBarView(controller: _controller, children: [_searchTabInSchool, _searchTabOutSchool],))
-          ],
-        ),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: height/2),
+        child: DefaultTabController(
+          length: 2,
+            child: Column(
+            children: [
+              TabBar(tabs: [
+                Tab(child: Text("phone_tab_inschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
+                Tab(child: Text("phone_tab_outschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
+              ],),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    _searchTabInSchool,
+                    _searchTabOutSchool
+                  ],
+                ),
+              )
+          ])
+        )
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _textEditingController.dispose();
-    _dataBaseController.dispose();
-    super.dispose();
   }
 }

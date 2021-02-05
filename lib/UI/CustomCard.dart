@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
+import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
+
+import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
+
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
 import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 
 class CustomShuttleCard extends StatelessWidget {
@@ -22,9 +23,9 @@ class CustomShuttleCard extends StatelessWidget {
 
     _width= MediaQuery.of(context).size.width;
 
-    String remainedTimeString = "";
-    String thisBusString = "";
-    String nextBusString = "";
+    var remainedTimeString = "";
+    var thisBusString = "";
+    var nextBusString = "";
 
     Widget _remainedText;
 
@@ -32,36 +33,36 @@ class CustomShuttleCard extends StatelessWidget {
     if(timetable.length >= 2){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "${TranslationManager.of(context).trans("this_bus")} : ${timetable.elementAt(0)}";
+      thisBusString = "${"this_bus".tr} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
+        thisBusString += "(${"is_cycle".tr})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(${TranslationManager.of(context).trans("is_direct")})";
+        thisBusString += "(${"is_direct".tr})";
       }
-      nextBusString = "${TranslationManager.of(context).trans("next_bus")} : ${timetable.elementAt(1)}";
+      nextBusString = "${"next_bus".tr} : ${timetable.elementAt(1)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(1))){
-        nextBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
+        nextBusString += "(${"is_cycle".tr})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(1)) || data.shuttleListTerminal.contains(timetable.elementAt(1))){
-        nextBusString += "(${TranslationManager.of(context).trans("is_direct")})";
+        nextBusString += "(${"is_direct".tr})";
       }
     } else if(timetable.length == 1){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "${TranslationManager.of(context).trans("this_bus")} : ${timetable.elementAt(0)}";
+      thisBusString = "${"this_bus".tr} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(${TranslationManager.of(context).trans("is_cycle")})";
+        thisBusString += "(${"is_cycle".tr})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(${TranslationManager.of(context).trans("is_direct")})";
+        thisBusString += "(${"is_direct".tr})";
       }
-      nextBusString = TranslationManager.of(context).trans("is_last_bus");
+      nextBusString = "is_last_bus".tr;
     } else {
-      thisBusString = TranslationManager.of(context).trans("out_of_service");
+      thisBusString = "out_of_service".tr;
     }
 
     if(timetable.isNotEmpty){
-      String minString = TranslationManager.of(context).trans('min_after');
+      String minString = 'min_after'.tr;
       if(minString.contains('min') && remainedTimeString == '1'){
-        minString = 'min left';
+        minString = 'min left'.tr;
       }
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
@@ -133,7 +134,7 @@ class CustomFoodCard extends StatelessWidget {
     String _menu = "메뉴를 준비중입니다";
     String _price = "0";
     if(data == null){
-      _menu = TranslationManager.of(context).trans("menu_not_uploaded");
+      _menu = "menu_not_uploaded".tr;
     } else {
       _menu = data.menu;
       _price = data.price;
@@ -153,7 +154,7 @@ class CustomFoodCard extends StatelessWidget {
             SizedBox(height: 20,),
             Text(_menu, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             Flexible(child: Container(),),
-            Text('$_price ${TranslationManager.of(context).trans("menu_price")}', style: TextStyle(fontSize: _height/50, fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
+            Text('$_price ${"menu_price".tr}', style: TextStyle(fontSize: _height/50, fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
           ],
         ),
       )
@@ -164,7 +165,6 @@ class CustomFoodCard extends StatelessWidget {
 class CustomStoreCard extends StatelessWidget {
 
   final StoreInfo info;
-
   CustomStoreCard(this.info);
 
   @override
@@ -187,7 +187,7 @@ class CustomStoreCard extends StatelessWidget {
               children: [
                 Icon(Icons.call_made_rounded),
                 SizedBox(width: 5,),
-                Text(TranslationManager.of(context).trans("map_can_call")),
+                Text("map_can_call".tr),
               ],
             ), ),
         ],
@@ -204,7 +204,7 @@ class CustomStoreCard extends StatelessWidget {
               children: [
                 Icon(Icons.call_made_rounded),
                 SizedBox(width: 5,),
-                Text(TranslationManager.of(context).trans("map_cant_call")),
+                Text("map_cant_call".tr),
               ],
             ),
           ),

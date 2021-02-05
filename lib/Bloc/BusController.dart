@@ -1,20 +1,56 @@
+import 'dart:async';
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
 
 
-class FetchBusInfoController{
-  final _allBusInfoSubject = BehaviorSubject<Map<String, dynamic>>();
-  final _busTimeTableSubject = BehaviorSubject<Map<String, dynamic>>();
+class BusDepartureController extends GetxController{
+  var departureInfo = Map<String, dynamic>().obs;
+  var isLoading = true.obs;
+  var hasError = false.obs;
 
-  FetchBusInfoController(){
-    fetch();
+  @override
+  void onInit(){
+    queryDepartureInfo();
+    super.onInit();
   }
 
-  void fetch() async{
+  queryDepartureInfo() async {
+    try{
+      isLoading(true);
+      var data = await fetchDepartureInfo();
+      if(data != null){
+        departureInfo.assignAll(data);
+        isLoading(false);
+      }
+    } catch(e){
+      hasError(true);
+    }
+    finally {
+      refresh();
+    }
+    Timer.periodic(Duration(minutes: 1), (timer) async {
+      try{
+        isLoading(true);
+        var data = await fetchDepartureInfo();
+        if(data != null){
+          departureInfo.assignAll(data);
+          isLoading(false);
+        }
+      } catch(e){
+        hasError(true);
+      }
+      finally {
+        refresh();
+      }
+    });
+  }
+
+  Future<Map<String, dynamic>> fetchDepartureInfo() async{
+
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -40,21 +76,45 @@ class FetchBusInfoController{
         data[key]["timetable"] = new List<BusInfoTimetable>();
       }
     }
-    _allBusInfoSubject.add(data);
+    return data;
+  }
+}
+
+class BusTimetableController extends GetxController{
+  RxMap<String, dynamic> timetableInfo = Map<String, dynamic>().obs;
+  var isLoading = true.obs;
+  var hasError = false.obs;
+
+  final String route;
+
+  BusTimetableController(this.route);
+
+  @override
+  void onInit(){
+    updateTimetable(route);
+    super.onInit();
   }
 
-  void fetchTimeTable(String route) async{
+  updateTimetable(String route) async {
+    try{
+      isLoading(true);
+      var data = await fetchTimeTable(route);
+      if(data != null){
+        timetableInfo.assignAll(data);
+        isLoading(false);
+      }
+    } catch(e){
+      hasError(true);
+    } finally {
+      refresh();
+    }
+  }
+
+  fetchTimeTable(String route) async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus/timetable");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "route": route}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     Map<String, dynamic> data = {"day": responseJson["day"], "weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};
-    _busTimeTableSubject.add(data);
+    return data;
   }
-
-  void dispose(){
-    _allBusInfoSubject.close();
-  }
-
-  Stream<Map<String, dynamic>> get allBusInfo => _allBusInfoSubject.stream;
-  Stream<Map<String, dynamic>> get timetableInfo => _busTimeTableSubject.stream;
 }

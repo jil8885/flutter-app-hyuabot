@@ -1,83 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DateController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class CalendarPage extends StatefulWidget{
-  @override
-  State<StatefulWidget> createState() => CalendarPageState();
-}
-
-class CalendarPageState extends State<CalendarPage>{
-  DateController _controller = DateController();
-
-  @override
-  void initState() {
-    super.initState();
-    analytics.setCurrentScreen(screenName: "/calendar");
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
+class CalendarPage extends StatelessWidget{
+  final _controller = Get.put(DateController());
   @override
   Widget build(BuildContext context) {
-    _controller.fetch();
+    analytics.setCurrentScreen(screenName: "/calendar");
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-      child: StreamBuilder<CalendarDataSource>(
-        stream: _controller.allSchedule,
-        builder: (context, snapshot) {
+      child: Obx((){
           CalendarDataSource _schedules;
-          if(snapshot.hasData){
-            _schedules = snapshot.data;
-            return SfCalendar(
-              dataSource: _schedules,
-              view: CalendarView.month,
-              onTap: (CalendarTapDetails details){
-                List _appointments = details.appointments;
-                for(var _data in _appointments){
-                  print(_data);
-                }
-              },
-              appointmentTextStyle: TextStyle(fontFamily: 'Godo', fontSize: 12, color: Colors.white),
-              monthViewSettings: MonthViewSettings(
-                numberOfWeeksInView: 6,
-                showAgenda: false,
-                agendaViewHeight: MediaQuery.of(context).size.height / 5,
-                appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
-                agendaStyle: AgendaStyle(
-                  appointmentTextStyle: TextStyle(
-                      fontFamily: 'Godo'
-                  ),
-                  dateTextStyle: TextStyle(
-                      fontFamily: 'Godo'
-                  ),
-                ),
-                monthCellStyle: MonthCellStyle(
-                    backgroundColor: const Color.fromARGB(255, 20, 75, 170),
-                    trailingDatesBackgroundColor: Color(0xff216583),
-                    leadingDatesBackgroundColor: Color(0xff216583),
-                    todayBackgroundColor: const Color.fromARGB(255, 20, 75, 170),
-                    textStyle: TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Godo'),
-                    trailingDatesTextStyle: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 12,
-                        fontFamily: 'Godo'),
-                    leadingDatesTextStyle: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 12,
-                        fontFamily: 'Godo'))
-              ),
-            );
-          } else {
-           return Center(child: CircularProgressIndicator(),);
+          if(_controller.hasError.value){
+            return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
           }
+          if(_controller.isLoading.value){
+            return Center(child: CircularProgressIndicator(),);
+          }
+          _schedules = MeetingDataSource(_controller.meetingDataSource);
+          return SfCalendar(
+            dataSource: _schedules,
+            view: CalendarView.month,
+            appointmentTextStyle: TextStyle(fontFamily: 'Godo', fontSize: 12, color: Colors.white),
+            monthViewSettings: MonthViewSettings(
+              numberOfWeeksInView: 6,
+              showAgenda: false,
+              agendaViewHeight: MediaQuery.of(context).size.height / 5,
+              appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
+              agendaStyle: AgendaStyle(
+                appointmentTextStyle: TextStyle(
+                    fontFamily: 'Godo'
+                ),
+                dateTextStyle: TextStyle(
+                    fontFamily: 'Godo'
+                ),
+              ),
+              monthCellStyle: MonthCellStyle(
+                  backgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.white:Colors.grey,
+                  trailingDatesBackgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.grey : Colors.black,
+                  leadingDatesBackgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.grey : Colors.black,
+                  todayBackgroundColor: Get.theme.backgroundColor,
+                  textStyle: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'Godo',
+                  ),
+                  trailingDatesTextStyle: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                      fontFamily: 'Godo'),
+                  leadingDatesTextStyle: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 12,
+                      fontFamily: 'Godo')
+              )
+            ),
+          );
         }
       ),
     );

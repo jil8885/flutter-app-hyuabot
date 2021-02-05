@@ -1,18 +1,53 @@
+import 'dart:async';
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 
 
-class FetchMetroInfoController{
-  final _allMetroInfoSubject = BehaviorSubject<Map<String, dynamic>>();
-  FetchMetroInfoController(){
-    fetch();
+class FetchMetroInfoController extends GetxController{
+  RxMap<String, dynamic> departureInfo = Map<String, dynamic>().obs;
+  var isLoading = true.obs;
+  var hasError = false.obs;
+
+  @override
+  void onInit(){
+    queryDepartureInfo();
+    super.onInit();
   }
 
-  void fetch() async{
+  queryDepartureInfo() async {
+    try{
+      isLoading(true);
+      var data = await fetchDepartureInfo();
+      if(data != null){
+        departureInfo.assignAll(data);
+        isLoading(false);
+      }
+    } catch (e){
+      hasError(false);
+    } finally {
+      refresh();
+    }
+    Timer.periodic(Duration(minutes: 1), (timer) async {
+      try{
+        isLoading(true);
+        var data = await fetchDepartureInfo();
+        if(data != null){
+          departureInfo.assignAll(data);
+          isLoading(false);
+        }
+      } catch (e){
+        hasError(false);
+      } finally {
+        refresh();
+      }
+    });
+  }
+
+  fetchDepartureInfo() async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/subway");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -34,12 +69,6 @@ class FetchMetroInfoController{
         }
       }
     }
-    _allMetroInfoSubject.add(data);
+    return data;
   }
-
-  void dispose(){
-    _allMetroInfoSubject.close();
-  }
-
-  Stream<Map<String, dynamic>> get allMetroInfo => _allMetroInfoSubject.stream;
 }

@@ -9,8 +9,8 @@ ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     fontFamily: "Godo",
     textTheme: const TextTheme(
-      bodyText1: const TextStyle(fontSize: 16, color: Colors.black),
-      bodyText2: const TextStyle(fontSize: 16, color: Colors.white),
+      bodyText1: const TextStyle(fontSize: 16, color: Colors.white),
+      bodyText2: const TextStyle(fontSize: 16, color: Colors.black),
     )
 );
 
@@ -21,7 +21,7 @@ ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   fontFamily: "Godo",
   textTheme: const TextTheme(
-    bodyText1: const TextStyle(fontSize: 16, color: Colors.white),
-    bodyText2: const TextStyle(fontSize: 16, color: Colors.black),
+    bodyText1: const TextStyle(fontSize: 16, color: Colors.black),
+    bodyText2: const TextStyle(fontSize: 16, color: Colors.white),
   )
 );
