@@ -230,6 +230,9 @@ class FoodPage extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
         child: Obx(() {
+              if(_controller.hasError.value){
+                return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
+              }
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: Column(

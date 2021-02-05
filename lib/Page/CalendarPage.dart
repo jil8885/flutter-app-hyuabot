@@ -13,6 +13,9 @@ class CalendarPage extends StatelessWidget{
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Obx((){
           CalendarDataSource _schedules;
+          if(_controller.hasError.value){
+            return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
+          }
           if(_controller.isLoading.value){
             return Center(child: CircularProgressIndicator(),);
           }
@@ -35,14 +38,13 @@ class CalendarPage extends StatelessWidget{
                 ),
               ),
               monthCellStyle: MonthCellStyle(
-                  backgroundColor: Get.theme.backgroundColor,
-                  trailingDatesBackgroundColor: Colors.grey,
-                  leadingDatesBackgroundColor: Colors.grey,
+                  backgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.white:Colors.grey,
+                  trailingDatesBackgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.grey : Colors.black,
+                  leadingDatesBackgroundColor: Get.theme.backgroundColor == Colors.white ? Colors.grey : Colors.black,
                   todayBackgroundColor: Get.theme.backgroundColor,
                   textStyle: TextStyle(
                       fontSize: 12,
                       fontFamily: 'Godo',
-                      color: Get.theme.textTheme.bodyText1.color
                   ),
                   trailingDatesTextStyle: TextStyle(
                       fontStyle: FontStyle.italic,

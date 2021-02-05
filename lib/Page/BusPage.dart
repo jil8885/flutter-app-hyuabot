@@ -70,7 +70,10 @@ class BusPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: Obx((){
-                  if(_busController.isLoading.value){
+                  if(_busController.hasError.value){
+                    return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
+                  }
+                  else if(_busController.isLoading.value){
                     return Container(child: Center(child: LinearProgressIndicator(),), height: 50,);
                   } else{
                     return CustomPaint(painter: BusCardPaint(_busController.departureInfo[lineName], lineColor, context, timeTableOffered), size: Size(width - 50, 50), );

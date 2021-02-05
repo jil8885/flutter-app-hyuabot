@@ -1,4 +1,5 @@
 const Map<String, String> ko_KR = {
+  "loading_error":"로딩 중 오류가 발생했습니다.",
   "booting_app": "휴아봇 켜지는 중..",
   "setting_title": "설정",
   "theme_title": "앱 테마 선택",
@@ -118,6 +119,7 @@ const Map<String, String> ko_KR = {
 };
 
 const Map<String, String> en_US = {
+  "loading_error":"Error happened while loading",
   "booting_app": "Entering to hyuabot..",
   "setting_title": "Settings",
   "theme_title": "App Theme",
@@ -237,6 +239,7 @@ const Map<String, String> en_US = {
 };
 
 const Map<String, String> zh = {
+  "loading_error":"로딩 중 오류가 발생했습니다.",
   "setting_title": "设置",
   "theme_title": "软件主题选择",
   "theme_dialog_title": "请选择软件主题。",
