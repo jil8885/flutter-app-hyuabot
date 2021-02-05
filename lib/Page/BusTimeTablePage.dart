@@ -111,7 +111,10 @@ class BusTimeTablePage extends StatelessWidget {
             color: lineColor,
           ),
           Obx(() {
-              if(_busController.isLoading.value){
+              if(_busController.hasError.value){
+                return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
+              }
+              else if(_busController.isLoading.value){
                 return Expanded(child: Center(child: CircularProgressIndicator(),));
               }
               int initialIndex = 0;
