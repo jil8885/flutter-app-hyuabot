@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
-
-import 'package:get/get.dart';
 
 class BusCardPaint extends CustomPainter {
   final Map<String, dynamic> data;
@@ -15,7 +16,7 @@ class BusCardPaint extends CustomPainter {
   void drawInfo(Canvas canvas, Offset offset, int numOfStop, int seats, var text, BuildContext context) {
     String _stopString, _seatString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _stopString = '$numOfStop전';
         _seatString = '$seats석';
@@ -39,7 +40,7 @@ class BusCardPaint extends CustomPainter {
           color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 14, fontFamily: "Godo"),
           text: text
     );
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
+    TextPainter tp = TextPainter(text: sp);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
@@ -49,7 +50,7 @@ class BusCardPaint extends CustomPainter {
   String _getArrivalTime(String time) {
     String _timeString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time 출발';
         break;
@@ -65,7 +66,7 @@ class BusCardPaint extends CustomPainter {
   String _getTime(int time) {
     String _timeString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time분';
         break;
@@ -127,19 +128,19 @@ class BusCardPaint extends CustomPainter {
         drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
       } else {
         if (timeTableOffered) {
-          drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr, context);
+          drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr(), context);
         } else {
-          drawInfo(canvas, Offset(15, 35), -1, -1, "timetable_not_offered".tr, context);
+          drawInfo(canvas, Offset(15, 35), -1, -1, "timetable_not_offered".tr(), context);
         }
       }
     } else if (!timeTableOffered) {
-      drawInfo(canvas, Offset(15, 10), -1, -1, "timetable_not_offered".tr, context);
+      drawInfo(canvas, Offset(15, 10), -1, -1, "timetable_not_offered".tr(), context);
     } else if (timetableList.length >= 2) {
       drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
       drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(1).time), context);
     } else if (timetableList.length == 1) {
       drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
-      drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr, context);
+      drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr(), context);
     } else {
       drawInfo(canvas, Offset(15, 10), -1, -1, "out_of_service", context);
     }

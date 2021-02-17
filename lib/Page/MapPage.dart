@@ -4,32 +4,32 @@ import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class MapPage extends StatelessWidget {
   final _menus = ['korean', 'japanese', 'chinese', 'western', 'fast_food', 'chicken', 'pizza', 'meat', 'vietnamese', 'other_food', 'bakery', 'cafe', 'pub'];
   bool _isInit = false;
   List<String> _translatedMenus;
 
-  MapController _mapController = Get.put(MapController());
 
   List<Marker> _markers = [];
   FloatingSearchBar _floatingSearchBar;
   FloatingSearchBarController _floatingSearchBarController = FloatingSearchBarController();
   OverlayImage image;
-
+  MapController _mapController;
 
   @override
   Widget build(BuildContext context) {
+    _mapController = MapController(context);
     if(!_isInit){
-      Fluttertoast.showToast(msg: "map_start_dialog".tr);
+      Fluttertoast.showToast(msg: "map_start_dialog".tr());
       _isInit = true;
     }
     analytics.setCurrentScreen(screenName: "/map");
-    _translatedMenus = _menus.map((e) => e.tr).toList();
-    _floatingSearchBar = buildFloatingSearchBar();
+    _translatedMenus = _menus.map((e) => e.tr()).toList();
+    _floatingSearchBar = buildFloatingSearchBar(context);
     String _selectedCat = _translatedMenus[0];
 
     return Scaffold(
@@ -39,7 +39,7 @@ class MapPage extends StatelessWidget {
         onPressed: (){
           showMaterialScrollPicker(
             context: context,
-            title: "map_picker_title".tr,
+            title: "map_picker_title".tr(),
             items: _translatedMenus,
             selectedItem: _translatedMenus[0],
             onChanged: (value){_selectedCat = value;},
@@ -47,7 +47,7 @@ class MapPage extends StatelessWidget {
               _markers.clear();
               _mapController.getMarker(_menus[_translatedMenus.indexOf(_selectedCat)]);
               String _toastString;
-              switch(prefManager.read("localeCode")){
+              switch(prefManager.getString("localeCode")){
                 case "ko_KR":
                   _toastString = '$_selectedCat(으)로 전환되었습니다.';
                   break;
@@ -58,7 +58,12 @@ class MapPage extends StatelessWidget {
                   _toastString = '$_selectedCat(으)로 전환되었습니다.';
                   break;
               }
-              Get.showSnackbar(GetBar(duration: Duration(seconds: 2), messageText: Text(_toastString, style: TextStyle(color: Get.theme.backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,), backgroundColor: Get.theme.backgroundColor,));
+              Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_toastString, style: TextStyle(color: Theme.of(context).backgroundColor == Colors.black ?Colors.white:Colors.black), textAlign: TextAlign.center,),
+                    duration: Duration(seconds: 2),
+                    backgroundColor: Theme.of(context).backgroundColor,
+              ));
             }
           );
         },),
@@ -70,19 +75,21 @@ class MapPage extends StatelessWidget {
                   .padding
                   .top),
               child: Container(child:
-                  GetBuilder<MapController>(
-                    builder: (controller){
-                      return NaverMap(
-                        markers: controller.selectedMarkers,
-                        initialCameraPosition: CameraPosition(
-                            target: LatLng(37.300153, 126.837759), zoom: 16),
-                        mapType: MapType.Basic,
-                        symbolScale: 0,
-                        nightModeEnable: Get.isDarkMode,
-                        onMapCreated: _onMapCreated,
-                      );
-                    },
-              ))
+                StreamBuilder(
+                  stream: _mapController.markers,
+                  builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    return NaverMap(
+                      markers: snapshot.data,
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(37.300153, 126.837759), zoom: 16),
+                      mapType: MapType.Basic,
+                      symbolScale: 0,
+                      nightModeEnable: Theme.of(context).backgroundColor == Colors.black,
+                      onMapCreated: _onMapCreated,
+                    );
+                  },
+                )
+            )
           ),
           _floatingSearchBar
         ],
@@ -95,11 +102,11 @@ class MapPage extends StatelessWidget {
   }
 
 
-  Widget buildFloatingSearchBar() {
+  Widget buildFloatingSearchBar(BuildContext context) {
 
     return FloatingSearchBar(
-        hint: "phone_hint_text".tr,
-        backgroundColor: Get.context.theme.backgroundColor,
+        hint: "phone_hint_text".tr(),
+        backgroundColor: Theme.of(context).backgroundColor,
         scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
         transitionDuration: const Duration(milliseconds: 200),
         transitionCurve: Curves.easeInOut,
@@ -126,59 +133,61 @@ class MapPage extends StatelessWidget {
           ),
         ],
         builder: (context, transition) {
-          return Obx((){
-                if(_mapController.searchResult.isEmpty){
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Material(
-                      color: Theme.of(context).backgroundColor,
-                      elevation: 4.0,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                              height: 75,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 20),),
-                                ],
-                              )
-                          )],
-                      ),
-                    ),
-                  );
-                } else{
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Material(
-                      color: Theme.of(context).backgroundColor,
-                      elevation: 4.0,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: _mapController.searchResult.map((e) => InkWell(
-                          onTap: () async {
-                            _mapController.naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
-                            _floatingSearchBar.controller.close();
-                            _mapController.selectedMarkers.assignAll([Marker(markerId: "0", position: LatLng(e.latitude, e.longitude))]);
-                          },
-                          child: Container(
+          return StreamBuilder(
+            stream: _mapController.searchResult,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if(snapshot.data.isEmpty){
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Material(
+                    color: Theme.of(context).backgroundColor,
+                    elevation: 4.0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
                             height: 75,
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text("${e.name}-${e.menu}", style: Theme.of(context).textTheme.bodyText2, overflow: TextOverflow.ellipsis,),
+                                Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 20),),
                               ],
-                            ),
-                          ),
-                        )).toList(),
-                      ),
+                            )
+                        )],
                     ),
-                  );
-                }
-              });
+                  ),
+                );
+              } else{
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Material(
+                    color: Theme.of(context).backgroundColor,
+                    elevation: 4.0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: snapshot.data.map((e) => InkWell(
+                        onTap: () async {
+                          _mapController.naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
+                          _floatingSearchBar.controller.close();
+                          _mapController.selectMarker([Marker(markerId: "0", position: LatLng(e.latitude, e.longitude))]);
+                        },
+                        child: Container(
+                          height: 75,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("${e.name}-${e.menu}", style: Theme.of(context).textTheme.bodyText2, overflow: TextOverflow.ellipsis,),
+                            ],
+                          ),
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                );
+              }
+            },);
         }
     );
   }

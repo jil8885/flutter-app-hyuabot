@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ShuttleCardPaint extends CustomPainter{
   final List<dynamic> timetableList;
   final ShuttleStopDepartureInfo data;
   final Color lineColor;
+  final BuildContext context;
 
-  ShuttleCardPaint(this.timetableList, this.data, this.lineColor);
+  ShuttleCardPaint(this.context, this.timetableList, this.data, this.lineColor);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text) {
-    TextSpan sp = TextSpan(style: TextStyle(color: !Get.isDarkMode ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
-    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
+    TextPainter tp = TextPainter(text: sp);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);
@@ -21,9 +22,9 @@ class ShuttleCardPaint extends CustomPainter{
   String _getDirection(String time, ShuttleStopDepartureInfo data){
     var type;
     if(data.shuttleListTerminal.contains(time) || data.shuttleListStation.contains(time)){
-      type = "is_direct".tr;
+      type = "is_direct".tr();
     } else {
-      type = "is_cycle".tr;
+      type = "is_cycle".tr();
     }
     return type;
   }
@@ -65,12 +66,12 @@ class ShuttleCardPaint extends CustomPainter{
     String status;
     DateTime now = DateTime.now();
     if(timetableList.length >= 2){
-      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr} (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status);
-      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} ${"minute".tr} (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 35), status);
     } else if(timetableList.length == 1){
-      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr} (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status);
       drawRemainedTime(canvas, Offset(25, 35), '막차');
     } else {
