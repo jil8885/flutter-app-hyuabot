@@ -9,6 +9,7 @@ import 'package:rxdart/rxdart.dart';
 class BusDepartureController {
   final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
   BusDepartureController(){
+    fetchDepartureInfo().then((value){_subject.add(value);});
     Stream _timer = Stream.periodic(Duration(minutes: 1));
     _timer.listen((_) async {
       _subject.add(await fetchDepartureInfo());

@@ -11,10 +11,10 @@ class FoodInfoController{
   final BehaviorSubject<List<bool>> _expandSubject = BehaviorSubject<List<bool>>();
 
   FoodInfoController(){
+    _expandSubject.add([false, false, false, false, false]);
     fetchFood().then((value){
       _menuSubject.add(value);
     });
-    _expandSubject.add([false, false, false, false, false]);
   }
 
   Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {

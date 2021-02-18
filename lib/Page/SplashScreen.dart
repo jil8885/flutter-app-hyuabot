@@ -34,7 +34,7 @@ void initApp() async {
     await new File(destPath).writeAsBytes(bytes, flush: true);
   }
   // Ad
-  adController.setTestDeviceIds(["F99695B64D31FD9A46D8AB9319E12EA6"]);
+  adController.setTestDeviceIds(["9EB3D1FB602993E0660E26FD66A53A25"]);
   adController.reloadAd(forceRefresh: true, numberAds: 3);
   adController.setAdUnitID(AdManager.bannerAdUnitId);
 
@@ -44,6 +44,11 @@ void initApp() async {
   const InitializationSettings _settings = InitializationSettings(android: _initialSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(_settings,
       onSelectNotification: whenSelectNotification);
+
+  // Locale
+  if (prefManager.getString("localeCode") == null){
+    prefManager.setString("localeCode", "ko_KR");
+  }
 }
 
 Future whenSelectNotification(String payload) async{
@@ -65,7 +70,6 @@ class SplashScreenState extends State<SplashScreen>{
 
   startTime() async {
     var _duration = new Duration(seconds: 1);
-    prefManager = await SharedPreferences.getInstance();
     initApp();
     return new Timer(_duration, navigationPage);
   }

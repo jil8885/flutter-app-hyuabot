@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/MetroController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/MetroCardPaint.dart';
 
@@ -41,6 +40,14 @@ class MetroPage extends StatelessWidget {
             break;
         }
 
+        Widget paint;
+        if(snapshot.hasError){
+          paint = Container(child: Center(child: Text("loading_error".tr()),), height: 50,);
+        } else if(!snapshot.hasData){
+          paint = Container(child: Center(child: LinearProgressIndicator(),), height: 50,);
+        } else {
+          paint = Container(child: CustomPaint(painter: content,), height: 50,);
+        }
         return Card(
           color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
           elevation: 3,
@@ -58,11 +65,9 @@ class MetroPage extends StatelessWidget {
                 ),
                 Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
                 Divider(color: Colors.grey),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Container(child: snapshot.hasError || !snapshot.hasData ? Center(child: CircularProgressIndicator()):CustomPaint(painter: content,), padding: EdgeInsets.only(bottom: 10), height: 50,),
-                  ],
+                Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 0),
+                    child: paint
                 )
               ],
             ),

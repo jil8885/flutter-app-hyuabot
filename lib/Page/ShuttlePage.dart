@@ -65,7 +65,7 @@ class ShuttlePage extends StatelessWidget {
                   child: StreamBuilder(
                     stream: shuttleDepartureController.departureInfo,
                     builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      if(snapshot.hasError){
+                      if(snapshot.hasError || !snapshot.hasData){
                         return CircularProgressIndicator();
                       }
                       List<dynamic> residenceStn = List.from(snapshot.data["Residence"].shuttleListStation)..addAll(snapshot.data["Residence"].shuttleListCycle)..sort();

@@ -168,6 +168,16 @@ class FoodPage extends StatelessWidget {
       return StreamBuilder(
         stream: foodInfoController.expandInfo,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if(!snapshot.hasData || snapshot.hasError){
+            return Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Card(
+                elevation: 3,
+                color: Theme.of(context).backgroundColor == Colors.black ? Colors.black : Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+                child: Container(child: CircularProgressIndicator()),)
+            );
+          }
           return Padding(
             padding: const EdgeInsets.only(top: 10),
             child: Card(
@@ -180,7 +190,7 @@ class FoodPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AnimatedCrossFade(
-                          crossFadeState: !snapshot.data[cardIndex] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: !snapshot.data[cardIndex] ?? true ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: kThemeAnimationDuration,
                           firstChild: Column(
                             children: [
@@ -208,7 +218,7 @@ class FoodPage extends StatelessWidget {
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            IconButton(icon: snapshot.data[cardIndex] ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){foodInfoController.expandCard(cardIndex);}),
+                            IconButton(icon: snapshot.data[cardIndex] ?? false ? Icon(Icons.keyboard_arrow_up_rounded):Icon(Icons.keyboard_arrow_down_rounded), onPressed: (){foodInfoController.expandCard(cardIndex);}),
                           ],
                         ),
                       )
@@ -234,6 +244,9 @@ class FoodPage extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if(snapshot.hasError){
               return Container(child: Center(child: Text("loading_error".tr()),), height: 50,);
+            }
+            if(!snapshot.hasData){
+              return Container(child: Center(child: CircularProgressIndicator()), height: 50,);
             }
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

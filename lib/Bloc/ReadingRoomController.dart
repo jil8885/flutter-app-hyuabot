@@ -12,13 +12,14 @@ class ReadingRoomController{
   final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
 
   ReadingRoomController(){
-    _subject.add({"seats": Map<String, dynamic>(), "alarm": {
-      "reading_room_1": false,
-      "reading_room_2": false,
-      "reading_room_3": false,
-      "reading_room_4": false,
-    }});
-
+    fetchSeats().then((value){
+      _subject.add({"alarm": {
+        "reading_room_1": false,
+        "reading_room_2": false,
+        "reading_room_3": false,
+        "reading_room_4": false,
+      }, "seats": value});
+    });
     Stream _timer = Stream.periodic(Duration(minutes: 1));
     _timer.listen((_) async {
       _subject.add({"alarm": await fetchAlarm(), "seats": await fetchSeats()});
@@ -26,7 +27,7 @@ class ReadingRoomController{
   }
 
 
-  fetchSeats() async{
+  Future<Map<String, ReadingRoomInfo>> fetchSeats() async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/library");
     http.Response response = await http.post(
         url, headers: {"Accept": "application/json"},
@@ -48,6 +49,10 @@ class ReadingRoomController{
       "reading_room_4": prefManager.getBool("reading_room_4") ?? false,
     };
     return data;
+  }
+
+  updateAlarm() async {
+    _subject.add({"seats":_subject.value["seats"], "alarm": await fetchAlarm()});
   }
 
   dispose(){

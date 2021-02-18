@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart' as localization;
 
 class ShuttleCardPaint extends CustomPainter{
   final List<dynamic> timetableList;
@@ -13,7 +13,7 @@ class ShuttleCardPaint extends CustomPainter{
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text) {
     TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
-    TextPainter tp = TextPainter(text: sp);
+    TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
     tp.paint(canvas, location);

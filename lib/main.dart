@@ -11,7 +11,9 @@ import 'package:flutter_app_hyuabot_v2/Page/SplashScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  prefManager = await SharedPreferences.getInstance();
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   analytics = FirebaseAnalytics();
   runApp(EasyLocalization(
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
     return AdaptiveTheme(
       light: lightTheme,
       dark: darkTheme,
-      initial: savedThemeMode ?? AdaptiveTheme.getThemeMode(),
+      initial: savedThemeMode ?? AdaptiveThemeMode.system,
       builder: (lightTheme, darkTheme){
         return MaterialApp(
           localizationsDelegates: context.localizationDelegates,
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
           locale: context.locale,
           theme: lightTheme,
           darkTheme: darkTheme,
+          debugShowCheckedModeBanner: false,
           home: SplashScreen(),
           routes: <String, WidgetBuilder>{
             '/home': (BuildContext context) => HomePage()

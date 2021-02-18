@@ -76,7 +76,7 @@ class MapPage extends StatelessWidget {
                   .top),
               child: Container(child:
                 StreamBuilder(
-                  stream: _mapController.markers,
+                  stream: _mapController.selectedMarkers,
                   builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                     return NaverMap(
                       markers: snapshot.data,

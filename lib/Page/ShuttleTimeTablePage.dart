@@ -154,7 +154,7 @@ class ShuttleTimeTablePage extends StatelessWidget {
      body: StreamBuilder(
        stream: shuttleTimeTableController.departureInfo,
        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-         if(snapshot.data["weekdays"] == null || snapshot.data["weekdays"] == null){
+         if(!snapshot.hasData || snapshot.data["weekdays"] == null || snapshot.data["weekdays"] == null){
            return Center(child: CircularProgressIndicator(),);
          }
          Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);

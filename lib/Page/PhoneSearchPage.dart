@@ -41,7 +41,7 @@ class PhoneSearchPage extends StatelessWidget {
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
-            } else if(snapshot.data.isEmpty()){
+            } else if(snapshot.data.isEmpty){
               return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(

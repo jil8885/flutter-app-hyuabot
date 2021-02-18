@@ -13,7 +13,9 @@ class MapController{
   NaverMapController naverMapController;
 
   final BuildContext context;
-  MapController(this.context);
+  MapController(this.context){
+    loadDatabase();
+  }
 
   loadDatabase()  {
     _selectedMarkerSubject.add([]);

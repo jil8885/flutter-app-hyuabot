@@ -208,7 +208,7 @@ class HomePage extends StatelessWidget{
         stream: menuController.isExpanded,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           return AnimatedCrossFade(
-            crossFadeState: snapshot.data ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: snapshot.data ?? true ? CrossFadeState.showFirst : CrossFadeState.showSecond,
             duration: kThemeAnimationDuration,
             firstChild: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
@@ -344,7 +344,7 @@ class HomePage extends StatelessWidget{
                                 stream: menuController.isExpanded,
                                 builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                                   return Text(
-                                    snapshot.data ? "shrink_menu".tr() : "expand_menu".tr(),
+                                    snapshot.data ?? true ? "shrink_menu".tr() : "expand_menu".tr(),
                                     style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? _primaryColor : Colors.white, fontFamily: 'Godo', fontSize: 18),
                                   );
                                 },

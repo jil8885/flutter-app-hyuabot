@@ -5,7 +5,6 @@ import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ReadingRoomPage extends StatelessWidget {
 
@@ -51,7 +50,7 @@ class ReadingRoomPage extends StatelessWidget {
                   fcmManager.unsubscribeFromTopic("$name.en_US");
                   fcmManager.unsubscribeFromTopic("$name.zh");
                   prefManager.setBool(name, false);
-                  readingRoomController.fetchAlarm();
+                  readingRoomController.updateAlarm();
                   Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(_alarmOffString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                       backgroundColor: Theme.of(context).backgroundColor,
@@ -61,7 +60,7 @@ class ReadingRoomPage extends StatelessWidget {
                   if(available < (kReleaseMode?0:100)){
                     fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
                     prefManager.setBool(name, true);
-                    readingRoomController.fetchAlarm();
+                    readingRoomController.updateAlarm();
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(_alarmOnString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                       backgroundColor: Theme.of(context).backgroundColor,
