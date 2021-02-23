@@ -1,8 +1,10 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class SettingPage extends StatelessWidget{
@@ -87,8 +89,9 @@ class SettingPage extends StatelessWidget{
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text("thanks_for_someone".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color,),),
+                        title: Text("thanks_for_someone".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color,), textAlign: TextAlign.center,),
                         content: Column(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 16),),
                             SizedBox(height: 5,),
@@ -98,6 +101,33 @@ class SettingPage extends StatelessWidget{
                       )
                     );
                   }
+                ),
+                SettingsTile(
+                    title: "icons_from".tr(),
+                    titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                    leading: Icon(Icons.source),
+                    onTap: (){
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("icons_from".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color,), textAlign: TextAlign.center,),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RichText(text:
+                                  TextSpan(
+                                    text: 'Icons made by Freepik(For map marker)',
+                                    style: new TextStyle(color: Colors.blue),
+                                    recognizer: new TapGestureRecognizer()
+                                      ..onTap = () { launch('https://www.freepik.com');
+                                      },
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                      );
+                    }
                 )
               ],
             )

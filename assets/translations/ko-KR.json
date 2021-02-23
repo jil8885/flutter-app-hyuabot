@@ -115,5 +115,6 @@
   "bound_suwon": "왕십리·수원",
   "bound_incheon": "오이도·인천",
   "subway_caution": "수인분당선은 실시간 API 문제로 시간표만 제공합니다",
-  "calendar_btn": "학사력"
+  "calendar_btn": "학사력",
+  "icons_from": "애셋 출처"
 }
