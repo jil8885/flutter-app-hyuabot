@@ -1,43 +1,22 @@
 import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:rxdart/rxdart.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 
-class DateController extends GetxController{
+class DateController{
   final List<Color> _colors = [ Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
-  var isLoading = true.obs;
-  var hasError = false.obs;
-  RxList<Schedule> meetingDataSource = List<Schedule>().obs;
+  final BehaviorSubject<List<Schedule>> _subject = BehaviorSubject<List<Schedule>>();
 
-  @override
-  void onInit(){
-    queryData();
-    super.onInit();
+  DateController(){
+    fetchData().then((value){_subject.add(value);});
   }
 
-  queryData() async {
-    try{
-      isLoading(true);
-      var data = await fetchData();
-      if(data != null){
-        meetingDataSource.assignAll(data);
-        isLoading(false);
-      }
-    } catch(e){
-      hasError(true);
-    }
-    finally {
-      refresh();
-    }
-  }
-
-
-  fetchData() async{
+  Future<List<Schedule>> fetchData() async{
     List<Schedule> data = [];
     final url = Uri.encodeFull("https://raw.githubusercontent.com/jil8885/API-for-ERICA/light/calendar/master.json");
     http.Response response = await http.get(url);
@@ -64,6 +43,12 @@ class DateController extends GetxController{
       endTimeZone: '',
     );
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<List<Schedule>> get scheduleList => _subject.stream;
 }
 
 class Schedule {

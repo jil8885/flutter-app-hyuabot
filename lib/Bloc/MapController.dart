@@ -1,25 +1,24 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
-import 'package:get/get.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
-class MapController extends GetxController{
+class MapController{
   Database _database;
-  RxMap<String, List<Marker>> markers = Map<String, List<Marker>>().obs;
-  RxList<Marker> selectedMarkers = List<Marker>().obs;
-  RxList<StoreSearchInfo> searchResult = List<StoreSearchInfo>().obs;
+  final BehaviorSubject<Map<String, List<Marker>>> _markerSubject = BehaviorSubject<Map<String, List<Marker>>>();
+  final BehaviorSubject<List<Marker>> _selectedMarkerSubject = BehaviorSubject<List<Marker>>();
+  final BehaviorSubject<List<StoreSearchInfo>> _resultSubject = BehaviorSubject<List<StoreSearchInfo>>();
   NaverMapController naverMapController;
-  var isLoading = true.obs;
 
-  @override
-  onInit(){
-    loadDatabase();
-    super.onInit();
+  final BuildContext context;
+  MapController(this.context){
+    _resultSubject.add([]);
   }
 
   loadDatabase()  {
-    selectedMarkers.assignAll([]);
+    _selectedMarkerSubject.add([]);
     String _path;
     getDatabasesPath().then((value){_path = value;}).whenComplete((){
       openDatabase(
@@ -38,7 +37,7 @@ class MapController extends GetxController{
               assetName = "cafe";
             }
             OverlayImage image;
-            OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: Get.context).then((value){
+            OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: context).then((value){
               image = value;
             });
             String query = "select name, menu from outschool where category='${marker["category"]}' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
@@ -61,23 +60,23 @@ class MapController extends GetxController{
               index++;
             });
           }
-          markers.assignAll(_markers);
-          refresh();
+          _markerSubject.add(_markers);
         });
       });
     });
   }
 
   getMarker(String category){
-    selectedMarkers.assignAll(markers[category]);
-    refresh();
+    _selectedMarkerSubject.add(_markerSubject.value[category]);
   }
 
   _onMarkerTap(Marker marker, Map<String, int> iconSize){
     naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(marker.position.latitude, marker.position.longitude)));
-    // Fluttertoast.showToast(msg: _mapController.getInfoWindow(marker.position.latitude, marker.position.longitude));
   }
 
+  selectMarker(List<Marker> markers){
+    _selectedMarkerSubject.add(markers);
+  }
   getStoreList(String catString, Map marker){
     String query = "select name, menu from outschool where category='$catString' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
     _database.rawQuery(query).then((value){
@@ -87,17 +86,13 @@ class MapController extends GetxController{
   }
 
   searchStore(String searchKeyword) async {
-    isLoading(true);
-    refresh();
     String _query;
     List<Map> queryResult = List<Map>();
     if(searchKeyword.isNotEmpty){
       _query = "select name, menu, latitude, longitude from outschool where phone is not null and name like '%$searchKeyword%'";
       queryResult = await _database.rawQuery(_query);
-      searchResult.assignAll(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
+      _resultSubject.add(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
     }
-    isLoading(false);
-    refresh();
   }
 
   getInfoWindow(double latitude, double longitude) {
@@ -108,4 +103,15 @@ class MapController extends GetxController{
       return storeResult;
     });
   }
+
+  dispose(){
+    _selectedMarkerSubject.close();
+    _markerSubject.close();
+    _resultSubject.close();
+  }
+
+  Stream<Map<String, List<Marker>>> get markers => _markerSubject.stream;
+  Stream<List<Marker>> get selectedMarkers => _selectedMarkerSubject.stream;
+  Stream<List<StoreSearchInfo>> get searchResult => _resultSubject.stream;
+
 }

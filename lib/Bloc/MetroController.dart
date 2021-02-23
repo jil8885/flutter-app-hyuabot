@@ -1,49 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
+import 'package:rxdart/rxdart.dart';
 
 
-class FetchMetroInfoController extends GetxController{
-  RxMap<String, dynamic> departureInfo = Map<String, dynamic>().obs;
-  var isLoading = true.obs;
-  var hasError = false.obs;
+class FetchMetroInfoController{
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
 
-  @override
-  void onInit(){
-    queryDepartureInfo();
-    super.onInit();
-  }
-
-  queryDepartureInfo() async {
-    try{
-      isLoading(true);
-      var data = await fetchDepartureInfo();
-      if(data != null){
-        departureInfo.assignAll(data);
-        isLoading(false);
-      }
-    } catch (e){
-      hasError(false);
-    } finally {
-      refresh();
-    }
-    Timer.periodic(Duration(minutes: 1), (timer) async {
-      try{
-        isLoading(true);
-        var data = await fetchDepartureInfo();
-        if(data != null){
-          departureInfo.assignAll(data);
-          isLoading(false);
-        }
-      } catch (e){
-        hasError(false);
-      } finally {
-        refresh();
-      }
+  FetchMetroInfoController(){
+    fetchDepartureInfo().then((value){
+      _subject.add(value);
+    });
+    Stream _timer =  Stream.periodic(Duration(minutes: 1));
+    _timer.listen((_) async {
+      _subject.add(await fetchDepartureInfo());
     });
   }
 
@@ -71,4 +44,11 @@ class FetchMetroInfoController extends GetxController{
     }
     return data;
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<Map<String, dynamic>> get departureInfo => _subject.stream;
+
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class BusTimeTablePage extends StatelessWidget {
   final String lineName;
@@ -69,10 +68,10 @@ class BusTimeTablePage extends StatelessWidget {
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
-    final BusTimetableController _busController = Get.put(BusTimetableController(lineName));
+    busTimetableController.setRoute(lineName);
 
 
-    switch (prefManager.read("localeCode")){
+    switch (prefManager.getString("localeCode")){
       case "ko_KR":
         _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
         break;
@@ -83,8 +82,8 @@ class BusTimeTablePage extends StatelessWidget {
         break;
     }
 
-    String _startStop = lineInfo[lineName]["from"].toString().tr;
-    String _terminalStop = lineInfo[lineName]["to"].toString().tr;
+    String _startStop = lineInfo[lineName]["from"].toString().tr();
+    String _terminalStop = lineInfo[lineName]["to"].toString().tr();
     return Scaffold(
       body: Column(
         children: [
@@ -110,48 +109,50 @@ class BusTimeTablePage extends StatelessWidget {
             ),
             color: lineColor,
           ),
-          Obx(() {
-              if(_busController.hasError.value){
-                return Container(child: Center(child: Text("loading_error".tr),), height: 50,);
-              }
-              else if(_busController.isLoading.value){
+          StreamBuilder(
+            stream: busTimetableController.timetableInfo,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if(snapshot.hasError){
+                return Container(child: Center(child: Text("loading_error".tr()),), height: 50,);
+              } else if(!snapshot.hasData){
                 return Expanded(child: Center(child: CircularProgressIndicator(),));
-              }
-              int initialIndex = 0;
-              switch(_busController.timetableInfo["day"]){
-                case "weekdays":
-                  initialIndex = 0;
-                  break;
-                case "sat":
-                  initialIndex = 1;
-                  break;
-                case "sun":
-                  initialIndex = 2;
-                  break;
-              }
-              return Expanded(
-                child: DefaultTabController(
-                  length: 3,
-                  initialIndex: initialIndex,
-                  child: Column(
-                    children: [
-                      TabBar(tabs: [
-                        Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText2,),),
-                        Tab(child: Text("saturday".tr, style: Theme.of(context).textTheme.bodyText2,),),
-                        Tab(child: Text("sunday".tr, style: Theme.of(context).textTheme.bodyText2,),),
-                      ],),
-                      Expanded(child: TabBarView(
-                        children: [
-                          Container(child: _timeTableView(_busController.timetableInfo["weekdays"], 0, initialIndex)),
-                          Container(child: _timeTableView(_busController.timetableInfo["saturday"], 1, initialIndex)),
-                          Container(child: _timeTableView(_busController.timetableInfo["sunday"], 2, initialIndex)),
-                        ],
-                      ))
-                    ],
+              } else {
+                int initialIndex = 0;
+                switch(snapshot.data["day"]){
+                  case "weekdays":
+                    initialIndex = 0;
+                    break;
+                  case "sat":
+                    initialIndex = 1;
+                    break;
+                  case "sun":
+                    initialIndex = 2;
+                    break;
+                }
+                return Expanded(
+                  child: DefaultTabController(
+                    length: 3,
+                    initialIndex: initialIndex,
+                    child: Column(
+                      children: [
+                        TabBar(tabs: [
+                          Tab(child: Text("weekdays".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                          Tab(child: Text("saturday".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                          Tab(child: Text("sunday".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                        ],),
+                        Expanded(child: TabBarView(
+                          children: [
+                            Container(child: _timeTableView(snapshot.data["weekdays"], 0, initialIndex)),
+                            Container(child: _timeTableView(snapshot.data["saturday"], 1, initialIndex)),
+                            Container(child: _timeTableView(snapshot.data["sunday"], 2, initialIndex)),
+                          ],
+                        ))
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
+            },
           ),
         ],
       ),

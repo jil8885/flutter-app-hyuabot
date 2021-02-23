@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
-import 'package:get/get.dart';
 
 class MetroRealtimeCardPaint extends CustomPainter{
+  final BuildContext context;
   final List<MetroRealtimeInfo> data;
   final Color lineColor;
-  MetroRealtimeCardPaint(this.data, this.lineColor);
+  MetroRealtimeCardPaint(this.context, this.data, this.lineColor);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text) {
-    TextSpan sp = TextSpan(style: TextStyle(color: !Get.isDarkMode ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
@@ -20,7 +20,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
   String _resultString(MetroRealtimeInfo info, String status){
     String _result;
     Map<String, String> langDict;
-    switch(prefManager.read("localeCode")){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _result = '${info.terminalStation}행 ${info.remainedTime.toInt()}분 ($status)';
         break;
@@ -118,13 +118,14 @@ class MetroRealtimeCardPaint extends CustomPainter{
 }
 
 class MetroTimeTableCardPaint extends CustomPainter{
+  final BuildContext context;
   final List<MetroTimeTableInfo> data;
   final Color lineColor;
 
-  MetroTimeTableCardPaint(this.data, this.lineColor);
+  MetroTimeTableCardPaint(this.context, this.data, this.lineColor);
 
   void drawRemainedTime(Canvas canvas, Offset offset, String text) {
-    TextSpan sp = TextSpan(style: TextStyle(color: !Get.isDarkMode ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
+    TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
     Offset location = Offset(offset.dx, offset.dy - tp.height * .5);
@@ -135,7 +136,7 @@ class MetroTimeTableCardPaint extends CustomPainter{
     String _result;
     Map<String, String> langDict;
     DateTime now = DateTime.now();
-    switch(prefManager.read("localeCode")){
+    switch(prefManager.getString("localeCode")){
       case "ko_KR":
         _result = '${info.terminalStation}행 ${getTimeFromString(info.arrivalTime.toString(), now).difference(now).inMinutes}분';
         break;

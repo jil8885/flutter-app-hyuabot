@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
+import 'package:easy_localization/easy_localization.dart';
+
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
-import 'package:get/get.dart';
 
 class ShuttleTimeTablePage extends StatelessWidget {
   final String currentStop;
   final String destination;
 
   ShuttleTimeTablePage(this.currentStop, this.destination);
-  String _busStop;
 
   Map<String, List<dynamic>> _getTimetable(Map<String, dynamic> data){
     Map<String, List<dynamic>> _resultData = {};
@@ -103,7 +102,7 @@ class ShuttleTimeTablePage extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(_label.tr, style: _headingColor),
+                Text(_label.tr(), style: _headingColor),
                 Container(
                   width: MediaQuery.of(context).size.width*.5,
                   child: Row(
@@ -127,7 +126,7 @@ class ShuttleTimeTablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     analytics.setCurrentScreen(screenName: "/shuttle/timetable");
-
+    String _busStop;
     switch(currentStop){
       case "bus_stop_dorm":
         _busStop = "Residence";
@@ -145,37 +144,39 @@ class ShuttleTimeTablePage extends StatelessWidget {
         _busStop = "Shuttlecock_I";
         break;
     }
-    final _shuttleController = Get.put(ShuttleTimeTableController(_busStop));
+    shuttleTimeTableController.setBusStop(_busStop);
 
     return Scaffold(
      appBar: AppBar(
-       title: Text("${currentStop.tr} → ${(destination.tr).replaceAll("Bound for", "")}"), centerTitle: true,
+       title: Text("${currentStop.tr()} → ${(destination.tr()).replaceAll("Bound for", "")}"), centerTitle: true,
        backgroundColor: Color.fromARGB(255, 20, 75, 170),
      ),
-     body: Obx(() {
-       if(_shuttleController.timeTableInfo["weekdays"] == null || _shuttleController.timeTableInfo["weekdays"] == null){
-         return Center(child: CircularProgressIndicator(),);
-       }
-       Map<String, List<dynamic>> _data = _getTimetable(_shuttleController.timeTableInfo);
-       int initialIndex = _shuttleController.timeTableInfo["day"] == "weekdays"? 0:1;
-       return Container(
-         child: DefaultTabController(
-           length: 2,
-           initialIndex: initialIndex,
-           child: Column(
-             children: [
-               TabBar(tabs: [Tab(child: Text("weekdays".tr, style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr, style: Theme.of(context).textTheme.bodyText2,),)],),
-               Expanded(child: TabBarView(
-                 children: [
-                   Container(child: _timeTableView(_data["weekdays"], _shuttleController.timeTableInfo["weekdays"], _shuttleController.timeTableInfo["day"] == "weekdays"),),
-                   Container(child: _timeTableView(_data["weekends"], _shuttleController.timeTableInfo["weekends"], _shuttleController.timeTableInfo["day"] != "weekdays"),),
-                 ],
-               ))
-             ],
+     body: StreamBuilder(
+       stream: shuttleTimeTableController.departureInfo,
+       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+         if(!snapshot.hasData || snapshot.data["weekdays"] == null || snapshot.data["weekdays"] == null){
+           return Center(child: CircularProgressIndicator(),);
+         }
+         Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
+         int initialIndex = snapshot.data["day"] == "weekdays"? 0:1;
+         return Container(
+           child: DefaultTabController(
+             length: 2,
+             initialIndex: initialIndex,
+             child: Column(
+               children: [
+                 TabBar(tabs: [Tab(child: Text("weekdays".tr(), style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr(), style: Theme.of(context).textTheme.bodyText2,),)],),
+                 Expanded(child: TabBarView(
+                   children: [
+                     Container(child: _timeTableView(_data["weekdays"], snapshot.data["weekdays"], snapshot.data["day"] == "weekdays"),),
+                     Container(child: _timeTableView(_data["weekends"], snapshot.data["weekends"], snapshot.data["day"] != "weekdays"),),
+                   ],
+                 ))
+               ],
+             ),
            ),
-         ),
-       );
-       }
+         );
+       },
      ),
    );
   }
