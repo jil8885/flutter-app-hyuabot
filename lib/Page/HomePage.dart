@@ -214,16 +214,16 @@ class HomePage extends StatelessWidget{
                 physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 4,
                 shrinkWrap: true,
-                childAspectRatio: 0.7,
+                childAspectRatio: 0.8,
                 children: [
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr(), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr(), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr(), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr(), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "reading_room_btn".tr(), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-phone.png", "contact_btn".tr(), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-map.png", "map_btn".tr(), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-reading-room.png", "calendar_btn".tr(), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-shuttle.png", "shuttle_btn".tr(), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-bus.png", "bus_btn".tr(), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-metro.png", "metro_btn".tr(), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-restaurant.png", "food_btn".tr(), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-library.png", "reading_room_btn".tr(), ReadingRoomPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-contact.png", "contact_btn".tr(), PhoneSearchPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-map.png", "map_btn".tr(), MapPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-calendar.png", "calendar_btn".tr(), CalendarPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 ]),
             secondChild: GridView.count(
                 physics: NeverScrollableScrollPhysics(),
@@ -231,10 +231,10 @@ class HomePage extends StatelessWidget{
                 shrinkWrap: true,
                 childAspectRatio: 0.8,
                 children: [
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-shuttle.png", "shuttle_btn".tr(), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-bus.png", "bus_btn".tr(), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-metro.png", "metro_btn".tr(), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
-                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/hanyang-food.png", "food_btn".tr(), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30)
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-shuttle.png", "shuttle_btn".tr(), ShuttlePage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-bus.png", "bus_btn".tr(), BusPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-metro.png", "metro_btn".tr(), MetroPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
+                  _menuButton(context, _itemWidth, _itemHeight, "assets/images/menu-restaurant.png", "food_btn".tr(), FoodPage(), Theme.of(context).backgroundColor == Colors.white ? _primaryColor.withOpacity(0.3) : Colors.white30),
                 ]),
           );
         },
@@ -459,7 +459,7 @@ class HomePage extends StatelessWidget{
             ),
             decoration: BoxDecoration(
                 color: color, borderRadius: BorderRadius.circular(10)),
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(10),
           ),
         ),
         Flexible(

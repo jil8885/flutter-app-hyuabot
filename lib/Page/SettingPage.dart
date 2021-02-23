@@ -116,12 +116,43 @@ class SettingPage extends StatelessWidget{
                               children: [
                                 RichText(text:
                                   TextSpan(
-                                    text: 'Icons made by Freepik(For map marker)',
+                                    text: 'Icons made by Freepik\n(Marker, Metro, Restaurant, Library, Contact)',
                                     style: new TextStyle(color: Colors.blue),
                                     recognizer: new TapGestureRecognizer()
                                       ..onTap = () { launch('https://www.freepik.com');
                                       },
                                   ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                RichText(text:
+                                TextSpan(
+                                  text: 'Icons made by Icongeek26(Shuttle)',
+                                  style: new TextStyle(color: Colors.blue),
+                                  recognizer: new TapGestureRecognizer()
+                                    ..onTap = () { launch('https://www.flaticon.com/authors/icongeek26');
+                                    },
+                                ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                RichText(text:
+                                TextSpan(
+                                  text: 'Icons made by Vectors Market(Bus)',
+                                  style: new TextStyle(color: Colors.blue),
+                                  recognizer: new TapGestureRecognizer()
+                                    ..onTap = () { launch('https://www.flaticon.com/authors/vectors-market');
+                                    },
+                                ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                RichText(text:
+                                TextSpan(
+                                  text: 'Icons made by Becris(Calendar)',
+                                  style: new TextStyle(color: Colors.blue),
+                                  recognizer: new TapGestureRecognizer()
+                                    ..onTap = () { launch('https://www.flaticon.com/authors/becris');
+                                    },
+                                ),
+                                  textAlign: TextAlign.center,
                                 )
                               ],
                             ),
