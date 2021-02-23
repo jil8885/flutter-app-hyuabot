@@ -14,7 +14,7 @@ class MapController{
 
   final BuildContext context;
   MapController(this.context){
-    loadDatabase();
+    _resultSubject.add([]);
   }
 
   loadDatabase()  {
