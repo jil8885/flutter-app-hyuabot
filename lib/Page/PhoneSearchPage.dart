@@ -19,7 +19,7 @@ class PhoneSearchPage extends StatelessWidget {
       inSchoolPhoneSearchController.search(_inSchoolTextEditor.value.text.trim());
     });
     _outSchoolTextEditor.addListener(() {
-      inSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
+      outSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
     });
 
     final Widget _searchTabInSchool = Column(
@@ -49,14 +49,39 @@ class PhoneSearchPage extends StatelessWidget {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index){
                       return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (context){
+                              return AlertDialog(
+                                title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                actions: [
+                                  FlatButton(
+                                    child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                  ),
+                                  FlatButton(
+                                    child: Text('no'.tr()),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  )
+                                ],
+                              );
+                            }
+                          );
+                        },
                         child: Card(
                           color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Text(
                                   snapshot.data[index].name,
@@ -116,7 +141,32 @@ class PhoneSearchPage extends StatelessWidget {
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index){
                       return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
                         child: Card(
                           color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
                           child: Padding(
@@ -157,7 +207,7 @@ class PhoneSearchPage extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: height, horizontal: height/2),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: 15),
         child: DefaultTabController(
           length: 2,
             child: Column(
