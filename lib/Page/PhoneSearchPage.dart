@@ -45,66 +45,50 @@ class PhoneSearchPage extends StatelessWidget {
               return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index){
-                      return GestureDetector(
+                child: ListView.separated(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
                         onTap: (){
                           showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (context){
-                              return AlertDialog(
-                                title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
-                                content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
-                                actions: [
-                                  FlatButton(
-                                    child: Text('yes'.tr()),
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
                                       onPressed: () {
                                         UrlLauncher.launch("tel://${snapshot.data[index].number}");
                                       },
-                                  ),
-                                  FlatButton(
-                                    child: Text('no'.tr()),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  )
-                                ],
-                              );
-                            }
+                                    ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
                           );
                         },
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  snapshot.data[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  snapshot.data[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            leading: CircleAvatar(),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
-                      );
-                    }
+                        )
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
                 ),
               );
             }
@@ -137,7 +121,7 @@ class PhoneSearchPage extends StatelessWidget {
               return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index){
                       return GestureDetector(
@@ -167,36 +151,20 @@ class PhoneSearchPage extends StatelessWidget {
                               }
                           );
                         },
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  snapshot.data[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  snapshot.data[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            leading: CircleAvatar(),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
+                        )
                       );
-                    }
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider();
+                  },
                 ),
               );
             }
