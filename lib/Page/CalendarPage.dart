@@ -25,11 +25,11 @@ class CalendarPage extends StatelessWidget{
             return SfCalendar(
               dataSource: _schedules,
               view: CalendarView.month,
-              appointmentTextStyle: TextStyle(fontFamily: 'Godo', fontSize: 12, color: Colors.white),
+              appointmentTextStyle: TextStyle(fontFamily: 'Godo', fontSize: 16, color: Colors.white),
+              initialSelectedDate: DateTime.now(),
               monthViewSettings: MonthViewSettings(
-                numberOfWeeksInView: 6,
-                showAgenda: false,
-                agendaViewHeight: MediaQuery.of(context).size.height / 5,
+                showAgenda: true,
+                agendaViewHeight: MediaQuery.of(context).size.height / 4.5,
                 appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
                 agendaStyle: AgendaStyle(
                   appointmentTextStyle: TextStyle(
@@ -40,13 +40,14 @@ class CalendarPage extends StatelessWidget{
                   ),
                 ),
                 monthCellStyle: MonthCellStyle(
-                    backgroundColor: Theme.of(context).backgroundColor == Colors.white ? Colors.white:Colors.grey,
-                    trailingDatesBackgroundColor: Theme.of(context).backgroundColor == Colors.white ? Colors.grey : Colors.black,
-                    leadingDatesBackgroundColor: Theme.of(context).backgroundColor == Colors.white ? Colors.grey : Colors.black,
+                    backgroundColor: Theme.of(context).backgroundColor,
+                    trailingDatesBackgroundColor: Colors.grey,
+                    leadingDatesBackgroundColor: Colors.grey,
                     todayBackgroundColor: Theme.of(context).backgroundColor,
                     textStyle: TextStyle(
                         fontSize: 12,
                         fontFamily: 'Godo',
+                        color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white
                     ),
                     trailingDatesTextStyle: TextStyle(
                         fontStyle: FontStyle.italic,
