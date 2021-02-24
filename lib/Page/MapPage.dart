@@ -40,7 +40,6 @@ class _MapPageState extends State<MapPage> {
       _isInitial = false;
     }
     _mapController = MapController(context);
-    _mapController.loadDatabase();
     _translatedMenus = _menus.map((e) => e.tr()).toList();
     String _selectedCat = _translatedMenus[0];
     _map = _naverMap(context);
@@ -48,7 +47,7 @@ class _MapPageState extends State<MapPage> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.category, color: Colors.white,),
+        child: Icon(Icons.menu, color: Colors.white,),
         backgroundColor: Color(0xff2db400),
         onPressed: () {
           showMaterialScrollPicker(
@@ -111,7 +110,7 @@ class _MapPageState extends State<MapPage> {
           return NaverMap(
             markers: _markers,
             initialCameraPosition: CameraPosition(
-                target: LatLng(37.300153, 126.837759), zoom: 17.5),
+                target: LatLng(37.300153, 126.837759), zoom: 16),
             mapType: MapType.Basic,
             symbolScale: 0,
             nightModeEnable: Theme

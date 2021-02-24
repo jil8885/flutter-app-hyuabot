@@ -14,6 +14,7 @@ class MapController{
 
   final BuildContext context;
   MapController(this.context){
+    loadDatabase();
     _resultSubject.add([]);
   }
 
@@ -67,7 +68,45 @@ class MapController{
   }
 
   getMarker(String category){
-    _selectedMarkerSubject.add(_markerSubject.value[category]);
+    if(_markerSubject.value[category].isNotEmpty){
+      _selectedMarkerSubject.add(_markerSubject.value[category]);
+    } else {
+      String query = "select distinct category, latitude, longitude from outschool where category='$category'";
+      List<Map> queryResult;
+      _database.rawQuery(query).then((value){queryResult = value;}).whenComplete((){
+        List<Marker> _markers = List<Marker>();
+        int index = 0;
+        for(Map marker in queryResult){
+          String assetName = "restaurant";
+          if(marker["category"] == "pub"){
+            assetName = "pub";
+          } else if(marker["category"] == "cafe"){
+            assetName = "cafe";
+          }
+          OverlayImage image;
+          OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: context).then((value){
+            image = value;
+          });
+          String query = "select name, menu from outschool where category='${marker["category"]}' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
+          List<Map> queryResult;
+          _database.rawQuery(query).then((value){queryResult = value;}).whenComplete((){
+            String storeResult = queryResult.map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
+            _markers.add(Marker(
+                markerId: '$index',
+                position: LatLng(double.parse(marker['latitude'].toString()), double.parse(marker['longitude'].toString())),
+                icon: image,
+                width: 20,
+                height: 20,
+                captionText: marker["category"],
+                infoWindow: storeResult,
+                onMarkerTab: _onMarkerTap
+            ));
+            index++;
+          });
+        }
+        _selectedMarkerSubject.add(_markers);
+      });
+    }
   }
 
   _onMarkerTap(Marker marker, Map<String, int> iconSize){
