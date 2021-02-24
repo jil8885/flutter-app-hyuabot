@@ -136,7 +136,7 @@ class ReadingRoomPage extends StatelessWidget {
                       child: Column(
                         children: [
                           Container(
-                            height: 400,
+                            height: 450,
                             child: ListView(
                               physics: BouncingScrollPhysics(),
                               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -146,7 +146,7 @@ class ReadingRoomPage extends StatelessWidget {
                                 _readingRoomCard(context, "reading_room_3", _theme),
                                 _readingRoomCard(context, "reading_room_4", _theme),
                               ],
-                            )
+                            ),
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,

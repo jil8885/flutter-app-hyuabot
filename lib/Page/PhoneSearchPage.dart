@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -19,7 +18,7 @@ class PhoneSearchPage extends StatelessWidget {
       inSchoolPhoneSearchController.search(_inSchoolTextEditor.value.text.trim());
     });
     _outSchoolTextEditor.addListener(() {
-      inSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
+      outSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
     });
 
     final Widget _searchTabInSchool = Column(
@@ -45,41 +44,49 @@ class PhoneSearchPage extends StatelessWidget {
               return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index){
-                      return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  snapshot.data[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  snapshot.data[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                child: ListView.separated(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
-                      );
-                    }
+                        )
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
                 ),
               );
             }
@@ -112,41 +119,49 @@ class PhoneSearchPage extends StatelessWidget {
               return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index){
                       return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  snapshot.data[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  snapshot.data[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
+                        )
                       );
-                    }
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider();
+                  },
                 ),
               );
             }
@@ -157,7 +172,7 @@ class PhoneSearchPage extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: height, horizontal: height/2),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: 15),
         child: DefaultTabController(
           length: 2,
             child: Column(
