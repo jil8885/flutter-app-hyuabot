@@ -101,7 +101,6 @@ class HomePage extends StatelessWidget{
     final Widget _shuttleCardList = Container(
       height: _height / 4,
       width: _width,
-      padding: EdgeInsets.symmetric(horizontal: 30),
       child: StreamBuilder(
         stream: shuttleDepartureController.departureInfo,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -160,7 +159,6 @@ class HomePage extends StatelessWidget{
         return Container(
           height: _height / 3.5,
           width: _width,
-          padding: EdgeInsets.symmetric(horizontal: 30),
           child: ListView.builder(
             padding: EdgeInsets.only(top: 5, bottom: 5, right: 5),
             shrinkWrap: true,
@@ -479,22 +477,28 @@ class HomePage extends StatelessWidget{
 
   Widget _homeShuttleItems(BuildContext context, String title,
     List<String> departureInfo, ShuttleStopDepartureInfo data) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, Transition(child: ShuttlePage(), transitionEffect: TransitionEffect.leftToRight).builder());
-      },
-      child:
-          CustomShuttleCard(title: title, timetable: departureInfo, data: data),
+    return Padding(
+      padding: const EdgeInsets.only(left: 15),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context, Transition(child: ShuttlePage(), transitionEffect: TransitionEffect.leftToRight).builder());
+        },
+        child:
+            CustomShuttleCard(title: title, timetable: departureInfo, data: data),
+      ),
     );
   }
 
   Widget _foodItems(BuildContext context, String title, String time, int index,
       FoodMenu data) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, Transition(child: FoodPage(), transitionEffect: TransitionEffect.leftToRight).builder());
-      },
-      child: CustomFoodCard(title: title, time: time, data: data),
+    return Padding(
+      padding: const EdgeInsets.only(left: 15),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context, Transition(child: FoodPage(), transitionEffect: TransitionEffect.leftToRight).builder());
+        },
+        child: CustomFoodCard(title: title, time: time, data: data),
+      ),
     );
   }
 
