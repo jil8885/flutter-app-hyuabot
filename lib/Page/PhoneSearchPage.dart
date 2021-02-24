@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -79,7 +78,6 @@ class PhoneSearchPage extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                            leading: CircleAvatar(),
                             title: Text(snapshot.data[index].name),
                             subtitle: Text(snapshot.data[index].number),
                           ),
@@ -155,7 +153,6 @@ class PhoneSearchPage extends StatelessWidget {
                           width: MediaQuery.of(context).size.width,
                           child: ListTile(
                             contentPadding: EdgeInsets.symmetric(horizontal: 20),
-                            leading: CircleAvatar(),
                             title: Text(snapshot.data[index].name),
                             subtitle: Text(snapshot.data[index].number),
                           ),
