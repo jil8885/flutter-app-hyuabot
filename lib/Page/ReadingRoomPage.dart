@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
 import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 
 class ReadingRoomPage extends StatelessWidget {
 
-  Widget _readingRoomCard(BuildContext context, String name, int active, int available, TextStyle theme, bool alarmActive) {
+  Widget _readingRoomCard(BuildContext context, String name, TextStyle theme) {
     String _alarmOnString;
     String _alarmOffString;
 
@@ -34,48 +35,70 @@ class ReadingRoomPage extends StatelessWidget {
         color: theme.color,
         child: Container(
           height: 80,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(name.tr(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
-              Text.rich(TextSpan(children: [
-                TextSpan(text: available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
-                TextSpan(text: '/$active', style: TextStyle(color: Colors.grey, fontSize: 22)),
-              ])),
-              IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
-                if(alarmActive){
-                  fcmManager.unsubscribeFromTopic("$name.ko_KR");
-                  fcmManager.unsubscribeFromTopic("$name.en_US");
-                  fcmManager.unsubscribeFromTopic("$name.zh");
-                  prefManager.setBool(name, false);
-                  readingRoomController.updateAlarm();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(_alarmOffString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      duration: Duration(seconds: 2),
-                  ));
-                } else {
-                  if(available < (kReleaseMode?0:100)){
-                    fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
-                    prefManager.setBool(name, true);
-                    readingRoomController.updateAlarm();
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text(_alarmOnString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      duration: Duration(seconds: 2),
-                    ));
-                  } else{
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("seat_remained_error".tr(), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      duration: Duration(seconds: 2),
-                    ));
-                  }
-                }
-              }),
-            ],
+          child: StreamBuilder<Map<String, dynamic>>(
+            stream: readingRoomController.currentData,
+            builder: (context, snapshot) {
+              if(snapshot.hasError || !snapshot.hasData){
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text(name.tr(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
+                    Text.rich(TextSpan(children: [
+                      TextSpan(text: "-", style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
+                      TextSpan(text: '/-', style: TextStyle(color: Colors.grey, fontSize: 22)),
+                    ])),
+                    IconButton(icon: Icon(Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){}),
+                  ],
+                );
+              }
+              ReadingRoomInfo seats = snapshot.data["seats"][name];
+              bool alarmActive = snapshot.data["alarm"][name];
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(name.tr(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 24), textAlign: TextAlign.center,),
+                  Text.rich(TextSpan(children: [
+                    TextSpan(text: seats.available.toString(), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 22)),
+                    TextSpan(text: '/${seats.active}', style: TextStyle(color: Colors.grey, fontSize: 22)),
+                  ])),
+                  IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
+                    if(alarmActive){
+                      fcmManager.unsubscribeFromTopic("$name.ko_KR");
+                      fcmManager.unsubscribeFromTopic("$name.en_US");
+                      fcmManager.unsubscribeFromTopic("$name.zh");
+                      prefManager.setBool(name, false);
+                      readingRoomController.updateAlarm();
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(_alarmOffString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          duration: Duration(seconds: 2),
+                      ));
+                    } else {
+                      if(seats.available < (kReleaseMode?0:100)){
+                        fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
+                        prefManager.setBool(name, true);
+                        readingRoomController.updateAlarm();
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text(_alarmOnString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          duration: Duration(seconds: 2),
+                        ));
+                      } else{
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text("seat_remained_error".tr(), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
+                          backgroundColor: Theme.of(context).backgroundColor,
+                          duration: Duration(seconds: 2),
+                        ));
+                      }
+                    }
+                  }),
+                ],
+              );
+            }
           ),
         ),
       ),
@@ -114,23 +137,15 @@ class ReadingRoomPage extends StatelessWidget {
                         children: [
                           Container(
                             height: 400,
-                            child: StreamBuilder(
-                              stream: readingRoomController.currentData,
-                              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                                if(snapshot.hasError | !snapshot.hasData){
-                                  return Center(child: CircularProgressIndicator());
-                                }
-                                return ListView(
-                                  physics: BouncingScrollPhysics(),
-                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                  children: [
-                                    _readingRoomCard(context, "reading_room_1", snapshot.data["seats"]["제1열람실"].active, snapshot.data["seats"]["제1열람실"].available, _theme, snapshot.data["alarm"]["reading_room_1"]),
-                                    _readingRoomCard(context, "reading_room_2", snapshot.data["seats"]["제2열람실"].active, snapshot.data["seats"]["제2열람실"].available, _theme, snapshot.data["alarm"]["reading_room_2"]),
-                                    _readingRoomCard(context, "reading_room_3", snapshot.data["seats"]["제3열람실"].active, snapshot.data["seats"]["제3열람실"].available, _theme, snapshot.data["alarm"]["reading_room_3"]),
-                                    _readingRoomCard(context, "reading_room_4", snapshot.data["seats"]["제4열람실"].active, snapshot.data["seats"]["제4열람실"].available, _theme, snapshot.data["alarm"]["reading_room_4"]),
-                                  ],
-                                );
-                              },
+                            child: ListView(
+                              physics: BouncingScrollPhysics(),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              children: [
+                                _readingRoomCard(context, "reading_room_1",  _theme),
+                                _readingRoomCard(context, "reading_room_2",  _theme),
+                                _readingRoomCard(context, "reading_room_3", _theme),
+                                _readingRoomCard(context, "reading_room_4", _theme),
+                              ],
                             )
                           ),
                           Row(

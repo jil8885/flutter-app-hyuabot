@@ -34,9 +34,10 @@ class ReadingRoomController{
         body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(
         utf8.decode(response.bodyBytes));
+    Map<String, String> roomCode = {"제1열람실":"reading_room_1", "제2열람실":"reading_room_2", "제3열람실":"reading_room_3", "제4열람실":"reading_room_4", "제5열람실":"reading_room_5"};
     Map<String, ReadingRoomInfo> data = {};
     for (String key in responseJson.keys) {
-      data[key] = ReadingRoomInfo.fromJson(responseJson[key]);
+      data[roomCode[key]] = ReadingRoomInfo.fromJson(responseJson[key]);
     }
     return data;
   }
