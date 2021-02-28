@@ -114,7 +114,7 @@ class BusPage extends StatelessWidget {
                   ),
                   _busCard(context, _width, "guest_house".tr(), "sangnoksu_stn".tr(), "10-1", Color(0xff009e96), true),
                   _busCard(context, _width, "guest_house".tr(), "gangnam_stn".tr(), "3102", Color(0xffe60012), true),
-                  _busCard(context, _width, "main_gate".tr(), "suwon_stn".tr(), "707-1", Color(0xff0068b7), false),
+                  _busCard(context, _width, "main_gate".tr(), "suwon_stn".tr(), "707-1", Color(0xff0068b7), true),
                   Expanded(
                     // child: Container(),
                     child: Center(child: Text("how_use_bus_page".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color), textAlign: TextAlign.center,)),

@@ -144,7 +144,6 @@ class ReadingRoomPage extends StatelessWidget {
                                 _readingRoomCard(context, "reading_room_1",  _theme),
                                 _readingRoomCard(context, "reading_room_2",  _theme),
                                 _readingRoomCard(context, "reading_room_3", _theme),
-                                _readingRoomCard(context, "reading_room_4", _theme),
                               ],
                             ),
                           ),
