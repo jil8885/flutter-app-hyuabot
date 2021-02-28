@@ -44,11 +44,6 @@ void initApp() async {
   const InitializationSettings _settings = InitializationSettings(android: _initialSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(_settings,
       onSelectNotification: whenSelectNotification);
-
-  // Locale
-  if (prefManager.getString("localeCode") == null){
-    prefManager.setString("localeCode", "ko_KR");
-  }
 }
 
 Future whenSelectNotification(String payload) async{
@@ -86,6 +81,20 @@ class SplashScreenState extends State<SplashScreen>{
 
   @override
   Widget build(BuildContext context) {
+    // Locale
+    if (prefManager.getString("localeCode") == null){
+      final String defaultLocale = Platform.localeName;
+      if(defaultLocale.startsWith("en")){
+        prefManager.setString("localeCode", "en_US");
+        context.locale = Locale("en", "US");
+      } else if(defaultLocale.startsWith("zh")){
+        prefManager.setString("localeCode", "zh");
+        context.locale = Locale("zh");
+      } else {
+        prefManager.setString("localeCode", "ko_KR");
+        context.locale = Locale("ko", "KR");
+      }
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body:  Column(
