@@ -22,8 +22,8 @@ class BusCardPaint extends CustomPainter {
         _seatString = '$seats석';
         break;
       case 'en_US':
-        _stopString = '($numOfStop Stops left)';
-        _seatString = 'Seats: $seats';
+        _stopString = '$numOfStop Stops';
+        _seatString = '$seats Seats';
         break;
       case 'zh':
         break;
@@ -33,7 +33,7 @@ class BusCardPaint extends CustomPainter {
       text += " - $_stopString";
     }
     if(seats >= 0){
-      text += "($_seatString)";
+      text += "/$_seatString";
     }
     TextSpan sp = TextSpan(
         style: TextStyle(
@@ -71,7 +71,7 @@ class BusCardPaint extends CustomPainter {
         _timeString = '$time분';
         break;
       case 'en_US':
-        _timeString = '$time min(s) left';
+        _timeString = '$time min(s)';
         break;
       case 'zh':
         break;

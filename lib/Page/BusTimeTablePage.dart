@@ -11,6 +11,7 @@ class BusTimeTablePage extends StatelessWidget {
   final Map<String, Map<String, dynamic>> lineInfo = {
     "10-1":{"estimated": 10, "from": "purgio_apt", "to": "sangnoksu_stn", "weekdays":"15~30", "weekends":"25~50"},
     "3102":{"estimated": 30, "from": "songsan", "to": "gangnam_stn", "weekdays":"10~30", "weekends":"20~40"},
+    "707-1":{"estimated": 20, "from": "sinansan_univ", "to": "suwon_stn", "weekdays":"30~80", "weekends":"30~80"},
   };
 
   Widget _timeTableView(List timeTable, int order, int initialIndex){
