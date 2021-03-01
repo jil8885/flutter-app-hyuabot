@@ -43,7 +43,6 @@ class _MapPageState extends State<MapPage> {
     _translatedMenus = _menus.map((e) => e.tr()).toList();
     String _selectedCat = _translatedMenus[0];
     _map = _naverMap(context);
-    _floatingSearchBar = buildFloatingSearchBar();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -78,18 +77,7 @@ class _MapPageState extends State<MapPage> {
             },
           );
       }),
-      body: Stack(
-        children: [
-          Container(
-              padding: EdgeInsets.only(top: MediaQuery
-                  .of(context)
-                  .padding
-                  .top),
-              child: Container(child: _map)
-          ),
-          _floatingSearchBar
-        ],
-      ),
+      body: Container(child: _map)
     );
   }
 
@@ -102,11 +90,7 @@ class _MapPageState extends State<MapPage> {
     return StreamBuilder<List<Marker>>(
         stream: _mapController.selectedMarkers,
         builder: (context, snapshot) {
-          if(snapshot.hasError || !snapshot.hasData){
-            _markers.clear();
-          } else {
-            _markers = snapshot.data;
-          }
+          _markers = snapshot.data;
           return NaverMap(
             markers: _markers,
             initialCameraPosition: CameraPosition(
@@ -123,101 +107,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _onMapCreated(NaverMapController controller) {
-    _mapController.naverMapController = controller;
     _naverMapController = controller;
   }
 
-
-  Widget buildFloatingSearchBar() {
-    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
-    return FloatingSearchBar(
-        hint: "phone_hint_text".tr(),
-        backgroundColor: Theme.of(context).backgroundColor,
-        scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-        transitionDuration: const Duration(milliseconds: 200),
-        transitionCurve: Curves.easeInOut,
-        physics: const BouncingScrollPhysics(),
-        axisAlignment: isPortrait ? 0.0 : -1.0,
-        openAxisAlignment: 0.0,
-        maxWidth: isPortrait ? 600 : 500,
-        debounceDelay: const Duration(milliseconds: 100),
-        controller: _floatingSearchBarController,
-        onQueryChanged: (query) {
-          _mapController.searchStore(query);
-        },
-        transition: CircularFloatingSearchBarTransition(),
-        actions: [
-          FloatingSearchBarAction(
-            showIfOpened: false,
-            child: CircularButton(
-              icon: const Icon(Icons.place),
-              onPressed: () {
-                _mapController.naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(37.300153, 126.837759)));
-              },
-            ),
-          ),
-          FloatingSearchBarAction.searchToClear(
-            showIfClosed: false,
-          ),
-        ],
-        builder: (context, transition) {
-          return StreamBuilder<List<StoreSearchInfo>>(
-              stream: _mapController.searchResult,
-              builder: (context, snapshot){
-                if(snapshot.hasError || !snapshot.hasData || snapshot.data.isEmpty){
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Material(
-                      color: Theme.of(context).backgroundColor,
-                      elevation: 4.0,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                              height: 75,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 20),),
-                                ],
-                              )
-                          )],
-                      ),
-                    ),
-                  );
-                } else{
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Material(
-                      color: Theme.of(context).backgroundColor,
-                      elevation: 4.0,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: snapshot.data.map((e) => InkWell(
-                          onTap: () async {
-                            _floatingSearchBar.controller.close();
-                            _mapController.selectMarker([Marker(markerId: e.name, position: LatLng(e.latitude, e.longitude), infoWindow: e.name)]);
-                            _naverMapController.moveCamera(CameraUpdate.scrollTo(LatLng(e.latitude, e.longitude)));
-                          },
-                          child: Container(
-                            height: 75,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("${e.name}-${e.menu}", style: Theme.of(context).textTheme.bodyText2, overflow: TextOverflow.ellipsis,),
-                              ],
-                            ),
-                          ),
-                        )).toList(),
-                      ),
-                    ),
-                  );
-                }
-            });
-        }
-    );
-  }
 }
