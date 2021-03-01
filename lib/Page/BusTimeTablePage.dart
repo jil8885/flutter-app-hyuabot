@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-class BusTimeTablePage extends StatefulWidget {
+class BusTimeTablePage extends StatelessWidget {
   final String lineName;
   final Color lineColor;
 
   BusTimeTablePage(this.lineName, this.lineColor);
-  @override
-  State<StatefulWidget> createState() => BusTimeTablePageState(lineName, lineColor);
-}
 
-class BusTimeTablePageState extends State<BusTimeTablePage>{
-  final String lineName;
-  final Color lineColor;
-
-  final FetchBusInfoController _busController = FetchBusInfoController();
   final Map<String, Map<String, dynamic>> lineInfo = {
     "10-1":{"estimated": 10, "from": "purgio_apt", "to": "sangnoksu_stn", "weekdays":"15~30", "weekends":"25~50"},
     "3102":{"estimated": 30, "from": "songsan", "to": "gangnam_stn", "weekdays":"10~30", "weekends":"20~40"},
+    "707-1":{"estimated": 20, "from": "sinansan_univ", "to": "suwon_stn", "weekdays":"30~80", "weekends":"30~80"},
   };
-
-  BusTimeTablePageState(this.lineName, this.lineColor);
 
   Widget _timeTableView(List timeTable, int order, int initialIndex){
     DateTime now = DateTime.now();
@@ -47,7 +37,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
           }
 
           Color _rowColor;
-          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 24);
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
           if(!passed && (initialIndex == order)){
             _rowColor = Color.fromARGB(255, 20, 75, 170);
             _timeColor = TextStyle(color: Colors.white, fontSize: 24);
@@ -77,8 +67,11 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
 
   @override
   Widget build(BuildContext context) {
-    TranslationManager _manager = TranslationManager.of(context);
+    analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
+    busTimetableController.setRoute(lineName);
+
+
     switch (prefManager.getString("localeCode")){
       case "ko_KR":
         _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
@@ -90,6 +83,8 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
         break;
     }
 
+    String _startStop = lineInfo[lineName]["from"].toString().tr();
+    String _terminalStop = lineInfo[lineName]["to"].toString().tr();
     return Scaffold(
       body: Column(
         children: [
@@ -106,7 +101,7 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
                   children: [
                     Text(lineName, style: TextStyle(color: Colors.white, fontSize: 28)),
                     SizedBox(height: 30,),
-                    Text("${TranslationManager.of(context).trans(lineInfo[lineName]["from"])} → ${TranslationManager.of(context).trans(lineInfo[lineName]["to"])}", style: TextStyle(color: Colors.white, fontSize: 18)),
+                    Text("$_startStop → $_terminalStop", style: TextStyle(color: Colors.white, fontSize: 18)),
                     SizedBox(height: 10,),
                     Text(_minuteInfo, style: TextStyle(color: Colors.white, fontSize: 18)),
                   ],
@@ -115,62 +110,53 @@ class BusTimeTablePageState extends State<BusTimeTablePage>{
             ),
             color: lineColor,
           ),
-          StreamBuilder<Map<String, dynamic>>(
-            stream: _busController.timetableInfo,
-            builder: (context, snapshot) {
-              if(snapshot.hasError || !snapshot.hasData){
+          StreamBuilder(
+            stream: busTimetableController.timetableInfo,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if(snapshot.hasError){
+                return Container(child: Center(child: Text("loading_error".tr()),), height: 50,);
+              } else if(!snapshot.hasData){
                 return Expanded(child: Center(child: CircularProgressIndicator(),));
-              }
-              int initialIndex = 0;
-              switch(snapshot.data["day"]){
-                case "weekdays":
-                  initialIndex = 0;
-                  break;
-                case "sat":
-                  initialIndex = 1;
-                  break;
-                case "sun":
-                  initialIndex = 2;
-                  break;
-              }
-              return Expanded(
-                child: DefaultTabController(
-                  length: 3,
-                  initialIndex: initialIndex,
-                  child: Column(
-                    children: [
-                      TabBar(tabs: [
-                        Tab(child: Text(_manager.trans("weekdays"), style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text(_manager.trans("saturday"), style: Theme.of(context).textTheme.bodyText1,),),
-                        Tab(child: Text(_manager.trans("sunday"), style: Theme.of(context).textTheme.bodyText1,),),
-                      ],),
-                      Expanded(child: TabBarView(
-                        children: [
-                          Container(child: _timeTableView(snapshot.data["weekdays"], 0, initialIndex)),
-                          Container(child: _timeTableView(snapshot.data["saturday"], 1, initialIndex)),
-                          Container(child: _timeTableView(snapshot.data["sunday"], 2, initialIndex)),
-                        ],
-                      ))
-                    ],
+              } else {
+                int initialIndex = 0;
+                switch(snapshot.data["day"]){
+                  case "weekdays":
+                    initialIndex = 0;
+                    break;
+                  case "sat":
+                    initialIndex = 1;
+                    break;
+                  case "sun":
+                    initialIndex = 2;
+                    break;
+                }
+                return Expanded(
+                  child: DefaultTabController(
+                    length: 3,
+                    initialIndex: initialIndex,
+                    child: Column(
+                      children: [
+                        TabBar(tabs: [
+                          Tab(child: Text("weekdays".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                          Tab(child: Text("saturday".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                          Tab(child: Text("sunday".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                        ],),
+                        Expanded(child: TabBarView(
+                          children: [
+                            Container(child: _timeTableView(snapshot.data["weekdays"], 0, initialIndex)),
+                            Container(child: _timeTableView(snapshot.data["saturday"], 1, initialIndex)),
+                            Container(child: _timeTableView(snapshot.data["sunday"], 2, initialIndex)),
+                          ],
+                        ))
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
+            },
           ),
         ],
       ),
     );
-  }
-
-  @override
-  void initState() {
-    analytics.setCurrentScreen(screenName: "/bus/timetable");
-    _busController.fetchTimeTable(lineName);
-    super.initState();
-  }
-  @override
-  void dispose() {
-    _busController.dispose();
-    super.dispose();
   }
 }

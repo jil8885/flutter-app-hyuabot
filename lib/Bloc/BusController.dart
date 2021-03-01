@@ -1,24 +1,27 @@
 import 'dart:convert';
-import 'package:rxdart/rxdart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
+import 'package:rxdart/rxdart.dart';
 
 
-class FetchBusInfoController{
-  final _allBusInfoSubject = BehaviorSubject<Map<String, dynamic>>();
-  final _busTimeTableSubject = BehaviorSubject<Map<String, dynamic>>();
-
-  FetchBusInfoController(){
-    fetch();
+class BusDepartureController {
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
+  BusDepartureController(){
+    fetchDepartureInfo().then((value){_subject.add(value);});
+    Stream _timer = Stream.periodic(Duration(minutes: 1));
+    _timer.listen((_) async {
+      _subject.add(await fetchDepartureInfo());
+    });
   }
 
-  void fetch() async{
+  Future<Map<String, dynamic>> fetchDepartureInfo() async{
+
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-
     Map<String, dynamic> data = {"10-1":{"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "3102": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "707-1": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}};
 
     for(String key in (responseJson["realtime"] as Map<String, dynamic>).keys){
@@ -40,21 +43,34 @@ class FetchBusInfoController{
         data[key]["timetable"] = new List<BusInfoTimetable>();
       }
     }
-    _allBusInfoSubject.add(data);
+    return data;
   }
 
-  void fetchTimeTable(String route) async{
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<Map<String, dynamic>> get busDepartureInfo => _subject.stream;
+}
+
+class BusTimetableController{
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
+
+  setRoute(String route) async {
+    _subject.add(await fetchTimeTable(route));
+  }
+
+  fetchTimeTable(String route) async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus/timetable");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "route": route}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     Map<String, dynamic> data = {"day": responseJson["day"], "weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};
-    _busTimeTableSubject.add(data);
+    return data;
   }
 
-  void dispose(){
-    _allBusInfoSubject.close();
+  dispose(){
+    _subject.close();
   }
 
-  Stream<Map<String, dynamic>> get allBusInfo => _allBusInfoSubject.stream;
-  Stream<Map<String, dynamic>> get timetableInfo => _busTimeTableSubject.stream;
+  Stream<Map<String, dynamic>> get timetableInfo => _subject.stream;
 }

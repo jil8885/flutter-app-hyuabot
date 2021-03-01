@@ -1,50 +1,54 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
 
 class DateController{
-  final _scheduleSubject = BehaviorSubject<MeetingDataSource>();
-  final List<Color> _colors = [Colors.grey, Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
+  final List<Color> _colors = [ Colors.blueGrey, Colors.green, Colors.purple, Colors.deepPurple];
+  final BehaviorSubject<List<Schedule>> _subject = BehaviorSubject<List<Schedule>>();
 
   DateController(){
-    fetch();
+    fetchData().then((value){_subject.add(value);});
   }
 
-  void fetch() async{
+  Future<List<Schedule>> fetchData() async{
     List<Schedule> data = [];
     final url = Uri.encodeFull("https://raw.githubusercontent.com/jil8885/API-for-ERICA/light/calendar/master.json");
     http.Response response = await http.get(url);
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+    int index = 0;
     for(String key in responseJson.keys){
       var value = responseJson[key];
-      data.add(getJson(key, value));
+      data.add(getJson(key, value, index % 4));
+      index++;
     }
-    _scheduleSubject.add(MeetingDataSource(data));
+    return data;
   }
 
-  void dispose(){
-    _scheduleSubject.close();
-  }
-
-  Schedule getJson(String key, dynamic value){
+  Schedule getJson(String key, dynamic value, int index){
     DateTime startDate = getDateTimeFromString(value["start"], 9);
     DateTime endDate = getDateTimeFromString(value["end"], 17);
     return Schedule(
       eventName: key,
       from: startDate,
       to: endDate,
-      background: (_colors..shuffle()).first,
+      background: _colors[index],
       isAllDay: false,
       startTimeZone: '',
       endTimeZone: '',
     );
   }
-  Stream<MeetingDataSource> get allSchedule => _scheduleSubject.stream;
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<List<Schedule>> get scheduleList => _subject.stream;
 }
 
 class Schedule {

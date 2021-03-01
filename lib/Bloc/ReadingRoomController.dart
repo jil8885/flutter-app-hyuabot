@@ -1,55 +1,64 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/ReadingRoom.dart';
+import 'package:rxdart/rxdart.dart';
 
 
 class ReadingRoomController{
-  final _allReadingRoomSubject = BehaviorSubject<Map<String, ReadingRoomInfo>>();
-  final _allReadingRoomAlarmSubject = BehaviorSubject<Map<String, bool>>();
-
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
 
   ReadingRoomController(){
-    fetch();
-    fetchAlarm();
+    fetchSeats().then((value){
+      _subject.add({"alarm": {
+        "reading_room_1": false,
+        "reading_room_2": false,
+        "reading_room_3": false,
+        "reading_room_4": false,
+      }, "seats": value});
+    });
+    Stream _timer = Stream.periodic(Duration(minutes: 1));
+    _timer.listen((_) async {
+      _subject.add({"alarm": await fetchAlarm(), "seats": await fetchSeats()});
+    });
   }
 
-  void fetch() async{
+
+  Future<Map<String, ReadingRoomInfo>> fetchSeats() async{
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/library");
     http.Response response = await http.post(
         url, headers: {"Accept": "application/json"},
         body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(
         utf8.decode(response.bodyBytes));
+    Map<String, String> roomCode = {"제1열람실":"reading_room_1", "제2열람실":"reading_room_2", "제3열람실":"reading_room_3", "제4열람실":"reading_room_4", "제5열람실":"reading_room_5"};
     Map<String, ReadingRoomInfo> data = {};
     for (String key in responseJson.keys) {
-      data[key] = ReadingRoomInfo.fromJson(responseJson[key]);
-      _allReadingRoomSubject.add(data);
+      data[roomCode[key]] = ReadingRoomInfo.fromJson(responseJson[key]);
     }
+    return data;
   }
 
-  void fetchAlarm() async{
+  fetchAlarm() async{
     Map<String, bool> data = {
-      "reading_room_1": prefManager.getBool("reading_room_1"),
-      "reading_room_2": prefManager.getBool("reading_room_2"),
-      "reading_room_3": prefManager.getBool("reading_room_3"),
-      "reading_room_4": prefManager.getBool("reading_room_4"),
+      "reading_room_1": prefManager.getBool("reading_room_1") ?? false,
+      "reading_room_2": prefManager.getBool("reading_room_2") ?? false,
+      "reading_room_3": prefManager.getBool("reading_room_3") ?? false,
+      "reading_room_4": prefManager.getBool("reading_room_4") ?? false,
     };
-    _allReadingRoomAlarmSubject.add(data);
+    return data;
   }
 
-  void refresh() async{
-    _allReadingRoomSubject.add(_allReadingRoomSubject.value);
+  updateAlarm() async {
+    _subject.add({"seats":_subject.value["seats"], "alarm": await fetchAlarm()});
   }
 
-  void dispose(){
-    _allReadingRoomSubject.close();
-    _allReadingRoomAlarmSubject.close();
+  dispose(){
+    _subject.close();
   }
 
-  Stream<Map<String, dynamic>> get allReadingRoom => _allReadingRoomSubject.stream;
-  Stream<Map<String, bool>> get allReadingRoomAlarm => _allReadingRoomAlarmSubject.stream;
+  Stream<Map<String, dynamic>> get currentData => _subject.stream;
 }

@@ -1,19 +1,23 @@
-import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
-
-import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
-
 import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
+import 'package:flutter_app_hyuabot_v2/Model/FoodMenu.dart';
 import 'package:rxdart/rxdart.dart';
 
-class FetchFoodInfoController{
-  final _allFoodInfoSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
-  FetchFoodInfoController(){
-    fetchFood();
+class FoodInfoController{
+  final BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>> _menuSubject = BehaviorSubject<Map<String, Map<String, List<FoodMenu>>>>();
+  final BehaviorSubject<List<bool>> _expandSubject = BehaviorSubject<List<bool>>();
+
+  FoodInfoController(){
+    _expandSubject.add([false, false, false, false, false]);
+    fetchFood().then((value){
+      _menuSubject.add(value);
+    });
   }
 
-  fetchFood() async {
+  Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
@@ -39,11 +43,20 @@ class FetchFoodInfoController{
         }
       }
     }
-    _allFoodInfoSubject.add(allMenus);
+    return allMenus;
   }
 
-  void dispose(){
-    _allFoodInfoSubject.close();
+  expandCard(int cardIndex) {
+    var data = _expandSubject.value;
+    data[cardIndex] = !data[cardIndex];
+    _expandSubject.add(data);
   }
-  Stream<Map<String, Map<String, List<FoodMenu>>>> get allFoodInfo => _allFoodInfoSubject.stream;
+
+  dispose(){
+    _expandSubject.close();
+    _menuSubject.close();
+  }
+
+  Stream<Map<String, dynamic>> get menuInfo => _menuSubject.stream;
+  Stream<List<bool>> get expandInfo => _expandSubject.stream;
 }

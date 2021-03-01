@@ -17,13 +17,6 @@
         android:layout_margin="10dp"
         >
         <RadioButton
-            android:id="@+id/shuttleStopAuto"
-            android:layout_weight="1"
-            android:text="자동(위치 기반)"
-            android:layout_width="wrap_content"
-            android:checked="true"
-            android:layout_height="0dp" />
-        <RadioButton
             android:id="@+id/shuttleStopDormitory"
             android:layout_weight="1"
             android:text="기숙사"

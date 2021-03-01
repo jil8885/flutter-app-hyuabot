@@ -1,222 +1,197 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/DatabaseController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Config/Localization.dart';
-import 'package:flutter_point_tab_bar/pointTabBar.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 
-class PhoneSearchPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _PhoneSearchPageState();
-
-}
-class _PhoneSearchPageState extends State<PhoneSearchPage> with SingleTickerProviderStateMixin{
-  TabController _controller;
-  DataBaseController _dataBaseController;
-  TextEditingController _textEditingController;
-
-  List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
-  databaseInit(){
-    _dataBaseController.init();
-  }
-
-  @override
-  void initState() {
-    analytics.setCurrentScreen(screenName: "/contacts");
-    _controller = TabController(length: 2, vsync: this);
-    _textEditingController = TextEditingController();
-    _dataBaseController = DataBaseController();
-    _dataBaseController.init().whenComplete(() {_dataBaseController.fetchInSchoolList();});
-    super.initState();
-  }
+class PhoneSearchPage extends StatelessWidget {
+  final List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
+  final _inSchoolTextEditor = TextEditingController();
+  final _outSchoolTextEditor = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    analytics.setCurrentScreen(screenName: "/contacts");
     final double height = MediaQuery.of(context).padding.top;
-    int lastPage = 0;
-    _controller.addListener(() {
-      print("$lastPage-${_controller.index}");
-      if(lastPage != _controller.index){
-        lastPage = _controller.index;
-        switch(_controller.index){
-          case 0:
-            _textEditingController.clear();
-            _dataBaseController.fetchInSchoolList();
-            break;
-          case 1:
-            _textEditingController.clear();
-            _dataBaseController.fetchOutSchoolList();
-            break;
-        }
-      }
+
+    _inSchoolTextEditor.addListener(() {
+      inSchoolPhoneSearchController.search(_inSchoolTextEditor.value.text.trim());
     });
-
-    _textEditingController.addListener(() {
-      if(_textEditingController.value.text.isNotEmpty){
-        if(_controller.index == 0){
-          _dataBaseController.fetchInSchoolList(_textEditingController.value.text);
-        } else {
-          _dataBaseController.fetchOutSchoolList(_textEditingController.value.text);
-        }
-      } else {
-        if(_controller.index == 0){
-          _dataBaseController.fetchInSchoolList();
-        } else {
-          _dataBaseController.fetchOutSchoolList();
-        }
-      }
+    _outSchoolTextEditor.addListener(() {
+      outSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
     });
-
-
-    final Widget _searchKeywordInput = TextField(
-      controller: _textEditingController,
-      keyboardType: TextInputType.text,
-
-      decoration: InputDecoration(
-        hintText: TranslationManager.of(context).trans("phone_hint_text"),
-        labelText: TranslationManager.of(context).trans("phone_label_text"),
-        helperText: TranslationManager.of(context).trans("phone_helper_text"),
-        suffixIcon: Icon(Icons.search_rounded)
-      ),
-    );
 
     final Widget _searchTabInSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 15,),
-        StreamBuilder<List<PhoneNum>>(
-          stream: _dataBaseController.searchPhoneResultInSchool,
-          builder: (context, snapshot){
+        TextField(
+          controller: _inSchoolTextEditor,
+          keyboardType: TextInputType.text,
+
+          decoration: InputDecoration(
+          hintText: "phone_hint_text".tr(),
+          labelText: "phone_label_text".tr(),
+          helperText: "phone_helper_text".tr(),
+          suffixIcon: Icon(Icons.search_rounded)
+          )
+        ),
+        StreamBuilder(
+          stream: inSchoolPhoneSearchController.searchResult,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index){
-                      return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  snapshot.data[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  snapshot.data[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                child: ListView.separated(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
-                      );
-                    }
+                        )
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
                 ),
               );
             }
-          }
+          },
         )
       ],
     );
 
+
     final Widget _searchTabOutSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 15,),
-        StreamBuilder<List<PhoneNum>>(
-            stream: _dataBaseController.searchPhoneResultOutSchool,
-            builder: (context, snapshot){
-              if(snapshot.hasError || !snapshot.hasData){
-                return CircularProgressIndicator();
-              } else if(snapshot.data.isEmpty){
-                return Center(child: Text(TranslationManager.of(context).trans("phone_not_found"), style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color),),);
-              } else {
-                return Expanded(
-                  child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index){
-                        return GestureDetector(
-                          onTap: (){UrlLauncher.launch("tel://${snapshot.data[index].number}");},
-                          child: Card(
-                            color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    snapshot.data[index].name,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.white,
+        TextField(
+            controller: _outSchoolTextEditor,
+            keyboardType: TextInputType.text,
+
+            decoration: InputDecoration(
+                hintText: "phone_hint_text".tr(),
+                labelText: "phone_label_text".tr(),
+                helperText: "phone_helper_text".tr(),
+                suffixIcon: Icon(Icons.search_rounded)
+            )
+        ),
+        StreamBuilder(
+          stream: outSchoolPhoneSearchController.searchResult,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.hasError || !snapshot.hasData){
+              return CircularProgressIndicator();
+            } else if(snapshot.data.isEmpty){
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+            } else {
+              return Expanded(
+                child: ListView.separated(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    FlatButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 15,),
-                                  Text(
-                                    snapshot.data[index].number,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    FlatButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        );
-                      }
-                  ),
-                );
-              }
+                        )
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider();
+                  },
+                ),
+              );
             }
+          },
         )
       ],
     );
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(height),
-        child: Column(
-          children: [
-            TabBar(
-              tabs: tabList.map((e) => Tab(child: Text(TranslationManager.of(context).trans(e), style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),)).toList(),
-              controller: _controller,
-              indicator: PointTabIndicator(position: PointTabIndicatorPosition.bottom, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, insets: EdgeInsets.only(bottom: 6)),
-            ),
-            _searchKeywordInput,
-            Expanded(child: TabBarView(controller: _controller, children: [_searchTabInSchool, _searchTabOutSchool],))
-          ],
-        ),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: 15),
+        child: DefaultTabController(
+          length: 2,
+            child: Column(
+            children: [
+              TabBar(tabs: [
+                Tab(child: Text("phone_tab_inschool".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                Tab(child: Text("phone_tab_outschool".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+              ],),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    _searchTabInSchool,
+                    _searchTabOutSchool
+                  ],
+                ),
+              )
+          ])
+        )
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _textEditingController.dispose();
-    _dataBaseController.dispose();
-    super.dispose();
   }
 }

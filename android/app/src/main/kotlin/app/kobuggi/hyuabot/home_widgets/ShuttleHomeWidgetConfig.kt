@@ -1,15 +1,25 @@
 package app.kobuggi.hyuabot.home_widgets
 
+import android.Manifest
 import android.app.Activity
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.RadioGroup
 import android.widget.RemoteViews
 import android.widget.SeekBar
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import app.kobuggi.hyuabot.AppLocationListener
 import app.kobuggi.hyuabot.MainActivity
 import app.kobuggi.hyuabot.R
 
@@ -20,12 +30,10 @@ class ShuttleHomeWidgetConfig : Activity (){
 
     private var appWidgetID : Int = AppWidgetManager.INVALID_APPWIDGET_ID;
     private lateinit var radioGroup : RadioGroup
-    private lateinit var widgetTransparent : SeekBar
     private var selectedValue : String = "auto"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.shuttle_widget_config)
-
         val configIntent : Intent = intent
         val extras : Bundle? = configIntent.extras
         if(extras != null){
@@ -41,7 +49,6 @@ class ShuttleHomeWidgetConfig : Activity (){
         }
 
         radioGroup = findViewById(R.id.shuttleRadioGroup)
-//        widgetTransparent = findViewById(R.id.shuttleWidgetTransparent)
     }
 
     fun confirmConfiguration(view : View){
@@ -55,30 +62,18 @@ class ShuttleHomeWidgetConfig : Activity (){
         views.setOnClickPendingIntent(R.id.shuttleStop, pendingIntent)
         views.setOnClickPendingIntent(R.id.shuttleDirection, pendingIntent)
         when(stop){
-            R.id.shuttleStopAuto -> selectedValue = "auto"
             R.id.shuttleStopDormitory -> selectedValue = "dorm"
             R.id.shuttleStopOutSchool -> selectedValue = "outSchool"
             R.id.shuttleStopStation -> selectedValue = "station"
             R.id.shuttleStopTerminal -> selectedValue = "terminal"
             R.id.shuttleStopInSchool -> selectedValue = "inSchool"
         }
-
-        var directionCode : String = ""
-        var stopName : String
-        val stopList = listOf("dorm", "outSchool", "station", "terminal")
-        val latitudeList = listOf(37.293504675319404, 37.29875067621797, 37.3078222739517, 37.31925490540365)
-        val longitudeList = listOf(126.83652294056917, 126.83795526758001, 126.85385203121884, 126.84558571149732)
-        var distance = 9999999
-        if(selectedValue == "auto"){
-            for (i in 0..3){
-
-            }
-            stopName = "outSchool"
-        } else {
-            stopName = this.getString(this.resources.getIdentifier(selectedValue, "string", this.packageName))
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            return
         }
 
-        directionCode = when(selectedValue){
+        var stopName : String = this.getString(this.resources.getIdentifier(selectedValue, "string", this.packageName))
+        var directionCode : String = when(selectedValue){
             "dorm" -> "bound_for_all"
             "outSchool" -> "bound_for_all"
             "station" -> "bound_for_school"

@@ -4,13 +4,12 @@ import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 
 class MetroRealtimeCardPaint extends CustomPainter{
+  final BuildContext context;
   final List<MetroRealtimeInfo> data;
   final Color lineColor;
-  final BuildContext context;
+  MetroRealtimeCardPaint(this.context, this.data, this.lineColor);
 
-  MetroRealtimeCardPaint(this.data, this.lineColor, this.context);
-
-  void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
+  void drawRemainedTime(Canvas canvas, Offset offset, String text) {
     TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
@@ -82,7 +81,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
         status = '${data.elementAt(0).currentStation} ${data.elementAt(0).currentStatus}';
       }
 
-      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status), context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status));
 
       if(data.elementAt(1).currentStatus.toString().contains("전역")){
         status = data.elementAt(1).currentStatus;
@@ -92,7 +91,7 @@ class MetroRealtimeCardPaint extends CustomPainter{
         status = '${data.elementAt(1).currentStation} ${data.elementAt(1).currentStatus}';
       }
 
-      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1), status), context);
+      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1), status));
     } else if(data.length == 1){
       if(data.elementAt(0).currentStatus.toString().contains("전역")){
         status = data.elementAt(0).currentStatus;
@@ -101,10 +100,10 @@ class MetroRealtimeCardPaint extends CustomPainter{
       } else {
         status = '${data.elementAt(0).currentStation} ${data.elementAt(0).currentStatus}';
       }
-      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status), context);
-      drawRemainedTime(canvas, Offset(25, 35), '정보 없음', context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0), status));
+      drawRemainedTime(canvas, Offset(25, 35), '정보 없음');
     } else {
-      drawRemainedTime(canvas, Offset(25, 10), '운행 종료 또는 API 운영사의 오류입니다.', context);
+      drawRemainedTime(canvas, Offset(25, 10), '운행 종료 또는 API 운영사의 오류입니다.');
     }
   }
 
@@ -119,13 +118,13 @@ class MetroRealtimeCardPaint extends CustomPainter{
 }
 
 class MetroTimeTableCardPaint extends CustomPainter{
+  final BuildContext context;
   final List<MetroTimeTableInfo> data;
   final Color lineColor;
-  final BuildContext context;
 
-  MetroTimeTableCardPaint(this.data, this.lineColor, this.context);
+  MetroTimeTableCardPaint(this.context, this.data, this.lineColor);
 
-  void drawRemainedTime(Canvas canvas, Offset offset, String text, BuildContext context) {
+  void drawRemainedTime(Canvas canvas, Offset offset, String text) {
     TextSpan sp = TextSpan(style: TextStyle(color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white, fontSize: 12, fontFamily: "Godo"), text: text);
     TextPainter tp = TextPainter(text: sp, textDirection: TextDirection.ltr);
     tp.layout();
@@ -189,12 +188,12 @@ class MetroTimeTableCardPaint extends CustomPainter{
     canvas.drawCircle(Offset(10, 35), 3.0, _white);
 
     if(data.length >= 2){
-      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)), context);
-      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1)), context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)));
+      drawRemainedTime(canvas, Offset(25, 35), _resultString(data.elementAt(1)));
     } else if(data.length == 1){
-      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)), context);
+      drawRemainedTime(canvas, Offset(25, 10), _resultString(data.elementAt(0)));
     } else {
-      drawRemainedTime(canvas, Offset(25, 10), '운행 종료', context);
+      drawRemainedTime(canvas, Offset(25, 10), '운행 종료');
     }
   }
 
