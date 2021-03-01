@@ -24,16 +24,19 @@ class PhoneSearchPage extends StatelessWidget {
     final Widget _searchTabInSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        TextField(
-          controller: _inSchoolTextEditor,
-          keyboardType: TextInputType.text,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+            controller: _inSchoolTextEditor,
+            keyboardType: TextInputType.text,
 
-          decoration: InputDecoration(
-          hintText: "phone_hint_text".tr(),
-          labelText: "phone_label_text".tr(),
-          helperText: "phone_helper_text".tr(),
-          suffixIcon: Icon(Icons.search_rounded)
-          )
+            decoration: InputDecoration(
+            hintText: "phone_hint_text".tr(),
+            labelText: "phone_label_text".tr(),
+            helperText: "phone_helper_text".tr(),
+            suffixIcon: Icon(Icons.search_rounded)
+            )
+          ),
         ),
         StreamBuilder(
           stream: inSchoolPhoneSearchController.searchResult,
@@ -99,16 +102,18 @@ class PhoneSearchPage extends StatelessWidget {
     final Widget _searchTabOutSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        TextField(
-            controller: _outSchoolTextEditor,
-            keyboardType: TextInputType.text,
-
-            decoration: InputDecoration(
-                hintText: "phone_hint_text".tr(),
-                labelText: "phone_label_text".tr(),
-                helperText: "phone_helper_text".tr(),
-                suffixIcon: Icon(Icons.search_rounded)
-            )
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+              controller: _outSchoolTextEditor,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                  hintText: "phone_hint_text".tr(),
+                  labelText: "phone_label_text".tr(),
+                  helperText: "phone_helper_text".tr(),
+                  suffixIcon: Icon(Icons.search_rounded)
+              )
+          ),
         ),
         StreamBuilder(
           stream: outSchoolPhoneSearchController.searchResult,

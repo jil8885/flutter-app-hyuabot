@@ -2,10 +2,13 @@ name: flutter_app_hyuabot_v2
 description: flutter-app-hyuabot
 
 publish_to: 'none'
-version: 0.3.4+36
+version: 0.3.5+37
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
+
+dev_dependencies:
+  flutter_native_splash: ^0.3.0
 
 dependencies:
   flutter:
@@ -48,3 +51,9 @@ flutter:
       fonts:
         - asset: fonts/GodoM.otf
         - asset: fonts/GodoB.otf
+
+flutter_native_splash:
+  color: "#ffffff"
+  color_dark: "#000000"
+  image: assets/images/hanyang-phone.png
+  fullscreen: true

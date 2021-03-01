@@ -61,8 +61,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class SplashScreenState extends State<SplashScreen>{
-  final Widget _logoImage = Image.asset('assets/images/hanyang-phone.png');
-
   startTime() async {
     var _duration = new Duration(seconds: 1);
     initApp();
@@ -97,12 +95,15 @@ class SplashScreenState extends State<SplashScreen>{
     }
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body:  Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          _logoImage,
-        ],
+      body:  Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("booting_app".tr(), textAlign: TextAlign.center,),
+            SizedBox(height: 50,),
+            CircularProgressIndicator()
+          ],
+        ),
       ),
     );
   }
