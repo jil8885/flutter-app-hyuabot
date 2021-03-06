@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'package:easy_localization/easy_localization.dart' as localization;
+
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
-
-import 'package:get/get.dart';
 
 class BusCardPaint extends CustomPainter {
   final Map<String, dynamic> data;
@@ -13,16 +14,16 @@ class BusCardPaint extends CustomPainter {
   BusCardPaint(this.data, this.lineColor, this.context, this.timeTableOffered);
 
   void drawInfo(Canvas canvas, Offset offset, int numOfStop, int seats, var text, BuildContext context) {
-    String _stopString, _seatString;
+    String? _stopString, _seatString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _stopString = '$numOfStop전';
         _seatString = '$seats석';
         break;
       case 'en_US':
-        _stopString = '($numOfStop Stops left)';
-        _seatString = 'Seats: $seats';
+        _stopString = '$numOfStop Stops';
+        _seatString = '$seats Seats';
         break;
       case 'zh':
         break;
@@ -32,7 +33,7 @@ class BusCardPaint extends CustomPainter {
       text += " - $_stopString";
     }
     if(seats >= 0){
-      text += "($_seatString)";
+      text += "/$_seatString";
     }
     TextSpan sp = TextSpan(
         style: TextStyle(
@@ -47,9 +48,9 @@ class BusCardPaint extends CustomPainter {
 
 
   String _getArrivalTime(String time) {
-    String _timeString;
+    String? _timeString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time 출발';
         break;
@@ -59,23 +60,23 @@ class BusCardPaint extends CustomPainter {
       case 'zh':
         break;
     }
-    return _timeString;
+    return _timeString!;
   }
 
   String _getTime(int time) {
-    String _timeString;
+    String? _timeString;
     switch (
-        prefManager.read("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time분';
         break;
       case 'en_US':
-        _timeString = '$time min(s) left';
+        _timeString = '$time min(s)';
         break;
       case 'zh':
         break;
     }
-    return _timeString;
+    return _timeString!;
   }
 
   @override
@@ -112,9 +113,6 @@ class BusCardPaint extends CustomPainter {
     canvas.drawCircle(Offset(0, 35), 5.0, _line);
     canvas.drawCircle(Offset(0, 35), 3.0, _white);
 
-    if(data == null){
-      return;
-    }
     List<BusInfoRealtime> realtimeList = data['realtime'];
     List<BusInfoTimetable> timetableList = data['timetable'];
 
@@ -127,19 +125,19 @@ class BusCardPaint extends CustomPainter {
         drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
       } else {
         if (timeTableOffered) {
-          drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr, context);
+          drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr(), context);
         } else {
-          drawInfo(canvas, Offset(15, 35), -1, -1, "timetable_not_offered".tr, context);
+          drawInfo(canvas, Offset(15, 35), -1, -1, "timetable_not_offered".tr(), context);
         }
       }
     } else if (!timeTableOffered) {
-      drawInfo(canvas, Offset(15, 10), -1, -1, "timetable_not_offered".tr, context);
+      drawInfo(canvas, Offset(15, 10), -1, -1, "timetable_not_offered".tr(), context);
     } else if (timetableList.length >= 2) {
       drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
       drawInfo(canvas, Offset(15, 35), -1, -1, _getArrivalTime(timetableList.elementAt(1).time), context);
     } else if (timetableList.length == 1) {
       drawInfo(canvas, Offset(15, 10), -1, -1, _getArrivalTime(timetableList.elementAt(0).time), context);
-      drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr, context);
+      drawInfo(canvas, Offset(15, 35), -1, -1, "last_bus".tr(), context);
     } else {
       drawInfo(canvas, Offset(15, 10), -1, -1, "out_of_service", context);
     }

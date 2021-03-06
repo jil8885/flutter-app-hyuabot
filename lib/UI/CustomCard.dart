@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
 
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 import 'package:flutter_app_hyuabot_v2/Config/Common.dart';
@@ -15,7 +15,7 @@ class CustomShuttleCard extends StatelessWidget {
   final List<String> timetable;
   final ShuttleStopDepartureInfo data;
 
-  CustomShuttleCard({this.title, this.timetable, this.data});
+  CustomShuttleCard(this.title, this.timetable, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -33,36 +33,36 @@ class CustomShuttleCard extends StatelessWidget {
     if(timetable.length >= 2){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "${"this_bus".tr} : ${timetable.elementAt(0)}";
+      thisBusString = "${"this_bus".tr()} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(${"is_cycle".tr})";
+        thisBusString += "(${"is_cycle".tr()})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(${"is_direct".tr})";
+        thisBusString += "(${"is_direct".tr()})";
       }
-      nextBusString = "${"next_bus".tr} : ${timetable.elementAt(1)}";
+      nextBusString = "${"next_bus".tr()} : ${timetable.elementAt(1)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(1))){
-        nextBusString += "(${"is_cycle".tr})";
+        nextBusString += "(${"is_cycle".tr()})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(1)) || data.shuttleListTerminal.contains(timetable.elementAt(1))){
-        nextBusString += "(${"is_direct".tr})";
+        nextBusString += "(${"is_direct".tr()})";
       }
     } else if(timetable.length == 1){
       DateTime thisBus = getTimeFromString(timetable.elementAt(0), DateTime.now());
       remainedTimeString = '${thisBus.difference(DateTime.now()).inMinutes}';
-      thisBusString = "${"this_bus".tr} : ${timetable.elementAt(0)}";
+      thisBusString = "${"this_bus".tr()} : ${timetable.elementAt(0)}";
       if(data.shuttleListCycle.contains(timetable.elementAt(0))){
-        thisBusString += "(${"is_cycle".tr})";
+        thisBusString += "(${"is_cycle".tr()})";
       } else if(data.shuttleListStation.contains(timetable.elementAt(0)) || data.shuttleListTerminal.contains(timetable.elementAt(0))){
-        thisBusString += "(${"is_direct".tr})";
+        thisBusString += "(${"is_direct".tr()})";
       }
-      nextBusString = "is_last_bus".tr;
+      nextBusString = "is_last_bus".tr();
     } else {
-      thisBusString = "out_of_service".tr;
+      thisBusString = "out_of_service".tr();
     }
 
     if(timetable.isNotEmpty){
-      String minString = 'min_after'.tr;
+      String minString = 'min_after'.tr();
       if(minString.contains('min') && remainedTimeString == '1'){
-        minString = 'min left'.tr;
+        minString = 'min left'.tr();
       }
       _remainedText = Flexible(
         child: Container(width: _width / 2.5,
@@ -84,7 +84,7 @@ class CustomShuttleCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: Theme.of(context).cardColor,
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: EdgeInsets.all(15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -119,9 +119,9 @@ class CustomShuttleCard extends StatelessWidget {
 class CustomFoodCard extends StatelessWidget {
   final String title;
   final String time;
-  final FoodMenu data;
+  final FoodMenu? data;
 
-  CustomFoodCard({this.title, this.time, this.data});
+  CustomFoodCard(this.title, this.time, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -134,17 +134,17 @@ class CustomFoodCard extends StatelessWidget {
     String _menu = "메뉴를 준비중입니다";
     String _price = "0";
     if(data == null){
-      _menu = "menu_not_uploaded".tr;
+      _menu = "menu_not_uploaded".tr();
     } else {
-      _menu = data.menu;
-      _price = data.price;
+      _menu = data!.menu;
+      _price = data!.price;
     }
     return Card(
       shape:
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       color: Theme.of(context).cardColor,
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(15),
         width: _width * .75,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -154,7 +154,7 @@ class CustomFoodCard extends StatelessWidget {
             SizedBox(height: 20,),
             Text(_menu, style: TextStyle(fontSize: _height/50, color: Theme.of(context).backgroundColor == Colors.white? Colors.black : Colors.white),),
             Flexible(child: Container(),),
-            Text('$_price ${"menu_price".tr}', style: TextStyle(fontSize: _height/50, fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
+            Text('$_price ${"menu_price".tr()}', style: TextStyle(fontSize: _height/50, fontWeight: FontWeight.bold, color: Theme.of(context).backgroundColor == Colors.white ? Color.fromARGB(255, 20, 75, 170) : Colors.lightBlue),)
           ],
         ),
       )
@@ -172,45 +172,24 @@ class CustomStoreCard extends StatelessWidget {
     double _height;
     _height = MediaQuery.of(context).size.height;
 
-    Widget _callButton;
-    if(info.number != null){
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: (){
-              UrlLauncher.launch("tel://${info.number}");
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_can_call".tr),
-              ],
-            ), ),
-        ],
-      );
-    } else {
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: null,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_cant_call".tr),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
+    final Widget _callButton = Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: (){
+            UrlLauncher.launch("tel://${info.number}");
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Icon(Icons.call_made_rounded),
+              SizedBox(width: 5,),
+              Text("map_can_call".tr()),
+            ],
+          ), ),
+      ],
+    );
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),

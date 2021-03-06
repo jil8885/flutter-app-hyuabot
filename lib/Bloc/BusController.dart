@@ -1,61 +1,28 @@
-import 'dart:async';
 import 'dart:convert';
-import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Bus.dart';
+import 'package:rxdart/rxdart.dart';
 
 
-class BusDepartureController extends GetxController{
-  var departureInfo = Map<String, dynamic>().obs;
-  var isLoading = true.obs;
-  var hasError = false.obs;
-
-  @override
-  void onInit(){
-    queryDepartureInfo();
-    super.onInit();
-  }
-
-  queryDepartureInfo() async {
-    try{
-      isLoading(true);
-      var data = await fetchDepartureInfo();
-      if(data != null){
-        departureInfo.assignAll(data);
-        isLoading(false);
-      }
-    } catch(e){
-      hasError(true);
-    }
-    finally {
-      refresh();
-    }
-    Timer.periodic(Duration(minutes: 1), (timer) async {
-      try{
-        isLoading(true);
-        var data = await fetchDepartureInfo();
-        if(data != null){
-          departureInfo.assignAll(data);
-          isLoading(false);
-        }
-      } catch(e){
-        hasError(true);
-      }
-      finally {
-        refresh();
-      }
+class BusDepartureController {
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
+  BusDepartureController(){
+    fetchDepartureInfo().then((value){_subject.add(value);});
+    Stream _timer = Stream.periodic(Duration(minutes: 1));
+    _timer.listen((_) async {
+      _subject.add(await fetchDepartureInfo());
     });
   }
 
   Future<Map<String, dynamic>> fetchDepartureInfo() async{
 
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/bus") : Uri.http(conf.getAPIServer(), "/app/bus");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-
-    Map<String, dynamic> data = {"10-1":{"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "3102": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "707-1": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}};
+    Map<String, dynamic> data = {"10-1":{"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}, "3102": {"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}, "707-1": {"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}};
 
     for(String key in (responseJson["realtime"] as Map<String, dynamic>).keys){
       List realtimeInfo = responseJson["realtime"][key];
@@ -63,7 +30,7 @@ class BusDepartureController extends GetxController{
         data[key]["realtime"] =
             realtimeInfo.map((e) => BusInfoRealtime.fromJson(e)).toList();
       } else {
-        data[key]["realtime"] = new List<BusInfoRealtime>();
+        data[key]["realtime"] = <BusInfoRealtime>[];
       }
     }
 
@@ -73,48 +40,37 @@ class BusDepartureController extends GetxController{
         data[key]["timetable"] =
             timetableInfo.map((e) => BusInfoTimetable.fromJson(e)).toList();
       }else{
-        data[key]["timetable"] = new List<BusInfoTimetable>();
+        data[key]["timetable"] = <BusInfoTimetable>[];
       }
     }
     return data;
   }
-}
 
-class BusTimetableController extends GetxController{
-  RxMap<String, dynamic> timetableInfo = Map<String, dynamic>().obs;
-  var isLoading = true.obs;
-  var hasError = false.obs;
-
-  final String route;
-
-  BusTimetableController(this.route);
-
-  @override
-  void onInit(){
-    updateTimetable(route);
-    super.onInit();
+  dispose(){
+    _subject.close();
   }
 
-  updateTimetable(String route) async {
-    try{
-      isLoading(true);
-      var data = await fetchTimeTable(route);
-      if(data != null){
-        timetableInfo.assignAll(data);
-        isLoading(false);
-      }
-    } catch(e){
-      hasError(true);
-    } finally {
-      refresh();
-    }
+  Stream<Map<String, dynamic>> get busDepartureInfo => _subject.stream;
+}
+
+class BusTimetableController{
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
+
+  setRoute(String route) async {
+    _subject.add(await fetchTimeTable(route));
   }
 
   fetchTimeTable(String route) async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus/timetable");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/bus/timetable") : Uri.http(conf.getAPIServer(), "/app/bus/timetable");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "route": route}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     Map<String, dynamic> data = {"day": responseJson["day"], "weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};
     return data;
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<Map<String, dynamic>> get timetableInfo => _subject.stream;
 }

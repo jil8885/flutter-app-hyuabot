@@ -1,9 +1,14 @@
-import 'package:get/get.dart';
+import 'package:rxdart/rxdart.dart';
 
-class NotificationController extends GetxController{
-  String content = "";
+class NotificationController{
+  final BehaviorSubject<String> _subject = BehaviorSubject<String>();
   addNotification(String data){
-    content = data;
-    update();
+    _subject.add(data);
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<String> get timetableInfo => _subject.stream;
 }

@@ -1,22 +1,20 @@
 import 'package:flutter_app_hyuabot_v2/Model/Phone.dart';
-import 'package:get/get.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
-class InSchoolPhoneSearchController extends GetxController{
-  Database _database;
-  RxList<PhoneNum> searchResult = List<PhoneNum>().obs;
-  var isLoading = true.obs;
+class InSchoolPhoneSearchController{
+  Database? _database;
+  final BehaviorSubject<List<PhoneNum>> _subject = BehaviorSubject<List<PhoneNum>>();
 
-  @override
-  onInit(){
+  InSchoolPhoneSearchController(){
     loadDatabase();
-    super.onInit();
   }
 
   loadDatabase() {
-    String _path;
-    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+    getDatabasesPath().then((value){
+      String _path;
+      _path = value!;
       openDatabase(
           join(_path, "information.db")
       ).then((value){_database = value;}).whenComplete((){
@@ -26,35 +24,36 @@ class InSchoolPhoneSearchController extends GetxController{
   }
 
   search(String keyword) async {
-    isLoading(true);
-    refresh();
     String _query;
     if(keyword.isEmpty){
       _query = "select name, phone from inschool where phone is not null";
     } else {
       _query = "select name, phone from inschool where phone is not null and name like '%$keyword%'";
     }
-    List<Map> queryResult = await _database.rawQuery(_query);
-    searchResult.assignAll(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
-    isLoading(false);
-    refresh();
+    List<Map<String, dynamic>> queryResult = await _database!.rawQuery(_query);
+    _subject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<List<PhoneNum>> get searchResult => _subject.stream;
+
 }
 
-class OutSchoolPhoneSearchController extends GetxController{
-  Database _database;
-  RxList<PhoneNum> searchResult = List<PhoneNum>().obs;
-  var isLoading = true.obs;
+class OutSchoolPhoneSearchController{
+  Database? _database;
+  BehaviorSubject<List<PhoneNum>> _subject = BehaviorSubject<List<PhoneNum>>();
 
-  @override
-  onInit(){
+  OutSchoolPhoneSearchController(){
     loadDatabase();
-    super.onInit();
   }
 
   loadDatabase() {
     String _path;
-    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+    getDatabasesPath().then((value){
+      _path = value!;
       openDatabase(
           join(_path, "information.db")
       ).then((value){_database = value;}).whenComplete((){
@@ -64,17 +63,15 @@ class OutSchoolPhoneSearchController extends GetxController{
   }
 
   search(String keyword) async {
-    isLoading(true);
-    refresh();
     String _query;
     if(keyword.isEmpty){
       _query = "select name, phone from outschool where phone is not null";
     } else {
       _query = "select name, phone from outschool where phone is not null and name like '%$keyword%'";
     }
-    List<Map> queryResult = await _database.rawQuery(_query);
-    searchResult.assignAll(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
-    isLoading(false);
-    refresh();
+    List<Map<String, dynamic>> queryResult = await _database!.rawQuery(_query);
+    _subject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
   }
+
+  Stream<List<PhoneNum>> get searchResult => _subject.stream;
 }

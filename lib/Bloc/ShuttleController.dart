@@ -1,55 +1,27 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:get/get.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
 import 'package:flutter_app_hyuabot_v2/Model/Shuttle.dart';
+import 'package:rxdart/rxdart.dart';
 
 
-class ShuttleDepartureController extends GetxController{
-  var departureInfo = Map<String, dynamic>().obs;
-  var isLoading = true.obs;
-  var hasError = false.obs;
-  @override
-  void onInit(){
-    queryDepartureInfo();
-    super.onInit();
-  }
+class ShuttleDepartureController{
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
 
-  queryDepartureInfo() async {
-    try{
-      isLoading(true);
-      var data = await fetchDepartureInfo();
-      if(data != null){
-        departureInfo.assignAll(data);
-        isLoading(false);
-      }
-    } catch(e){
-      hasError(true);
-    }
-    finally {
-      refresh();
-    }
-    Timer.periodic(Duration(minutes: 1), (timer) async {
-      try{
-        isLoading(true);
-        var data = await fetchDepartureInfo();
-        if(data != null){
-          departureInfo.assignAll(data);
-          isLoading(false);
-        }
-      } catch(e){
-        hasError(true);
-      }
-      finally {
-        refresh();
-      }
+  ShuttleDepartureController(){
+    fetchDepartureInfo().then((value){_subject.add(value);});
+    Stream _timer = Stream.periodic(Duration(minutes: 1));
+    _timer.listen((_) async {
+      _subject.add(await fetchDepartureInfo());
     });
   }
 
+
   Future<Map<String, ShuttleStopDepartureInfo>> fetchDepartureInfo() async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/shuttle") : Uri.http(conf.getAPIServer(), "/app/shuttle");
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     Map<String, dynamic> responseJson = jsonDecode(response.body);
 
@@ -59,40 +31,24 @@ class ShuttleDepartureController extends GetxController{
     }
     return data;
   }
-}
 
-class ShuttleTimeTableController extends GetxController{
-  RxMap<String, dynamic> timeTableInfo = Map<String, dynamic>().obs;
-  var isLoading = true.obs;
-  var hasError = false.obs;
-  final String busStop;
-
-  ShuttleTimeTableController(this.busStop);
-
-  @override
-  void onInit(){
-    queryTimetableInfo(busStop);
-    super.onInit();
+  dispose(){
+    _subject.close();
   }
 
-  queryTimetableInfo(String busStop) async {
-    try{
-      isLoading(true);
-      hasError(false);
-      var data = await fetchTimeTable(busStop);
-      if(data != null){
-        timeTableInfo.assignAll(data);
-        isLoading(false);
-      }
-    } catch(e){
-      hasError(true);
-    } finally {
-      refresh();
-    }
+  Stream<Map<String, dynamic>> get departureInfo => _subject.stream;
+
+}
+
+class ShuttleTimeTableController{
+  final BehaviorSubject<Map<String, dynamic>> _subject = BehaviorSubject<Map<String, dynamic>>();
+
+  setBusStop(String busStop) async {
+    _subject.add(await fetchTimeTable(busStop));
   }
 
   Future<Map<String, dynamic>> fetchTimeTable(String busStop) async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle/by-stop");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/shuttle/by-stop") : Uri.http(conf.getAPIServer(), "/app/shuttle/by-stop");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"busStop": busStop}));
     Map<String, dynamic> responseJson = jsonDecode(response.body);
     Map<String, dynamic> data = {};
@@ -101,4 +57,11 @@ class ShuttleTimeTableController extends GetxController{
     data["day"] = responseJson["day"];
     return data;
   }
+
+  dispose(){
+    _subject.close();
+  }
+
+  Stream<Map<String, dynamic>> get departureInfo => _subject.stream;
+
 }

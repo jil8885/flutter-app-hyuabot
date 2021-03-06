@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:get/get.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 
@@ -9,81 +9,95 @@ class PhoneSearchPage extends StatelessWidget {
   final List<String> tabList = ["phone_tab_inschool", "phone_tab_outschool"];
   final _inSchoolTextEditor = TextEditingController();
   final _outSchoolTextEditor = TextEditingController();
-  final _inSchoolSearchController = Get.put(InSchoolPhoneSearchController());
-  final _outSchoolSearchController = Get.put(OutSchoolPhoneSearchController());
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/contacts");
+    if(prefManager!.getString("localeCode")!="ko_KR"){
+      Fluttertoast.showToast(msg: "Sorry, this menu supports only korean!");
+    }
+
     final double height = MediaQuery.of(context).padding.top;
 
     _inSchoolTextEditor.addListener(() {
-      _inSchoolSearchController.search(_inSchoolTextEditor.value.text.trim());
+      inSchoolPhoneSearchController.search(_inSchoolTextEditor.value.text.trim());
     });
     _outSchoolTextEditor.addListener(() {
-      _outSchoolSearchController.search(_outSchoolTextEditor.value.text.trim());
+      outSchoolPhoneSearchController.search(_outSchoolTextEditor.value.text.trim());
     });
 
     final Widget _searchTabInSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        TextField(
-          controller: _inSchoolTextEditor,
-          keyboardType: TextInputType.text,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+            controller: _inSchoolTextEditor,
+            keyboardType: TextInputType.text,
 
-          decoration: InputDecoration(
-          hintText: "phone_hint_text".tr,
-          labelText: "phone_label_text".tr,
-          helperText: "phone_helper_text".tr,
-          suffixIcon: Icon(Icons.search_rounded)
-          )
+            decoration: InputDecoration(
+            hintText: "phone_hint_text".tr(),
+            labelText: "phone_label_text".tr(),
+            helperText: "phone_helper_text".tr(),
+            suffixIcon: Icon(Icons.search_rounded)
+            )
+          ),
         ),
-        Obx((){
-            if(_inSchoolSearchController.isLoading.value){
+        StreamBuilder(
+          stream: inSchoolPhoneSearchController.searchResult,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
-            } else if(_inSchoolSearchController.searchResult.isEmpty){
-              return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+            } else if(snapshot.data.isEmpty){
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
             } else {
               return Expanded(
-                child: ListView.builder(
-                    itemCount: _inSchoolSearchController.searchResult.length,
-                    itemBuilder: (context, index){
-                      return GestureDetector(
-                        onTap: (){UrlLauncher.launch("tel://${_inSchoolSearchController.searchResult[index].number}");},
-                        child: Card(
-                          color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  _inSchoolSearchController.searchResult[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.white,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                SizedBox(height: 15,),
-                                Text(
-                                  _inSchoolSearchController.searchResult[index].number,
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
+                child: ListView.separated(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (context, index){
+                    return GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        ),
-                      );
-                    }
+                        )
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return Divider();
+                  },
                 ),
               );
             }
-          }
+          },
         )
       ],
     );
@@ -92,77 +106,89 @@ class PhoneSearchPage extends StatelessWidget {
     final Widget _searchTabOutSchool = Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        TextField(
-            controller: _outSchoolTextEditor,
-            keyboardType: TextInputType.text,
-
-            decoration: InputDecoration(
-                hintText: "phone_hint_text".tr,
-                labelText: "phone_label_text".tr,
-                helperText: "phone_helper_text".tr,
-                suffixIcon: Icon(Icons.search_rounded)
-            )
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: TextField(
+              controller: _outSchoolTextEditor,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                  hintText: "phone_hint_text".tr(),
+                  labelText: "phone_label_text".tr(),
+                  helperText: "phone_helper_text".tr(),
+                  suffixIcon: Icon(Icons.search_rounded)
+              )
+          ),
         ),
-        Obx((){
-              if(_outSchoolSearchController.isLoading.value){
-                return CircularProgressIndicator();
-              } else if(_outSchoolSearchController.searchResult.isEmpty){
-                return Center(child: Text("phone_not_found".tr, style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
-              } else {
-                return Expanded(
-                  child: ListView.builder(
-                      itemCount: _outSchoolSearchController.searchResult.length,
-                      itemBuilder: (context, index){
-                        return GestureDetector(
-                          onTap: (){UrlLauncher.launch("tel://${_outSchoolSearchController.searchResult[index].number}");},
-                          child: Card(
-                            color: Theme.of(context).backgroundColor == Colors.white ? Theme.of(context).accentColor : Colors.black,
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    _outSchoolSearchController.searchResult[index].name,
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Colors.white,
+        StreamBuilder(
+          stream: outSchoolPhoneSearchController.searchResult,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if(snapshot.hasError || !snapshot.hasData){
+              return CircularProgressIndicator();
+            } else if(snapshot.data.isEmpty){
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
+            } else {
+              return Expanded(
+                child: ListView.separated(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index){
+                      return GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
+                                  content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
+                                  actions: [
+                                    TextButton(
+                                      child: Text('yes'.tr()),
+                                      onPressed: () {
+                                        UrlLauncher.launch("tel://${snapshot.data[index].number}");
+                                      },
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 15,),
-                                  Text(
-                                    _outSchoolSearchController.searchResult[index].number,
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                                    TextButton(
+                                      child: Text('no'.tr()),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    )
+                                  ],
+                                );
+                              }
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                            title: Text(snapshot.data[index].name),
+                            subtitle: Text(snapshot.data[index].number),
                           ),
-                        );
-                      }
-                  ),
-                );
-              }
+                        )
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider();
+                  },
+                ),
+              );
             }
+          },
         )
       ],
     );
 
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: height, horizontal: height/2),
+        padding: EdgeInsets.symmetric(vertical: height, horizontal: 15),
         child: DefaultTabController(
           length: 2,
             child: Column(
             children: [
               TabBar(tabs: [
-                Tab(child: Text("phone_tab_inschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
-                Tab(child: Text("phone_tab_outschool".tr, style: Theme.of(context).textTheme.bodyText2,),),
+                Tab(child: Text("phone_tab_inschool".tr(), style: Theme.of(context).textTheme.bodyText2,),),
+                Tab(child: Text("phone_tab_outschool".tr(), style: Theme.of(context).textTheme.bodyText2,),),
               ],),
               Expanded(
                 child: TabBarView(
