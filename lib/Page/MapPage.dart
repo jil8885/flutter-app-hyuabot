@@ -28,6 +28,10 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(prefManager!.getString("localeCode")!="ko_KR"){
+      Fluttertoast.showToast(msg: "Sorry, this menu supports only korean!");
+    }
+
     if(_isInitial){
       Fluttertoast.showToast(
           msg: "map_start_dialog".tr());

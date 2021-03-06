@@ -65,19 +65,21 @@ class SettingPage extends StatelessWidget{
                               SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
                                 prefManager!.setString("localeCode", "ko_KR");
                                 context.setLocale(Locale("ko", "KR"));
+                                foodInfoController.reload();
                                 Navigator.of(context).pop();
                               },),
                               SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
                                 prefManager!.setString("localeCode", "en_US").whenComplete((){
                                   context.setLocale(Locale("en", "US"));
+                                  foodInfoController.reload();
                                   Navigator.of(context).pop();
                                 });
                               },),
-                              SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                                prefManager!.setString("localeCode", "zh");
-                                context.setLocale(Locale("zh"));
-                                Navigator.of(context).pop();
-                              },),
+                              // SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
+                              //   prefManager!.setString("localeCode", "zh");
+                              //   context.setLocale(Locale("zh"));
+                              //   Navigator.of(context).pop();
+                              // },),
                             ],
                           );
                         }

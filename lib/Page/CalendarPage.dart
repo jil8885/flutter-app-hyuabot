@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DateController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class CalendarPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
+    if(prefManager!.getString("localeCode")!="ko_KR"){
+      Fluttertoast.showToast(msg: "Sorry, this menu supports only korean!");
+    }
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: StreamBuilder(
