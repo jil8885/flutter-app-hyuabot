@@ -15,7 +15,7 @@ class CustomShuttleCard extends StatelessWidget {
   final List<String> timetable;
   final ShuttleStopDepartureInfo data;
 
-  CustomShuttleCard({this.title, this.timetable, this.data});
+  CustomShuttleCard(this.title, this.timetable, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -119,9 +119,9 @@ class CustomShuttleCard extends StatelessWidget {
 class CustomFoodCard extends StatelessWidget {
   final String title;
   final String time;
-  final FoodMenu data;
+  final FoodMenu? data;
 
-  CustomFoodCard({this.title, this.time, this.data});
+  CustomFoodCard(this.title, this.time, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +136,8 @@ class CustomFoodCard extends StatelessWidget {
     if(data == null){
       _menu = "menu_not_uploaded".tr();
     } else {
-      _menu = data.menu;
-      _price = data.price;
+      _menu = data!.menu;
+      _price = data!.price;
     }
     return Card(
       shape:
@@ -172,45 +172,24 @@ class CustomStoreCard extends StatelessWidget {
     double _height;
     _height = MediaQuery.of(context).size.height;
 
-    Widget _callButton;
-    if(info.number != null){
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: (){
-              UrlLauncher.launch("tel://${info.number}");
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_can_call".tr()),
-              ],
-            ), ),
-        ],
-      );
-    } else {
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: null,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_cant_call".tr()),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
+    final Widget _callButton = Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: (){
+            UrlLauncher.launch("tel://${info.number}");
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Icon(Icons.call_made_rounded),
+              SizedBox(width: 5,),
+              Text("map_can_call".tr()),
+            ],
+          ), ),
+      ],
+    );
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),

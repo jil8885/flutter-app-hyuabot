@@ -6,30 +6,27 @@ import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
 class MapController{
-  Database _database;
+  Database? _database;
   final BehaviorSubject<List<Marker>> _selectedMarkerSubject = BehaviorSubject<List<Marker>>();
   final BehaviorSubject<List<StoreSearchInfo>> _resultSubject = BehaviorSubject<List<StoreSearchInfo>>();
 
   final BuildContext context;
   MapController(this.context){
-    loadDatabase();
-    _resultSubject.add([]);
-  }
-
-  loadDatabase()  {
     _selectedMarkerSubject.add([]);
-    String _path;
-    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+    getDatabasesPath().then((value){
+      String _path;
+      _path = value!;
       openDatabase(
           join(_path, "information.db")
       ).then((value){_database = value;});
-    });
+    });    _resultSubject.add([]);
   }
+
   getMarker(String category) async {
-    List<Marker> _markers = List<Marker>();
+    List<Marker> _markers = <Marker>[];
     int index = 0;
     String query = "select distinct category, latitude, longitude from outschool where category='$category'";
-    List<Map> markerPosition = await _database.rawQuery(query);
+    List<Map> markerPosition = await _database!.rawQuery(query);
     for(Map marker in markerPosition){
       String assetName = "restaurant";
       if (marker["category"] == "pub") {
@@ -39,7 +36,7 @@ class MapController{
       }
       OverlayImage image = await OverlayImage.fromAssetImage(assetName: "assets/images/$assetName.png", context: context);
       query = "select name, menu from outschool where category='${marker["category"]}' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
-      List<Map> storeList = await _database.rawQuery(query);
+      List<Map> storeList = await _database!.rawQuery(query);
       _markers.add(Marker(
           markerId: '$index',
           position: LatLng(double.parse(marker['latitude'].toString()),
@@ -60,7 +57,7 @@ class MapController{
   }
   getStoreList(String catString, Map marker){
     String query = "select name, menu from outschool where category='$catString' and latitude=${marker['latitude'].toString().trim()} and longitude=${marker['longitude'].toString().trim()}";
-    _database.rawQuery(query).then((value){
+    _database!.rawQuery(query).then((value){
       String storeResult = value.map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
       return storeResult;
     });
@@ -68,10 +65,10 @@ class MapController{
 
   searchStore(String searchKeyword) async {
     String _query;
-    List<Map> queryResult = List<Map>();
+    List<Map<String, dynamic>> queryResult = <Map<String, dynamic>>[];
     if(searchKeyword.isNotEmpty){
       _query = "select name, menu, latitude, longitude from outschool where phone is not null and name like '%$searchKeyword%'";
-      queryResult = await _database.rawQuery(_query);
+      queryResult = await _database!.rawQuery(_query);
       _resultSubject.add(queryResult.map((e) => StoreSearchInfo.fromJson(e)).toList());
     }
   }
@@ -79,7 +76,7 @@ class MapController{
   getInfoWindow(double latitude, double longitude) {
     String query = "select name, menu from outschool where latitude=$latitude and longitude=$longitude";
     String storeResult;
-    _database.rawQuery(query).then((value){
+    _database!.rawQuery(query).then((value){
       storeResult = value.map((e) => "${e["name"]}-${e["menu"]}").toList().join("\n");
       return storeResult;
     });

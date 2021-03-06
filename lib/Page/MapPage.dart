@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -16,15 +14,12 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
 
   final _menus = ['korean', 'japanese', 'chinese', 'western', 'fast_food', 'chicken', 'pizza', 'meat', 'vietnamese', 'other_food', 'bakery', 'cafe', 'pub'];
-  List<String> _translatedMenus;
+  List<String>? _translatedMenus;
 
-  MapController _mapController;
-  NaverMapController _naverMapController;
+  MapController? _mapController;
   List<Marker> _markers = [];
-  Widget _map;
+  Widget? _map;
   bool _isInitial = true;
-  FloatingSearchBar _floatingSearchBar;
-  FloatingSearchBarController _floatingSearchBarController = FloatingSearchBarController();
 
   @override
   void initState() {
@@ -40,7 +35,7 @@ class _MapPageState extends State<MapPage> {
     }
     _mapController = MapController(context);
     _translatedMenus = _menus.map((e) => e.tr()).toList();
-    String _selectedCat = _translatedMenus[0];
+    String _selectedCat = _translatedMenus![0];
     _map = _naverMap(context);
 
     return Scaffold(
@@ -52,16 +47,16 @@ class _MapPageState extends State<MapPage> {
             context: context,
             title: "map_picker_title".tr(),
             items: _translatedMenus,
-            selectedItem: _translatedMenus[0],
+            selectedItem: _translatedMenus![0],
             onChanged: (value) {
               _selectedCat = value;
             },
             onConfirmed: () {
               _markers.clear();
-              _mapController.getMarker(
-                  _menus[_translatedMenus.indexOf(_selectedCat)]);
-              String _toastString;
-              switch (prefManager.getString("localeCode")) {
+              _mapController!.getMarker(
+                  _menus[_translatedMenus!.indexOf(_selectedCat)]);
+              String? _toastString;
+              switch (prefManager!.getString("localeCode")) {
                 case "ko_KR":
                   _toastString = '$_selectedCat(으)로 전환되었습니다.';
                   break;
@@ -72,7 +67,7 @@ class _MapPageState extends State<MapPage> {
                   _toastString = '$_selectedCat(으)로 전환되었습니다.';
                   break;
               }
-              Fluttertoast.showToast(msg: _toastString);
+              Fluttertoast.showToast(msg: _toastString!);
             },
           );
       }),
@@ -87,9 +82,9 @@ class _MapPageState extends State<MapPage> {
 
   _naverMap(BuildContext context) {
     return StreamBuilder<List<Marker>>(
-        stream: _mapController.selectedMarkers,
+        stream: _mapController!.selectedMarkers,
         builder: (context, snapshot) {
-          _markers = snapshot.data;
+          _markers = snapshot.data!;
           return NaverMap(
             markers: _markers,
             initialCameraPosition: CameraPosition(
@@ -106,7 +101,6 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _onMapCreated(NaverMapController controller) {
-    _naverMapController = controller;
   }
 
 }

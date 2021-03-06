@@ -10,10 +10,10 @@ import 'package:flutter_native_admob/native_admob_options.dart';
 class ReadingRoomPage extends StatelessWidget {
 
   Widget _readingRoomCard(BuildContext context, String name, TextStyle theme) {
-    String _alarmOnString;
-    String _alarmOffString;
+    String? _alarmOnString;
+    String? _alarmOffString;
 
-    switch(prefManager.getString("localeCode")){
+    switch(prefManager!.getString("localeCode")){
       case "ko_KR":
         _alarmOnString = "${name.tr()}의 좌석 알림이 설정되었다냥!";
         _alarmOffString = "${name.tr()}의 좌석 알림이 해제되었다냥!";
@@ -53,8 +53,8 @@ class ReadingRoomPage extends StatelessWidget {
                   ],
                 );
               }
-              ReadingRoomInfo seats = snapshot.data["seats"][name];
-              bool alarmActive = snapshot.data["alarm"][name];
+              ReadingRoomInfo seats = snapshot.data!["seats"][name];
+              bool alarmActive = snapshot.data!["alarm"][name];
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -67,28 +67,28 @@ class ReadingRoomPage extends StatelessWidget {
                   ])),
                   IconButton(icon: Icon(alarmActive ? Icons.alarm_on_rounded:Icons.alarm_off_rounded, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,), onPressed: (){
                     if(alarmActive){
-                      fcmManager.unsubscribeFromTopic("$name.ko_KR");
-                      fcmManager.unsubscribeFromTopic("$name.en_US");
-                      fcmManager.unsubscribeFromTopic("$name.zh");
-                      prefManager.setBool(name, false);
+                      fcmManager!.unsubscribeFromTopic("$name.ko_KR");
+                      fcmManager!.unsubscribeFromTopic("$name.en_US");
+                      fcmManager!.unsubscribeFromTopic("$name.zh");
+                      prefManager!.setBool(name, false);
                       readingRoomController.updateAlarm();
-                      Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(_alarmOffString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(_alarmOffString!, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),
                       ));
                     } else {
                       if(seats.available < (kReleaseMode?0:100)){
-                        fcmManager.subscribeToTopic("$name.${prefManager.getString("localeCode")}");
-                        prefManager.setBool(name, true);
+                        fcmManager!.subscribeToTopic("$name.${prefManager!.getString("localeCode")}");
+                        prefManager!.setBool(name, true);
                         readingRoomController.updateAlarm();
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          content: Text(_alarmOnString, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(_alarmOnString!, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),
                         ));
                       } else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("seat_remained_error".tr(), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),
@@ -108,13 +108,13 @@ class ReadingRoomPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double _statusBarHeight = MediaQuery.of(context).padding.top;
-    final TextStyle _theme = Theme.of(context).textTheme.bodyText1;
+    final TextStyle _theme = Theme.of(context).textTheme.bodyText1!;
 
-    if(prefManager.getBool("reading_room_1") == null || prefManager.getBool("reading_room_2") == null || prefManager.getBool("reading_room_3") == null || prefManager.getBool("reading_room_4") == null){
-      prefManager.setBool("reading_room_1", false);
-      prefManager.setBool("reading_room_2", false);
-      prefManager.setBool("reading_room_3", false);
-      prefManager.setBool("reading_room_4", false);
+    if(prefManager!.getBool("reading_room_1") == null || prefManager!.getBool("reading_room_2") == null || prefManager!.getBool("reading_room_3") == null || prefManager!.getBool("reading_room_4") == null){
+      prefManager!.setBool("reading_room_1", false);
+      prefManager!.setBool("reading_room_2", false);
+      prefManager!.setBool("reading_room_3", false);
+      prefManager!.setBool("reading_room_4", false);
     }
 
     return Scaffold(
@@ -127,7 +127,7 @@ class ReadingRoomPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
+                      IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
                     ],
                   ),
                   Expanded(
@@ -163,12 +163,12 @@ class ReadingRoomPage extends StatelessWidget {
                       numberAds: 1,
                       controller: adController,
                       type: NativeAdmobType.banner,
-                      error: Center(child: Text('plz_enable_ad'.tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 14), textAlign: TextAlign.center,)),
+                      error: Center(child: Text('plz_enable_ad'.tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 14), textAlign: TextAlign.center,)),
                       options: NativeAdmobOptions(
-                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color,),
-                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
-                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
-                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color,),
+                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                       ),
                     ),
                   ),

@@ -8,8 +8,6 @@ import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';
@@ -31,8 +29,8 @@ import 'package:transition/transition.dart';
 
 Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   final dynamic data = msg['data'];
-  fcmManager.unsubscribeFromTopic(data['name']);
-  prefManager.setBool(data['name'], false);
+  fcmManager!.unsubscribeFromTopic(data['name']);
+  prefManager!.setBool(data['name'], false);
   readingRoomController.fetchAlarm();
 }
 
@@ -157,30 +155,30 @@ class HomePage extends StatelessWidget{
             itemBuilder: (context, index) {
               DateTime _now = DateTime.now();
               if (_now.hour < 11 &&
-                  allMenus[_cafeteriaKeys[index]]['breakfast'].isNotEmpty) {
+                  allMenus[_cafeteriaKeys[index]]!['breakfast']!.isNotEmpty) {
                 return _foodItems(
                     context,
                     _cafeteriaNames[index],
                     "breakfast".tr(),
                     index,
-                    allMenus[_cafeteriaKeys[index]]['breakfast']
+                    allMenus[_cafeteriaKeys[index]]!['breakfast']!
                         .elementAt(0));
               } else if (_now.hour > 15 &&
-                  allMenus[_cafeteriaKeys[index]]['dinner'].isNotEmpty) {
+                  allMenus[_cafeteriaKeys[index]]!['dinner']!.isNotEmpty) {
                 return _foodItems(
                     context,
                     _cafeteriaNames[index],
                     "dinner".tr(),
                     index,
-                    allMenus[_cafeteriaKeys[index]]['dinner'].elementAt(0));
-              } else if (allMenus[_cafeteriaKeys[index]]['lunch']
+                    allMenus[_cafeteriaKeys[index]]!['dinner']!.elementAt(0));
+              } else if (allMenus[_cafeteriaKeys[index]]!['lunch']!
                   .isNotEmpty) {
                 return _foodItems(
                     context,
                     _cafeteriaNames[index],
                     "lunch".tr(),
                     index,
-                    allMenus[_cafeteriaKeys[index]]['lunch'].elementAt(0));
+                    allMenus[_cafeteriaKeys[index]]!['lunch']!.elementAt(0));
               }
               return _foodItems(context, _cafeteriaNames[index],
                   "lunch".tr(), index, null);
@@ -276,7 +274,7 @@ class HomePage extends StatelessWidget{
                                     color: Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText2
+                                        .bodyText2!
                                         .color,
                                     fontSize: 14),
                                 textAlign: TextAlign.center,
@@ -286,26 +284,26 @@ class HomePage extends StatelessWidget{
                               color: Theme
                                   .of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyText2!
                                   .color,
                             ),
                             bodyTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyText2!
                                     .color),
                             headlineTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyText2!
                                     .color),
                             advertiserTextStyle: NativeTextStyle(
                                 color: Theme
                                     .of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyText2!
                                     .color),
                           ),
                         ),
@@ -324,7 +322,7 @@ class HomePage extends StatelessWidget{
                                       Theme
                                           .of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyText1!
                                           .color)),
                               Expanded(child: Container()),
                               StreamBuilder(
@@ -354,7 +352,7 @@ class HomePage extends StatelessWidget{
                                     Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyText1!
                                         .color)),
                             GestureDetector(
                                 onTap: () {
@@ -390,7 +388,7 @@ class HomePage extends StatelessWidget{
                                     Theme
                                         .of(context)
                                         .textTheme
-                                        .bodyText1
+                                        .bodyText1!
                                         .color)),
                             GestureDetector(
                                 onTap: () {
@@ -455,7 +453,7 @@ class HomePage extends StatelessWidget{
             child: Text(
               menuName,
               style: TextStyle(
-              color: Theme.of(context).textTheme.bodyText2.color, fontSize: 18),
+              color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 18),
               textAlign: TextAlign.center,
             ),
           ),
@@ -473,20 +471,20 @@ class HomePage extends StatelessWidget{
           Navigator.push(context, Transition(child: ShuttlePage(), transitionEffect: TransitionEffect.leftToRight).builder());
         },
         child:
-            CustomShuttleCard(title: title, timetable: departureInfo, data: data),
+            CustomShuttleCard(title, departureInfo, data),
       ),
     );
   }
 
   Widget _foodItems(BuildContext context, String title, String time, int index,
-      FoodMenu data) {
+      FoodMenu? data) {
     return Padding(
       padding: const EdgeInsets.only(left: 15),
       child: GestureDetector(
         onTap: () {
           Navigator.push(context, Transition(child: FoodPage(), transitionEffect: TransitionEffect.leftToRight).builder());
         },
-        child: CustomFoodCard(title: title, time: time, data: data),
+        child: CustomFoodCard(title, time, data),
       ),
     );
   }
@@ -500,7 +498,7 @@ class ExpandMenuController{
     _subject.add(true);
   }
   expand(){
-    _subject.add(!_subject.value);
+    _subject.add(!_subject.value!);
   }
 
   Stream<bool> get isExpanded => _subject.stream;

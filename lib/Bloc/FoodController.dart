@@ -22,7 +22,7 @@ class FoodInfoController{
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
     final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/food") : Uri.http(conf.getAPIServer(), "/app/food");
-    final String _localeCode = prefManager.getString("localeCode");
+    final String _localeCode = prefManager!.getString("localeCode") ?? "ko_KR";
     http.Response response;
     response = await http.post(url, body: jsonEncode({'language': _localeCode.split("_")[0]}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
@@ -32,13 +32,13 @@ class FoodInfoController{
         for(String time in responseJson[name].keys){
           switch(time){
             case "조식":
-              allMenus[name]['breakfast'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              allMenus[name]!['breakfast'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
               break;
             case "중식":
-              allMenus[name]['lunch'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              allMenus[name]!['lunch'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
               break;
             case "석식":
-              allMenus[name]['dinner'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
+              allMenus[name]!['dinner'] = (responseJson[name][time] as List).map((e) => FoodMenu.fromJson(e)).toList();
               break;
           }
         }
@@ -49,7 +49,7 @@ class FoodInfoController{
 
   expandCard(int cardIndex) {
     var data = _expandSubject.value;
-    data[cardIndex] = !data[cardIndex];
+    data![cardIndex] = !data[cardIndex];
     _expandSubject.add(data);
   }
 

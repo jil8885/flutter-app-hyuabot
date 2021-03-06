@@ -54,7 +54,7 @@ class ShuttlePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Navigator.pop(context);}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
+                IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.pop(context);}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
               ],
             ),
             Expanded(

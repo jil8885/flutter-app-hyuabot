@@ -11,8 +11,8 @@ import 'package:transition/transition.dart';
 
 class BusPage extends StatelessWidget {
   Widget _busCard(BuildContext context, double width, String busStop, String terminalStop, String lineName, Color lineColor, bool timeTableOffered){
-    String _boundString;
-    switch(prefManager.getString("localeCode")){
+    String? _boundString;
+    switch(prefManager!.getString("localeCode")){
       case "ko_KR":
         _boundString = "$terminalStop 방면";
         break;
@@ -29,7 +29,7 @@ class BusPage extends StatelessWidget {
         if(timeTableOffered){
           Navigator.push(context, Transition(child: BusTimeTablePage(lineName, lineColor), transitionEffect: TransitionEffect.leftToRight).builder());
         }else {
-          Scaffold.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("timetable_not_offered_popup".tr(), style: TextStyle(color: Theme.of(context).backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,),
               backgroundColor: Theme.of(context).backgroundColor,
@@ -64,7 +64,7 @@ class BusPage extends StatelessWidget {
                           padding: const EdgeInsets.only(bottom: 5),
                           child: Text(busStop, style: TextStyle(fontSize: 16, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white,),),
                         ),
-                        Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
+                        Text(_boundString!, style: TextStyle(fontSize: 12, color: Colors.grey),),
                       ],
                     ),
                   ),
@@ -108,7 +108,7 @@ class BusPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [IconButton(
                       icon: Icon(Icons.arrow_back_rounded,
-                      color: Theme.of(context).textTheme.bodyText2.color,),
+                      color: Theme.of(context).textTheme.bodyText2!.color,),
                       onPressed: (){Navigator.pop(context);},
                       padding: EdgeInsets.only(left: 30),)],
                   ),
@@ -117,7 +117,7 @@ class BusPage extends StatelessWidget {
                   _busCard(context, _width, "main_gate".tr(), "suwon_stn".tr(), "707-1", Color(0xff0068b7), true),
                   Expanded(
                     // child: Container(),
-                    child: Center(child: Text("how_use_bus_page".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color), textAlign: TextAlign.center,)),
+                    child: Center(child: Text("how_use_bus_page".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color), textAlign: TextAlign.center,)),
                   ),
                   Container(
                     height: 90,
@@ -127,12 +127,12 @@ class BusPage extends StatelessWidget {
                       numberAds: 1,
                       controller: adController,
                       type: NativeAdmobType.banner,
-                      error: Center(child: Text("plz_enable_ad".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 14), textAlign: TextAlign.center,)),
+                      error: Center(child: Text("plz_enable_ad".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 14), textAlign: TextAlign.center,)),
                       options: NativeAdmobOptions(
-                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color,),
-                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
-                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
-                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color,),
+                        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+                        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+                        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                       ),
                     ),
                   ),

@@ -33,15 +33,7 @@ class DateController{
   Schedule getJson(String key, dynamic value, int index){
     DateTime startDate = getDateTimeFromString(value["start"], 9);
     DateTime endDate = getDateTimeFromString(value["end"], 17);
-    return Schedule(
-      eventName: key,
-      from: startDate,
-      to: endDate,
-      background: _colors[index],
-      isAllDay: false,
-      startTimeZone: '',
-      endTimeZone: '',
-    );
+    return Schedule(key, startDate, endDate, _colors[index], false, '', '');
   }
 
   dispose(){
@@ -52,7 +44,7 @@ class DateController{
 }
 
 class Schedule {
-  Schedule({this.eventName, this.from, this.to, this.background, this.isAllDay, this.startTimeZone, this.endTimeZone});
+  Schedule(this.eventName, this.from, this.to, this.background, this.isAllDay, this.startTimeZone, this.endTimeZone);
 
   String eventName;
   DateTime from;

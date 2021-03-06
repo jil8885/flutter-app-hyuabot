@@ -38,23 +38,23 @@ class ReadingRoomController{
     Map<String, String> roomCode = {"제1열람실":"reading_room_1", "제2열람실":"reading_room_2", "제3열람실":"reading_room_3", "제4열람실":"reading_room_4", "제5열람실":"reading_room_5"};
     Map<String, ReadingRoomInfo> data = {};
     for (String key in responseJson.keys) {
-      data[roomCode[key]] = ReadingRoomInfo.fromJson(responseJson[key]);
+      data[roomCode[key]!] = ReadingRoomInfo.fromJson(responseJson[key]);
     }
     return data;
   }
 
   fetchAlarm() async{
     Map<String, bool> data = {
-      "reading_room_1": prefManager.getBool("reading_room_1") ?? false,
-      "reading_room_2": prefManager.getBool("reading_room_2") ?? false,
-      "reading_room_3": prefManager.getBool("reading_room_3") ?? false,
-      "reading_room_4": prefManager.getBool("reading_room_4") ?? false,
+      "reading_room_1": prefManager!.getBool("reading_room_1") ?? false,
+      "reading_room_2": prefManager!.getBool("reading_room_2") ?? false,
+      "reading_room_3": prefManager!.getBool("reading_room_3") ?? false,
+      "reading_room_4": prefManager!.getBool("reading_room_4") ?? false,
     };
     return data;
   }
 
   updateAlarm() async {
-    _subject.add({"seats":_subject.value["seats"], "alarm": await fetchAlarm()});
+    _subject.add({"seats":_subject.value!["seats"], "alarm": await fetchAlarm()});
   }
 
   dispose(){

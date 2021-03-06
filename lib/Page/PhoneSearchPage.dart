@@ -43,7 +43,7 @@ class PhoneSearchPage extends StatelessWidget {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
             } else {
               return Expanded(
                 child: ListView.separated(
@@ -59,13 +59,13 @@ class PhoneSearchPage extends StatelessWidget {
                                   title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
                                   content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('yes'.tr()),
                                       onPressed: () {
                                         UrlLauncher.launch("tel://${snapshot.data[index].number}");
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('no'.tr()),
                                       onPressed: () {
                                         Navigator.pop(context);
@@ -120,7 +120,7 @@ class PhoneSearchPage extends StatelessWidget {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
             } else {
               return Expanded(
                 child: ListView.separated(
@@ -136,13 +136,13 @@ class PhoneSearchPage extends StatelessWidget {
                                   title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
                                   content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('yes'.tr()),
                                       onPressed: () {
                                         UrlLauncher.launch("tel://${snapshot.data[index].number}");
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('no'.tr()),
                                       onPressed: () {
                                         Navigator.pop(context);

@@ -36,7 +36,7 @@ class FetchMetroInfoController{
           data['sub'][heading] = (temp[heading] as List).map((e) => MetroTimeTableInfo.fromJson(e)).toList();
         }
       } else {
-        temp = responseJson[key] as Map<String, dynamic> ?? {"up":[], "down":[]};
+        temp = responseJson[key] as Map<String, dynamic>;
         data['main'] = {};
         for (String heading in temp.keys) {
           data['main'][heading] = (temp[heading] as List).map((e) => MetroRealtimeInfo.fromJson(e)).toList();

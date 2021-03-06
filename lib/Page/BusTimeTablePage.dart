@@ -36,8 +36,8 @@ class BusTimeTablePage extends StatelessWidget {
             }
           }
 
-          Color _rowColor;
-          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 24);
+          Color? _rowColor;
+          TextStyle _timeColor = TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 24);
           if(!passed && (initialIndex == order)){
             _rowColor = Color.fromARGB(255, 20, 75, 170);
             _timeColor = TextStyle(color: Colors.white, fontSize: 24);
@@ -46,7 +46,7 @@ class BusTimeTablePage extends StatelessWidget {
           }
 
           return Container(
-            color: _rowColor,
+            color: _rowColor!,
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
             child: Container(
               width: MediaQuery.of(context).size.width*.5,
@@ -71,19 +71,19 @@ class BusTimeTablePage extends StatelessWidget {
     busTimetableController.setRoute(lineName);
 
 
-    switch (prefManager.getString("localeCode")){
+    switch (prefManager!.getString("localeCode")){
       case "ko_KR":
-        _minuteInfo = "평일: ${lineInfo[lineName]["weekdays"]} 분/주말: ${lineInfo[lineName]["weekends"]} 분";
+        _minuteInfo = "평일: ${lineInfo[lineName]!["weekdays"]} 분/주말: ${lineInfo[lineName]!["weekends"]} 분";
         break;
       case "en_US":
-        _minuteInfo = "Weekdays: ${lineInfo[lineName]["weekdays"]} min/Weekends: ${lineInfo[lineName]["weekends"]} min";
+        _minuteInfo = "Weekdays: ${lineInfo[lineName]!["weekdays"]} min/Weekends: ${lineInfo[lineName]!["weekends"]} min";
         break;
       case "zh":
         break;
     }
 
-    String _startStop = lineInfo[lineName]["from"].toString().tr();
-    String _terminalStop = lineInfo[lineName]["to"].toString().tr();
+    String _startStop = lineInfo[lineName]!["from"].toString().tr();
+    String _terminalStop = lineInfo[lineName]!["to"].toString().tr();
     return Scaffold(
       body: Column(
         children: [
