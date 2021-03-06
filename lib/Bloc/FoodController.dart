@@ -18,6 +18,10 @@ class FoodInfoController{
     });
   }
 
+  reload() async {
+    _menuSubject.add(await fetchFood());
+  }
+
   Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
