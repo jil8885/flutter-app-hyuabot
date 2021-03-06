@@ -73,11 +73,11 @@ class SettingPage extends StatelessWidget{
                                   Navigator.of(context).pop();
                                 });
                               },),
-                              SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                                prefManager!.setString("localeCode", "zh");
-                                context.setLocale(Locale("zh"));
-                                Navigator.of(context).pop();
-                              },),
+                              // SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
+                              //   prefManager!.setString("localeCode", "zh");
+                              //   context.setLocale(Locale("zh"));
+                              //   Navigator.of(context).pop();
+                              // },),
                             ],
                           );
                         }
