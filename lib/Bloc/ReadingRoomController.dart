@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,7 +29,7 @@ class ReadingRoomController{
 
 
   Future<Map<String, ReadingRoomInfo>> fetchSeats() async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/library");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/library") : Uri.http(conf.getAPIServer(), "/app/library");
     http.Response response = await http.post(
         url, headers: {"Accept": "application/json"},
         body: jsonEncode({"campus": "ERICA"}));

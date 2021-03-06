@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
@@ -20,7 +21,7 @@ class FoodInfoController{
   Future<Map<String, Map<String, List<FoodMenu>>>> fetchFood() async {
     // food info
     Map<String, Map<String, List<FoodMenu>>> allMenus = {};
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/food");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/food") : Uri.http(conf.getAPIServer(), "/app/food");
     final String _localeCode = prefManager.getString("localeCode");
     http.Response response;
     response = await http.post(url, body: jsonEncode({'language': _localeCode.split("_")[0]}));

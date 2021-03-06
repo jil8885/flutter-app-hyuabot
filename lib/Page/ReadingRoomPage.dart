@@ -110,7 +110,6 @@ class ReadingRoomPage extends StatelessWidget {
     final double _statusBarHeight = MediaQuery.of(context).padding.top;
     final TextStyle _theme = Theme.of(context).textTheme.bodyText1;
 
-    analytics.setCurrentScreen(screenName: "/library");
     if(prefManager.getBool("reading_room_1") == null || prefManager.getBool("reading_room_2") == null || prefManager.getBool("reading_room_3") == null || prefManager.getBool("reading_room_4") == null){
       prefManager.setBool("reading_room_1", false);
       prefManager.setBool("reading_room_2", false);

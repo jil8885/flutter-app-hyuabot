@@ -125,7 +125,6 @@ class ShuttleTimeTablePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/shuttle/timetable");
     String _busStop;
     switch(currentStop){
       case "bus_stop_dorm":

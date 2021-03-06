@@ -11,7 +11,6 @@ class PhoneSearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/contacts");
     final double height = MediaQuery.of(context).padding.top;
 
     _inSchoolTextEditor.addListener(() {

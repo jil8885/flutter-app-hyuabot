@@ -235,7 +235,6 @@ class FoodPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextStyle _theme1 = Theme.of(context).textTheme.bodyText2;
-    analytics.setCurrentScreen(screenName: "/food");
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),

@@ -18,7 +18,7 @@ class DateController{
 
   Future<List<Schedule>> fetchData() async{
     List<Schedule> data = [];
-    final url = Uri.encodeFull("https://raw.githubusercontent.com/jil8885/API-for-ERICA/light/calendar/master.json");
+    final url = Uri.https("raw.githubusercontent.com", "jil8885/API-for-ERICA/light/calendar/master.json");
     http.Response response = await http.get(url);
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     int index = 0;

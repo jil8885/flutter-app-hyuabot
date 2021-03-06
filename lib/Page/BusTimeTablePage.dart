@@ -67,7 +67,6 @@ class BusTimeTablePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/bus/timetable");
     String _minuteInfo= "";
     busTimetableController.setRoute(lineName);
 

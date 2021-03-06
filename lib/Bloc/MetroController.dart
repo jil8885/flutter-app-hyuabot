@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
@@ -21,7 +22,7 @@ class FetchMetroInfoController{
   }
 
   fetchDepartureInfo() async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/subway");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/subway") : Uri.http(conf.getAPIServer(), "/app/subway");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
 
