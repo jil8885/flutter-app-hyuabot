@@ -20,18 +20,10 @@ void initApp() async {
 
   ByteData srcData = await rootBundle.load(srcPath);
   await Directory(path.dirname(destPath)).create(recursive: true);
-  try{
-    if(srcData.lengthInBytes != srcSize){
-      await deleteDatabase(destPath);
-      List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
-      await new File(destPath).writeAsBytes(bytes, flush: true);
-      prefManager!.setInt("databaseSize", srcData.lengthInBytes);
-    }
-  } catch(_){
-    await deleteDatabase(destPath);
-    List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
-    await new File(destPath).writeAsBytes(bytes, flush: true);
-  }
+  await deleteDatabase(destPath);
+  List<int> bytes = srcData.buffer.asUint8List(srcData.offsetInBytes, srcData.lengthInBytes);
+  await new File(destPath).writeAsBytes(bytes, flush: true);
+  prefManager!.setInt("databaseSize", srcData.lengthInBytes);
   // Ad
   adController.setTestDeviceIds(["9EB3D1FB602993E0660E26FD66A53A25"]);
   adController.reloadAd(forceRefresh: true, numberAds: 3);
