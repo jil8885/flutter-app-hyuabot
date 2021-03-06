@@ -46,7 +46,7 @@ class BusTimeTablePage extends StatelessWidget {
           }
 
           return Container(
-            color: _rowColor!,
+            color: _rowColor,
             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
             child: Container(
               width: MediaQuery.of(context).size.width*.5,
