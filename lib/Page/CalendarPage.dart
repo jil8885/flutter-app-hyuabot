@@ -7,7 +7,6 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 class CalendarPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/calendar");
     return Container(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: StreamBuilder(

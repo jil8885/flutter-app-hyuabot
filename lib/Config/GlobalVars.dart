@@ -1,5 +1,4 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,9 +19,6 @@ final adController = NativeAdmobController();
 
 // FCM Manager
 FirebaseMessaging fcmManager;
-
-// Firebase FirebaseAnalytics
-FirebaseAnalytics analytics;
 
 // Notification
 class ReceivedNotification {

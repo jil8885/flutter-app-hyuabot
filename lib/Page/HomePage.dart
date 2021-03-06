@@ -36,19 +36,10 @@ Future<dynamic> onLaunchMessageHandler(Map<String, dynamic> msg) async {
   readingRoomController.fetchAlarm();
 }
 
-Future<dynamic> backgroundMessageHandler(Map<String, dynamic> msg) async {
-  final dynamic data = msg['data'];
+Future<dynamic> backgroundMessageHandler(RemoteMessage msg) async {
+  final dynamic data = msg.data;
   print("background:$data");
   _showNotificationWithNoTitle(data['name'], data['language']);
-}
-
-Future<dynamic> foregroundMessageHandler(Map<String, dynamic> msg) async{
-  final dynamic data = msg['data'];
-  print("foreground:$data");
-  fcmManager.unsubscribeFromTopic(data['name']);
-  prefManager.setBool(data['name'], false);
-  _showNotificationWithNoTitle(data['name'], data['language']);
-  readingRoomController.fetchAlarm();
 }
 
 Future<void> _showNotificationWithNoTitle(String msg, String language) async {
@@ -75,15 +66,13 @@ class HomePage extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/home");
-    // FCM
-    fcmManager = FirebaseMessaging();
-    fcmManager.configure(
-        onMessage: foregroundMessageHandler,
-        onBackgroundMessage: backgroundMessageHandler,
-        onLaunch: onLaunchMessageHandler
-    );
+    FirebaseMessaging.onMessage.listen((msg) {
+      final dynamic data = msg.data;
+      print("background:$data");
+      _showNotificationWithNoTitle(data['name'], data['language']);
+    });
 
+    FirebaseMessaging.onBackgroundMessage(backgroundMessageHandler);
     // 화면 너비, 크기 조정
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
@@ -19,10 +20,10 @@ class BusDepartureController {
 
   Future<Map<String, dynamic>> fetchDepartureInfo() async{
 
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/bus") : Uri.http(conf.getAPIServer(), "/app/bus");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA"}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-    Map<String, dynamic> data = {"10-1":{"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "3102": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}, "707-1": {"realtime": List<BusInfoRealtime>(), "timetable": List<BusInfoTimetable>()}};
+    Map<String, dynamic> data = {"10-1":{"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}, "3102": {"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}, "707-1": {"realtime": <BusInfoRealtime>[], "timetable": <BusInfoTimetable>[]}};
 
     for(String key in (responseJson["realtime"] as Map<String, dynamic>).keys){
       List realtimeInfo = responseJson["realtime"][key];
@@ -30,7 +31,7 @@ class BusDepartureController {
         data[key]["realtime"] =
             realtimeInfo.map((e) => BusInfoRealtime.fromJson(e)).toList();
       } else {
-        data[key]["realtime"] = new List<BusInfoRealtime>();
+        data[key]["realtime"] = <BusInfoRealtime>[];
       }
     }
 
@@ -40,7 +41,7 @@ class BusDepartureController {
         data[key]["timetable"] =
             timetableInfo.map((e) => BusInfoTimetable.fromJson(e)).toList();
       }else{
-        data[key]["timetable"] = new List<BusInfoTimetable>();
+        data[key]["timetable"] = <BusInfoTimetable>[];
       }
     }
     return data;
@@ -61,7 +62,7 @@ class BusTimetableController{
   }
 
   fetchTimeTable(String route) async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/bus/timetable");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/bus/timetable") : Uri.http(conf.getAPIServer(), "/app/bus/timetable");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"campus": "ERICA", "route": route}));
     Map<String, dynamic> responseJson = jsonDecode(utf8.decode(response.bodyBytes));
     Map<String, dynamic> data = {"day": responseJson["day"], "weekdays": responseJson["weekdays"], "saturday": responseJson["saturday"], "sunday": responseJson["sunday"]};

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_app_hyuabot_v2/Config/Networking.dart' as conf;
@@ -20,7 +21,7 @@ class ShuttleDepartureController{
 
 
   Future<Map<String, ShuttleStopDepartureInfo>> fetchDepartureInfo() async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/shuttle") : Uri.http(conf.getAPIServer(), "/app/shuttle");
     http.Response response = await http.get(url, headers: {"Accept": "application/json"});
     Map<String, dynamic> responseJson = jsonDecode(response.body);
 
@@ -47,7 +48,7 @@ class ShuttleTimeTableController{
   }
 
   Future<Map<String, dynamic>> fetchTimeTable(String busStop) async{
-    final url = Uri.encodeFull(conf.getAPIServer() + "/app/shuttle/by-stop");
+    final url = kReleaseMode ? Uri.https(conf.getAPIServer(), "/app/shuttle/by-stop") : Uri.http(conf.getAPIServer(), "/app/shuttle/by-stop");
     http.Response response = await http.post(url, headers: {"Accept": "application/json"}, body: jsonEncode({"busStop": busStop}));
     Map<String, dynamic> responseJson = jsonDecode(response.body);
     Map<String, dynamic> data = {};

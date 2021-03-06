@@ -79,7 +79,6 @@ class MetroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/metro");
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
     return Scaffold(

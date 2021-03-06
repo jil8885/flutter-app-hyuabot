@@ -10,7 +10,6 @@ import 'package:url_launcher/url_launcher.dart';
 class SettingPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    analytics.setCurrentScreen(screenName: "/setting");
     return Scaffold(
       body: Container(
         color: Theme.of(context).backgroundColor,
@@ -56,31 +55,35 @@ class SettingPage extends StatelessWidget{
                   title: "language_title".tr(),
                   titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
                   leading: Icon(Icons.language),
-                  onTap: ()=>{
+                  onPressed: (BuildContext context){
                     showDialog(
                         context: context,
-                        child: SimpleDialog(
-                          title: Text("language_dialog_title".tr()),
-                          children: [
-                            SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                              prefManager.setString("localeCode", "ko_KR");
-                              context.locale = Locale("ko", "KR");
-                              Navigator.of(context).pop();
-                            },),
-                            SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                              prefManager.setString("localeCode", "en_US").whenComplete((){
-                                context.locale = Locale("en", "US");
+                        builder: (context){
+                          return SimpleDialog(
+                            title: Text("language_dialog_title".tr()),
+                            children: [
+                              SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
+                                prefManager.setString("localeCode", "ko_KR");
+                                context.locale = Locale("ko", "KR");
                                 Navigator.of(context).pop();
-                              });
-                            },),
-                            SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                              prefManager.setString("localeCode", "zh");
-                              context.locale = Locale("zh");
-                              Navigator.of(context).pop();
-                            },),
-                          ],
-                        ))
-                  },),
+                              },),
+                              SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
+                                prefManager.setString("localeCode", "en_US").whenComplete((){
+                                  context.locale = Locale("en", "US");
+                                  Navigator.of(context).pop();
+                                });
+                              },),
+                              SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
+                                prefManager.setString("localeCode", "zh");
+                                context.locale = Locale("zh");
+                                Navigator.of(context).pop();
+                              },),
+                            ],
+                          );
+                        }
+                    );
+                  },
+                ),
                 SettingsTile(
                   title: "thanks_for_someone".tr(),
                   titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
