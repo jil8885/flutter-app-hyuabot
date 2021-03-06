@@ -24,7 +24,7 @@ class SettingPage extends StatelessWidget{
                   title: "theme_title".tr(),
                   titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                   leading: Icon(Icons.wb_sunny),
-                  onTap: ()=>{
+                  onPressed: (context){
                     showDialog(
                         context: context,
                         builder: (_) => SimpleDialog(
@@ -49,7 +49,7 @@ class SettingPage extends StatelessWidget{
                               adController.reloadAd(forceRefresh: true);
                             },),
                           ],
-                        ))
+                        ));
                   },),
                 SettingsTile(
                   title: "language_title".tr(),
@@ -64,18 +64,18 @@ class SettingPage extends StatelessWidget{
                             children: [
                               SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
                                 prefManager!.setString("localeCode", "ko_KR");
-                                context.locale = Locale("ko", "KR");
+                                context.setLocale(Locale("ko", "KR"));
                                 Navigator.of(context).pop();
                               },),
                               SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
                                 prefManager!.setString("localeCode", "en_US").whenComplete((){
-                                  context.locale = Locale("en", "US");
+                                  context.setLocale(Locale("en", "US"));
                                   Navigator.of(context).pop();
                                 });
                               },),
                               SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
                                 prefManager!.setString("localeCode", "zh");
-                                context.locale = Locale("zh");
+                                context.setLocale(Locale("zh"));
                                 Navigator.of(context).pop();
                               },),
                             ],
@@ -88,7 +88,7 @@ class SettingPage extends StatelessWidget{
                   title: "thanks_for_someone".tr(),
                   titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                   leading: Icon(Icons.people),
-                  onTap: (){
+                  onPressed: (context){
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -109,7 +109,7 @@ class SettingPage extends StatelessWidget{
                     title: "icons_from".tr(),
                     titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                     leading: Icon(Icons.source),
-                    onTap: (){
+                    onPressed: (context){
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(

@@ -59,13 +59,13 @@ class PhoneSearchPage extends StatelessWidget {
                                   title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
                                   content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('yes'.tr()),
                                       onPressed: () {
                                         UrlLauncher.launch("tel://${snapshot.data[index].number}");
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('no'.tr()),
                                       onPressed: () {
                                         Navigator.pop(context);
@@ -136,13 +136,13 @@ class PhoneSearchPage extends StatelessWidget {
                                   title: Text(snapshot.data[index].name, textAlign: TextAlign.center,),
                                   content: Text("${snapshot.data[index].number}로 연결하시겠습니까?", textAlign: TextAlign.center,),
                                   actions: [
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('yes'.tr()),
                                       onPressed: () {
                                         UrlLauncher.launch("tel://${snapshot.data[index].number}");
                                       },
                                     ),
-                                    FlatButton(
+                                    TextButton(
                                       child: Text('no'.tr()),
                                       onPressed: () {
                                         Navigator.pop(context);

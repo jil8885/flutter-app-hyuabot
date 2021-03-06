@@ -8,8 +8,6 @@ import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-import 'package:flutter_app_hyuabot_v2/Bloc/FoodController.dart';
-import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:flutter_app_hyuabot_v2/Config/Style.dart';

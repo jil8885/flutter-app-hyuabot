@@ -113,9 +113,6 @@ class BusCardPaint extends CustomPainter {
     canvas.drawCircle(Offset(0, 35), 5.0, _line);
     canvas.drawCircle(Offset(0, 35), 3.0, _white);
 
-    if(data == null){
-      return;
-    }
     List<BusInfoRealtime> realtimeList = data['realtime'];
     List<BusInfoTimetable> timetableList = data['timetable'];
 

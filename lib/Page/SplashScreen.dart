@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path/path.dart' as path;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'package:flutter_app_hyuabot_v2/Config/AdManager.dart';
@@ -83,13 +82,13 @@ class SplashScreenState extends State<SplashScreen>{
       final String defaultLocale = Platform.localeName;
       if(defaultLocale.startsWith("en")){
         prefManager!.setString("localeCode", "en_US");
-        context.locale = Locale("en", "US");
+        context.setLocale(Locale("en", "US"));
       } else if(defaultLocale.startsWith("zh")){
         prefManager!.setString("localeCode", "zh");
-        context.locale = Locale("zh");
+        context.setLocale(Locale("zh"));
       } else {
         prefManager!.setString("localeCode", "ko_KR");
-        context.locale = Locale("ko", "KR");
+        context.setLocale(Locale("ko", "KR"));
       }
     }
     return Scaffold(

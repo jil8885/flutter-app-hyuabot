@@ -172,45 +172,24 @@ class CustomStoreCard extends StatelessWidget {
     double _height;
     _height = MediaQuery.of(context).size.height;
 
-    Widget _callButton;
-    if(info.number != null){
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: (){
-              UrlLauncher.launch("tel://${info.number}");
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_can_call".tr()),
-              ],
-            ), ),
-        ],
-      );
-    } else {
-      _callButton = Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RaisedButton(
-            onPressed: null,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Icon(Icons.call_made_rounded),
-                SizedBox(width: 5,),
-                Text("map_cant_call".tr()),
-              ],
-            ),
-          ),
-        ],
-      );
-    }
+    final Widget _callButton = Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: (){
+            UrlLauncher.launch("tel://${info.number}");
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Icon(Icons.call_made_rounded),
+              SizedBox(width: 5,),
+              Text("map_can_call".tr()),
+            ],
+          ), ),
+      ],
+    );
 
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),

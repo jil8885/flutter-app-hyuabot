@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/MapController.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
-import 'package:flutter_app_hyuabot_v2/Model/Store.dart';
 import 'package:flutter_material_pickers/helpers/show_scroll_picker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:naver_map_plugin/naver_map_plugin.dart';
 import 'package:easy_localization/easy_localization.dart';
 

@@ -29,7 +29,7 @@ class BusPage extends StatelessWidget {
         if(timeTableOffered){
           Navigator.push(context, Transition(child: BusTimeTablePage(lineName, lineColor), transitionEffect: TransitionEffect.leftToRight).builder());
         }else {
-          Scaffold.of(context).showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text("timetable_not_offered_popup".tr(), style: TextStyle(color: Theme.of(context).backgroundColor==Colors.black?Colors.white:Colors.black), textAlign: TextAlign.center,),
               backgroundColor: Theme.of(context).backgroundColor,

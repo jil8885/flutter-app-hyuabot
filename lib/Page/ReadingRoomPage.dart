@@ -72,7 +72,7 @@ class ReadingRoomPage extends StatelessWidget {
                       fcmManager!.unsubscribeFromTopic("$name.zh");
                       prefManager!.setBool(name, false);
                       readingRoomController.updateAlarm();
-                      Scaffold.of(context).showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(_alarmOffString!, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),
@@ -82,13 +82,13 @@ class ReadingRoomPage extends StatelessWidget {
                         fcmManager!.subscribeToTopic("$name.${prefManager!.getString("localeCode")}");
                         prefManager!.setBool(name, true);
                         readingRoomController.updateAlarm();
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(_alarmOnString!, style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),
                         ));
                       } else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text("seat_remained_error".tr(), style: TextStyle(color:Theme.of(context).backgroundColor == Colors.black ? Colors.white:Colors.black), textAlign: TextAlign.center,),
                           backgroundColor: Theme.of(context).backgroundColor,
                           duration: Duration(seconds: 2),

@@ -190,7 +190,7 @@ class FoodPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AnimatedCrossFade(
-                          crossFadeState: !snapshot.data[cardIndex] ?? true ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                          crossFadeState: !snapshot.data[cardIndex] ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                           duration: kThemeAnimationDuration,
                           firstChild: Column(
                             children: [
