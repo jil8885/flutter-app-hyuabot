@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 
@@ -11,6 +12,10 @@ class PhoneSearchPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if(prefManager!.getString("localeCode")!="ko_KR"){
+      Fluttertoast.showToast(msg: "Sorry, this menu supports only korean!");
+    }
+
     final double height = MediaQuery.of(context).padding.top;
 
     _inSchoolTextEditor.addListener(() {
