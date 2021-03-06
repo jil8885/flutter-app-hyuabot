@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 0.3.6+38
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dev_dependencies:
   flutter_native_splash: ^1.0.3
@@ -13,7 +13,6 @@ dev_dependencies:
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   timezone: ^0.7.0-nullsafety.0
-  file_picker: '>=2.0.0 <3.0.0-nullsafety.0'
   plugin_platform_interface: ^2.0.0
 dependencies:
   flutter:

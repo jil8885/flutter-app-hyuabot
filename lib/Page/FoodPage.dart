@@ -10,7 +10,7 @@ class FoodPage extends StatelessWidget {
 
   Widget _foodItem(BuildContext context, String menu, String price){
     String _priceString;
-    if(prefManager.getString("localeCode") == "ko_KR"){
+    if(prefManager!.getString("localeCode") == "ko_KR"){
       _priceString = '$price 원';
     } else {
       _priceString = '₩ $price';
@@ -39,14 +39,14 @@ class FoodPage extends StatelessWidget {
     String kind = "lunch".tr();
     List<FoodMenu> currentFood = [];
     bool hasManyMenu = false;
-    if(_now.hour < 11 && data['breakfast'].isNotEmpty){
-      currentFood = data['breakfast'];
+    if(_now.hour < 11 && data['breakfast']!.isNotEmpty){
+      currentFood = data['breakfast']!;
       kind = "breakfast".tr();
-    } else if (_now.hour > 15 && data['dinner'].isNotEmpty){
-      currentFood = data['dinner'];
+    } else if (_now.hour > 15 && data['dinner']!.isNotEmpty){
+      currentFood = data['dinner']!;
       kind = "dinner".tr();
-    } else if (data['lunch'].isNotEmpty){
-      currentFood = data['lunch'];
+    } else if (data['lunch']!.isNotEmpty){
+      currentFood = data['lunch']!;
     } else {
       currentFood = [];
     }
@@ -62,7 +62,7 @@ class FoodPage extends StatelessWidget {
     }
 
     List<Widget> allFoodWidget = [];
-    if(data['breakfast'].isNotEmpty){
+    if(data['breakfast']!.isNotEmpty){
       hasManyMenu = true;
       allFoodWidget.addAll([
         Padding(
@@ -76,11 +76,11 @@ class FoodPage extends StatelessWidget {
           ),
         )
       ]);
-      allFoodWidget.addAll(data['breakfast'].map((e) => _foodItem(context, e.menu, e.price)).toList());
+      allFoodWidget.addAll(data['breakfast']!.map((e) => _foodItem(context, e.menu, e.price)).toList());
       allFoodWidget.add(Divider());
     }
 
-    if(data['lunch'].isNotEmpty){
+    if(data['lunch']!.isNotEmpty){
       allFoodWidget.addAll([
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16, top: 10),
@@ -93,11 +93,11 @@ class FoodPage extends StatelessWidget {
           ),
         )
       ]);
-      allFoodWidget.addAll(data['lunch'].map((e) => _foodItem(context, e.menu, e.price)).toList());
+      allFoodWidget.addAll(data['lunch']!.map((e) => _foodItem(context, e.menu, e.price)).toList());
       allFoodWidget.add(Divider());
     }
 
-    if(data['dinner'].isNotEmpty){
+    if(data['dinner']!.isNotEmpty){
       hasManyMenu = true;
       allFoodWidget.addAll([
         Padding(
@@ -111,7 +111,7 @@ class FoodPage extends StatelessWidget {
           ),
         )
       ]);
-      allFoodWidget.addAll(data['dinner'].map((e) => _foodItem(context, e.menu, e.price)).toList());
+      allFoodWidget.addAll(data['dinner']!.map((e) => _foodItem(context, e.menu, e.price)).toList());
     }
 
     if(allFoodWidget.isNotEmpty && allFoodWidget[allFoodWidget.length - 1].runtimeType == Divider){
@@ -234,7 +234,7 @@ class FoodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle _theme1 = Theme.of(context).textTheme.bodyText2;
+    final TextStyle _theme1 = Theme.of(context).textTheme.bodyText2!;
     return Scaffold(
       body: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
@@ -258,7 +258,7 @@ class FoodPage extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Navigator.of(context).pop();}, alignment: Alignment.centerLeft,),
+                          IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.of(context).pop();}, alignment: Alignment.centerLeft,),
                         ],
                       ),
                     ],
@@ -278,7 +278,7 @@ class FoodPage extends StatelessWidget {
                                 Text("student_cafeteria".tr(), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
-                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당'], 0),
+                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['학생식당']], _cafeteriaList['학생식당']!, 0),
                             SizedBox(height: 20,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -286,7 +286,7 @@ class FoodPage extends StatelessWidget {
                                 Text("teacher_cafeteria".tr(), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
-                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당'], 1),
+                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['교직원식당']], _cafeteriaList['교직원식당']!, 1),
                             SizedBox(height: 20,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -294,7 +294,7 @@ class FoodPage extends StatelessWidget {
                                 Text("food_court".tr(), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
-                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트'], 2),
+                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['푸드코트']], _cafeteriaList['푸드코트']!, 2),
                             SizedBox(height: 20,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -302,7 +302,7 @@ class FoodPage extends StatelessWidget {
                                 Text("changbo_cafeteria".tr(), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
-                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터'], 3),
+                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['창업보육센터']], _cafeteriaList['창업보육센터']!, 3),
                             SizedBox(height: 20,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -310,7 +310,7 @@ class FoodPage extends StatelessWidget {
                                 Text("dorm_cafeteria".tr(), style: TextStyle(color: _theme1.color, fontSize: 20), textAlign: TextAlign.center,)
                               ],
                             ),
-                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당'], 4),
+                            _cafeteriaCard(context, snapshot.data[_cafeteriaList['창의인재원식당']], _cafeteriaList['창의인재원식당']!, 4),
                           ],
                         ),
                       ),

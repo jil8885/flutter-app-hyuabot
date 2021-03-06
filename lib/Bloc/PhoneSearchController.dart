@@ -4,7 +4,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:sqflite/sqflite.dart';
 
 class InSchoolPhoneSearchController{
-  Database _database;
+  Database? _database;
   final BehaviorSubject<List<PhoneNum>> _subject = BehaviorSubject<List<PhoneNum>>();
 
   InSchoolPhoneSearchController(){
@@ -12,8 +12,9 @@ class InSchoolPhoneSearchController{
   }
 
   loadDatabase() {
-    String _path;
-    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+    getDatabasesPath().then((value){
+      String _path;
+      _path = value!;
       openDatabase(
           join(_path, "information.db")
       ).then((value){_database = value;}).whenComplete((){
@@ -29,7 +30,7 @@ class InSchoolPhoneSearchController{
     } else {
       _query = "select name, phone from inschool where phone is not null and name like '%$keyword%'";
     }
-    List<Map> queryResult = await _database.rawQuery(_query);
+    List<Map<String, dynamic>> queryResult = await _database!.rawQuery(_query);
     _subject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
   }
 
@@ -42,7 +43,7 @@ class InSchoolPhoneSearchController{
 }
 
 class OutSchoolPhoneSearchController{
-  Database _database;
+  Database? _database;
   BehaviorSubject<List<PhoneNum>> _subject = BehaviorSubject<List<PhoneNum>>();
 
   OutSchoolPhoneSearchController(){
@@ -51,7 +52,8 @@ class OutSchoolPhoneSearchController{
 
   loadDatabase() {
     String _path;
-    getDatabasesPath().then((value){_path = value;}).whenComplete((){
+    getDatabasesPath().then((value){
+      _path = value!;
       openDatabase(
           join(_path, "information.db")
       ).then((value){_database = value;}).whenComplete((){
@@ -67,7 +69,7 @@ class OutSchoolPhoneSearchController{
     } else {
       _query = "select name, phone from outschool where phone is not null and name like '%$keyword%'";
     }
-    List<Map> queryResult = await _database.rawQuery(_query);
+    List<Map<String, dynamic>> queryResult = await _database!.rawQuery(_query);
     _subject.add(queryResult.map((e) => PhoneNum.fromJson(e)).toList());
   }
 

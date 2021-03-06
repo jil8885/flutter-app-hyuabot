@@ -43,7 +43,7 @@ class PhoneSearchPage extends StatelessWidget {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
             } else {
               return Expanded(
                 child: ListView.separated(
@@ -120,7 +120,7 @@ class PhoneSearchPage extends StatelessWidget {
             if(snapshot.hasError || !snapshot.hasData){
               return CircularProgressIndicator();
             } else if(snapshot.data.isEmpty){
-              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),);
+              return Center(child: Text("phone_not_found".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),);
             } else {
               return Expanded(
                 child: ListView.separated(

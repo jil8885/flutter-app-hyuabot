@@ -17,7 +17,7 @@ void main() async{
   savedThemeMode = await AdaptiveTheme.getThemeMode();
   // FCM
   fcmManager = FirebaseMessaging.instance;
-  NotificationSettings settings = await fcmManager.requestPermission(
+  NotificationSettings settings = await fcmManager!.requestPermission(
     alert: true,
     announcement: false,
     badge: true,

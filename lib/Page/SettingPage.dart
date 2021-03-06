@@ -22,29 +22,29 @@ class SettingPage extends StatelessWidget{
               tiles: [
                 SettingsTile(
                   title: "theme_title".tr(),
-                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                   leading: Icon(Icons.wb_sunny),
                   onTap: ()=>{
                     showDialog(
                         context: context,
                         builder: (_) => SimpleDialog(
-                          title: Text("theme_dialog_title".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),),
+                          title: Text("theme_dialog_title".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),),
                           children: [
-                            SimpleDialogOption(child: Text("set_theme_system".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),), onPressed: (){
+                            SimpleDialogOption(child: Text("set_theme_system".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),), onPressed: (){
                               AdaptiveTheme.of(context).setSystem();
-                              prefManager.setString("theme", "auto");
+                              prefManager!.setString("theme", "auto");
                               Navigator.of(context).pop();
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text("set_theme_light".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),), onPressed: (){
+                            SimpleDialogOption(child: Text("set_theme_light".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),), onPressed: (){
                               AdaptiveTheme.of(context).setLight();
-                              prefManager.setString("theme", "light");
+                              prefManager!.setString("theme", "light");
                               Navigator.of(context).pop();
                               adController.reloadAd(forceRefresh: true);
                             },),
-                            SimpleDialogOption(child: Text("set_theme_dark".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),), onPressed: (){
+                            SimpleDialogOption(child: Text("set_theme_dark".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),), onPressed: (){
                               AdaptiveTheme.of(context).setDark();
-                              prefManager.setString("theme", "dark");
+                              prefManager!.setString("theme", "dark");
                               Navigator.of(context).pop();
                               adController.reloadAd(forceRefresh: true);
                             },),
@@ -53,7 +53,7 @@ class SettingPage extends StatelessWidget{
                   },),
                 SettingsTile(
                   title: "language_title".tr(),
-                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                   leading: Icon(Icons.language),
                   onPressed: (BuildContext context){
                     showDialog(
@@ -63,18 +63,18 @@ class SettingPage extends StatelessWidget{
                             title: Text("language_dialog_title".tr()),
                             children: [
                               SimpleDialogOption(child: Text("한국어", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                                prefManager.setString("localeCode", "ko_KR");
+                                prefManager!.setString("localeCode", "ko_KR");
                                 context.locale = Locale("ko", "KR");
                                 Navigator.of(context).pop();
                               },),
                               SimpleDialogOption(child: Text("English", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                                prefManager.setString("localeCode", "en_US").whenComplete((){
+                                prefManager!.setString("localeCode", "en_US").whenComplete((){
                                   context.locale = Locale("en", "US");
                                   Navigator.of(context).pop();
                                 });
                               },),
                               SimpleDialogOption(child: Text("中國語", style: Theme.of(context).textTheme.bodyText2,), onPressed: (){
-                                prefManager.setString("localeCode", "zh");
+                                prefManager!.setString("localeCode", "zh");
                                 context.locale = Locale("zh");
                                 Navigator.of(context).pop();
                               },),
@@ -86,19 +86,19 @@ class SettingPage extends StatelessWidget{
                 ),
                 SettingsTile(
                   title: "thanks_for_someone".tr(),
-                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                  titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                   leading: Icon(Icons.people),
                   onTap: (){
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: Text("thanks_for_someone".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color,), textAlign: TextAlign.center,),
+                        title: Text("thanks_for_someone".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color,), textAlign: TextAlign.center,),
                         content: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 16),),
+                            Text("소프트웨어학부19 유진웅(디자인)", style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 16),),
                             SizedBox(height: 5,),
-                            Text("중국학과16 이용찬(번역)", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 16),),
+                            Text("중국학과16 이용찬(번역)", style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 16),),
                           ],
                         ),
                       )
@@ -107,13 +107,13 @@ class SettingPage extends StatelessWidget{
                 ),
                 SettingsTile(
                     title: "icons_from".tr(),
-                    titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2.color),
+                    titleTextStyle: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
                     leading: Icon(Icons.source),
                     onTap: (){
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text("icons_from".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color,), textAlign: TextAlign.center,),
+                            title: Text("icons_from".tr(), style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color,), textAlign: TextAlign.center,),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [

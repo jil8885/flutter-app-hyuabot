@@ -14,9 +14,9 @@ class BusCardPaint extends CustomPainter {
   BusCardPaint(this.data, this.lineColor, this.context, this.timeTableOffered);
 
   void drawInfo(Canvas canvas, Offset offset, int numOfStop, int seats, var text, BuildContext context) {
-    String _stopString, _seatString;
+    String? _stopString, _seatString;
     switch (
-        prefManager.getString("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _stopString = '$numOfStop전';
         _seatString = '$seats석';
@@ -48,9 +48,9 @@ class BusCardPaint extends CustomPainter {
 
 
   String _getArrivalTime(String time) {
-    String _timeString;
+    String? _timeString;
     switch (
-        prefManager.getString("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time 출발';
         break;
@@ -60,13 +60,13 @@ class BusCardPaint extends CustomPainter {
       case 'zh':
         break;
     }
-    return _timeString;
+    return _timeString!;
   }
 
   String _getTime(int time) {
-    String _timeString;
+    String? _timeString;
     switch (
-        prefManager.getString("localeCode")) {
+        prefManager!.getString("localeCode")) {
       case 'ko_KR':
         _timeString = '$time분';
         break;
@@ -76,7 +76,7 @@ class BusCardPaint extends CustomPainter {
       case 'zh':
         break;
     }
-    return _timeString;
+    return _timeString!;
   }
 
   @override

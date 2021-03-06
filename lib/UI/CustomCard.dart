@@ -15,7 +15,7 @@ class CustomShuttleCard extends StatelessWidget {
   final List<String> timetable;
   final ShuttleStopDepartureInfo data;
 
-  CustomShuttleCard({this.title, this.timetable, this.data});
+  CustomShuttleCard(this.title, this.timetable, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -119,9 +119,9 @@ class CustomShuttleCard extends StatelessWidget {
 class CustomFoodCard extends StatelessWidget {
   final String title;
   final String time;
-  final FoodMenu data;
+  final FoodMenu? data;
 
-  CustomFoodCard({this.title, this.time, this.data});
+  CustomFoodCard(this.title, this.time, this.data);
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +136,8 @@ class CustomFoodCard extends StatelessWidget {
     if(data == null){
       _menu = "menu_not_uploaded".tr();
     } else {
-      _menu = data.menu;
-      _price = data.price;
+      _menu = data!.menu;
+      _price = data!.price;
     }
     return Card(
       shape:

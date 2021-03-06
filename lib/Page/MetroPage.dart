@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_app_hyuabot_v2/Config/GlobalVars.dart';
+import 'package:flutter_app_hyuabot_v2/Model/Metro.dart';
 import 'package:flutter_app_hyuabot_v2/UI/CustomPaint/MetroCardPaint.dart';
 
 class MetroPage extends StatelessWidget {
@@ -8,7 +9,7 @@ class MetroPage extends StatelessWidget {
     return StreamBuilder(
       stream: metroInfoController.departureInfo,
       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        CustomPainter content;
+        CustomPainter? content;
         try {
           var data = snapshot.data[key][subKey] as List;
           if (data.isNotEmpty) {
@@ -16,9 +17,9 @@ class MetroPage extends StatelessWidget {
                 .elementAt(0)
                 .runtimeType
                 .toString() == 'MetroRealtimeInfo') {
-              content = MetroRealtimeCardPaint(context, data, lineColor);
+              content = MetroRealtimeCardPaint(context, data as List<MetroRealtimeInfo>, lineColor);
             } else {
-              content = MetroTimeTableCardPaint(context, data, lineColor);
+              content = MetroTimeTableCardPaint(context, data as List<MetroTimeTableInfo>, lineColor);
             }
           } else {
             content = MetroRealtimeCardPaint(context, [], lineColor);
@@ -27,8 +28,8 @@ class MetroPage extends StatelessWidget {
           content = null;
         }
 
-        String _boundString;
-        switch(prefManager.getString("localeCode")){
+        String? _boundString;
+        switch(prefManager!.getString("localeCode")){
           case "ko_KR":
             _boundString = "$terminalStop 방면";
             break;
@@ -63,7 +64,7 @@ class MetroPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 10, bottom: 5),
                   child: Text(currentStop, style: TextStyle(fontSize: 16, color: Theme.of(context).backgroundColor == Colors.white ? Colors.black : Colors.white),),
                 ),
-                Text(_boundString, style: TextStyle(fontSize: 12, color: Colors.grey),),
+                Text(_boundString!, style: TextStyle(fontSize: 12, color: Colors.grey),),
                 Divider(color: Colors.grey),
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 0),
@@ -91,7 +92,7 @@ class MetroPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
+                  IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
                 ],
               ),
               Flexible(
