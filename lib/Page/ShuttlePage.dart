@@ -54,7 +54,8 @@ class ShuttlePage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.pop(context);}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,)
+                IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.pop(context);}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft,),
+                Expanded(child: Text("touch_shuttle_timetable".tr(), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),)),
               ],
             ),
             Expanded(
@@ -103,14 +104,7 @@ class ShuttlePage extends StatelessWidget {
                               _shuttleCard(context, _width / 2, _height, "bus_stop_school_opposite", "bound_bus_dorm", schoolResidence, snapshot.data["Shuttlecock_I"]),
                             ],
                           ),
-                          Container(
-                            height: 80,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [Center(child: Text("touch_shuttle_timetable".tr(), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),)],
-                            ),),
+                          getAdWidget(context)
                         ],
                       );
                     },

@@ -92,7 +92,7 @@ class MetroPage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft)
+                  IconButton(icon: Icon(Icons.arrow_back_rounded, color: Theme.of(context).textTheme.bodyText2!.color,), onPressed: (){Navigator.of(context).pop();}, padding: EdgeInsets.only(left: 20), alignment: Alignment.centerLeft),
                 ],
               ),
               Flexible(
@@ -103,12 +103,7 @@ class MetroPage extends StatelessWidget {
                       _metroCard(context, _width, _height, Color(0xff00a5de), "station_line_4".tr(), "bound_oido".tr(), 'main', 'down'),
                       _metroCard(context, _width, _height, Color(0xfff5a200), "station_line_suin".tr(), "bound_suwon".tr(), 'sub', 'up'),
                       _metroCard(context, _width, _height, Color(0xfff5a200), "station_line_suin".tr(), "bound_incheon".tr(), 'sub', 'down'),
-                      Container(
-                        padding: EdgeInsets.all(10),
-                        height: 80,
-                        width: _width,
-                        child: Text("subway_caution".tr(), textAlign: TextAlign.center, style: TextStyle(color: Colors.grey),),
-                      ),
+                      getAdWidget(context)
                     ],
                   ),
                 ),
