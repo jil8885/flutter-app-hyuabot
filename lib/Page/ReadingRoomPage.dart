@@ -136,14 +136,21 @@ class ReadingRoomPage extends StatelessWidget {
                         children: [
                           Container(
                             height: 450,
-                            child: ListView(
-                              physics: BouncingScrollPhysics(),
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                              children: [
-                                _readingRoomCard(context, "reading_room_1",  _theme),
-                                _readingRoomCard(context, "reading_room_2",  _theme),
-                                _readingRoomCard(context, "reading_room_3", _theme),
-                              ],
+                            child: StreamBuilder<Map<String, dynamic>>(
+                              stream: readingRoomController.currentData,
+                              builder: (context, snapshot) {
+                                if(snapshot.hasError){
+                                  return Center(child: Text("fail_to_load_library".tr()),);
+                                } else if(!snapshot.hasData){
+                                  return Center(child: CircularProgressIndicator(),);
+                                }
+                                Iterable<String> keys = snapshot.data!['seats'].keys;
+                                return ListView(
+                                  physics: BouncingScrollPhysics(),
+                                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  children: keys.map((e) => _readingRoomCard(context, e, _theme)).toList(),
+                                );
+                              }
                             ),
                           ),
                           Row(
