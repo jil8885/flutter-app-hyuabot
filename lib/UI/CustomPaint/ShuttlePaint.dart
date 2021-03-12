@@ -68,7 +68,7 @@ class ShuttleCardPaint extends CustomPainter{
     if(timetableList.length >= 2){
       status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status);
-      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
+      status = '${getTimeFromString(timetableList.elementAt(1), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(1), data)})';
       drawRemainedTime(canvas, Offset(25, 35), status);
     } else if(timetableList.length == 1){
       status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
