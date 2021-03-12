@@ -150,33 +150,40 @@ class ShuttleTimeTablePage extends StatelessWidget {
        title: Text("${currentStop.tr()} → ${(destination.tr()).replaceAll("Bound for", "")}"), centerTitle: true,
        backgroundColor: Color.fromARGB(255, 20, 75, 170),
      ),
-     body: StreamBuilder(
-       stream: shuttleTimeTableController.departureInfo,
-       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-         if(!snapshot.hasData || snapshot.data["weekdays"] == null || snapshot.data["weekdays"] == null){
-           return Center(child: CircularProgressIndicator(),);
-         }
-         Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
-         int initialIndex = snapshot.data["day"] == "weekdays"? 0:1;
-         return Container(
-           child: DefaultTabController(
-             length: 2,
-             initialIndex: initialIndex,
-             child: Column(
-               children: [
-                 TabBar(tabs: [Tab(child: Text("weekdays".tr(), style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr(), style: Theme.of(context).textTheme.bodyText2,),)],),
-                 Expanded(child: TabBarView(
-                   children: [
-                     Container(child: _timeTableView(_data["weekdays"]!, snapshot.data["weekdays"], snapshot.data["day"] == "weekdays"),),
-                     Container(child: _timeTableView(_data["weekends"]!, snapshot.data["weekends"], snapshot.data["day"] != "weekdays"),),
-                   ],
-                 ))
-               ],
+     body: Column(
+         children: [
+           Expanded(
+             child: StreamBuilder(
+               stream: shuttleTimeTableController.departureInfo,
+               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                 if(!snapshot.hasData || snapshot.data["weekdays"] == null || snapshot.data["weekdays"] == null){
+                   return Center(child: CircularProgressIndicator(),);
+                 }
+                 Map<String, List<dynamic>> _data = _getTimetable(snapshot.data);
+                 int initialIndex = snapshot.data["day"] == "weekdays"? 0:1;
+                 return Container(
+                   child: DefaultTabController(
+                     length: 2,
+                     initialIndex: initialIndex,
+                     child: Column(
+                       children: [
+                         TabBar(tabs: [Tab(child: Text("weekdays".tr(), style: Theme.of(context).textTheme.bodyText2,),), Tab(child: Text("weekends".tr(), style: Theme.of(context).textTheme.bodyText2,),)],),
+                         Expanded(child: TabBarView(
+                           children: [
+                             Container(child: _timeTableView(_data["weekdays"]!, snapshot.data["weekdays"], snapshot.data["day"] == "weekdays"),),
+                             Container(child: _timeTableView(_data["weekends"]!, snapshot.data["weekends"], snapshot.data["day"] != "weekdays"),),
+                           ],
+                         ))
+                       ],
+                     ),
+                   ),
+                 );
+               },
              ),
            ),
-         );
-       },
-     ),
+           getAdWidget(context)
+         ],
+       ),
    );
   }
 }

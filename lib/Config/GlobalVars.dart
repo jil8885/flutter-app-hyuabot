@@ -1,5 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/BusController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/DateController.dart';
@@ -10,11 +11,40 @@ import 'package:flutter_app_hyuabot_v2/Bloc/PhoneSearchController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ReadingRoomController.dart';
 import 'package:flutter_app_hyuabot_v2/Bloc/ShuttleController.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_admob/flutter_native_admob.dart';
 import 'package:flutter_native_admob/native_admob_controller.dart';
+import 'package:flutter_native_admob/native_admob_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
+
+import 'AdManager.dart';
 
 // Ad manager
 final adController = NativeAdmobController();
+getAdWidget(BuildContext context){
+  return Container(
+    height: 90,
+    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+    child: NativeAdmob(
+      adUnitID: AdManager.bannerAdUnitId,
+      numberAds: 1,
+      controller: adController,
+      type: NativeAdmobType.banner,
+      error: Center(
+          child: Text(
+            "plz_enable_ad".tr(),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 14),
+            textAlign: TextAlign.center,
+          )),
+      options: NativeAdmobOptions(
+        adLabelTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color,),
+        bodyTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+        headlineTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+        advertiserTextStyle: NativeTextStyle(color: Theme.of(context).textTheme.bodyText2!.color),
+      ),
+    ),
+  );
+}
 
 // FCM Manager
 FirebaseMessaging? fcmManager;

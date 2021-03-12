@@ -154,6 +154,7 @@ class BusTimeTablePage extends StatelessWidget {
               }
             },
           ),
+          getAdWidget(context)
         ],
       ),
     );
