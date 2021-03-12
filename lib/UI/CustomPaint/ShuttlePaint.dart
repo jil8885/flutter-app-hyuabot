@@ -73,9 +73,9 @@ class ShuttleCardPaint extends CustomPainter{
     } else if(timetableList.length == 1){
       status = '${getTimeFromString(timetableList.elementAt(0), now).difference(now).inMinutes} ${"minute".tr()} (${_getDirection(timetableList.elementAt(0), data)})';
       drawRemainedTime(canvas, Offset(25, 10), status);
-      drawRemainedTime(canvas, Offset(25, 35), '막차');
+      drawRemainedTime(canvas, Offset(25, 35), "is_last_bus".tr());
     } else {
-      drawRemainedTime(canvas, Offset(25, 10), '운행 종료');
+      drawRemainedTime(canvas, Offset(25, 10), "out_of_service".tr());
     }
   }
 
